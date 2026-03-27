@@ -142,7 +142,7 @@ class BaseSteeringAI {
     const ray = new THREE.Ray(origin, dir);
 
     raycaster.ray = ray;
-    const hit = raycaster.intersectObject(mesh,true)[0];
+    const hit = raycaster.intersectObject(this.mesh,true)[0];
     if (!hit || hit.distance > this.lookAhead) return new THREE.Vector3();
 
     const avoid = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0));
@@ -203,7 +203,7 @@ class ClimberAI extends BaseSteeringAI {
     const ray = new THREE.Ray(origin, dir);
 
     raycaster.ray = ray;
-    const hit = raycaster.intersectObject(mesh,true)[0];
+    const hit = raycaster.intersectObject(this.mesh,true)[0];
     return hit && hit.distance < 0.7;
   }
 }
@@ -431,7 +431,7 @@ function startGame(tId,lId){
         
         raycaster.ray = r;
         raycaster.far = horizLength;
-        const hit = raycaster.intersectObject(mesh,true)[0];
+        const hit = raycaster.intersectObject(tMesh,true)[0];
         hits[i] = hit;
         raycaster.far = Infinity;
 
