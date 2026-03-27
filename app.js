@@ -322,6 +322,9 @@ function startGame(tId,lId){
     tMesh.material = GridMaterial(tColor2,tColor1);
     eMaterial = GridMaterial(tColor1,tColor2,0.5);
     scene.add(tMesh);
+    let x0 = 0;
+    while(tMesh.heightmap.get(0,x0)!=0)x0++;
+    yaw.position.set(x0,2,0);
     gameUI(tColor1);
     spawner = setInterval(spawn,5000);
   }
