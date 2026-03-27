@@ -4,8 +4,8 @@
 //license: none
 
 //imports
-import * as THREE from '../libs/three.module.js';
-import {importVRX,importHeightmap} from '../libs/io.js';
+import * as THREE from './three.module.js';
+import {importVRX,importHeightmap} from './io.js';
 
 //custom raycast
 
