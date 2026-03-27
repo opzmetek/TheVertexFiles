@@ -310,9 +310,6 @@ function startGame(tId,lId){
     tMesh = mmx.mesh;
     tMesh.heightmap = mmx.map;
     tMesh.raycast = DDARaycast;
-    const scaleMatrix = new THREE.Matrix4();
-    scaleMatrix.makeScale(1, -1, 1);
-    tMesh.geometry.applyMatrix4(scaleMatrix);
     tMesh.geometry.computeBoundingBox();
     tMesh.geometry.computeBoundingSphere();
     tMesh.geometry.computeVertexNormals();
