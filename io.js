@@ -117,31 +117,34 @@ function heightmapToMesh(heightmap) {
   const indices = [];
   let index = 0;
 
-  // used array pracuje čistě s indexy 0..width-1 / 0..height-1
   const used = Array.from({ length: height }, () => new Array(width).fill(false));
 
-  // scale pro převod indexu na souřadnici -size..size
-  const xOffset = width / 2;
-  const zOffset = height / 2;
+  // Funkce pro převod indexu -> heightmap souřadnice
+  const idxToCoord = (i, len) => {
+    // i = 0..len-1 → -len/2..len/2
+    return (i - len / 2 + 0.5); // +0.5 pro střed voxelů
+  }
 
   for (let zi = 0; zi < height; zi++) {
     for (let xi = 0; xi < width; xi++) {
       if (used[zi][xi]) continue;
 
-      // převedení indexů na heightmap souřadnice
-      const x = xi - xOffset;
-      const z = zi - zOffset;
+      const x = idxToCoord(xi, width);
+      const z = idxToCoord(zi, height);
       const h = heightmap.get(z, x);
 
-      // zjistit šířku bloku se stejnou výškou
+      // šířka
       let w = 1;
-      while (xi + w < width && !used[zi][xi + w] && heightmap.get(z, xi + w - xOffset) === h) w++;
+      while (xi + w < width && !used[zi][xi + w] &&
+             heightmap.get(idxToCoord(xi + w, width), z) === h) w++;
 
-      // zjistit hloubku bloku se stejnou výškou
+      // hloubka
       let d = 1;
       outer: while (zi + d < height) {
         for (let k = 0; k < w; k++) {
-          if (used[zi + d][xi + k] || heightmap.get(z + d - zOffset, xi + k - xOffset) !== h) break outer;
+          if (used[zi + d][xi + k] ||
+              heightmap.get(idxToCoord(xi + k, width), idxToCoord(zi + d, height)) !== h)
+            break outer;
         }
         d++;
       }
@@ -154,10 +157,10 @@ function heightmapToMesh(heightmap) {
       }
 
       // souřadnice vertexů
-      const x0 = x;
-      const x1 = x + w;
-      const z0 = z;
-      const z1 = z + d;
+      const x0 = idxToCoord(xi, width);
+      const x1 = idxToCoord(xi + w, width);
+      const z0 = idxToCoord(zi, height);
+      const z1 = idxToCoord(zi + d, height);
       const y = h;
 
       vertices.push(
