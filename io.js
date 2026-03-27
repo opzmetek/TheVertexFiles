@@ -1,6 +1,6 @@
 // io.js
-import * as THREE from 'https://opzmetek.neocities.org/libs/three.module.js';
-import Heightmap from 'https://opzmetek.neocities.org/libs/heightmap.js';
+import * as THREE from './three.module.js';
+import Heightmap from './heightmap.js';
 
 // Uložit scénu do .vrx a stáhnout
 export function exportVRX(objects) {
