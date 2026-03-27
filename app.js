@@ -8,6 +8,8 @@ import * as THREE from './three.module.js';
 import {importVRX,importHeightmap} from './io.js';
 
 //custom raycast
+const raycaster = new THREE.Raycaster();
+raycaster.firstHitOnly = true;
 
 const DDARaycast = function(raycaster, intersects){
   if(!this.heightmap)return;
@@ -30,7 +32,7 @@ const DDARaycast = function(raycaster, intersects){
   let tMaxZ = dz > 0 ? ((cz + 1) * cellSize - oz) / dz : dz < 0 ? (cz * cellSize - oz) / dz : Infinity;
   let t = 0;
   while (t < raycaster.far) {
-    const h = this.heightmap[cx] && this.heightmap[cx][cz];
+    const h = this.heightmap.get(cx,cz);
     if (h !== undefined) {
       const yHit = oy + dy * t;
       if (yHit <= h && t >= raycaster.near) {
@@ -52,7 +54,7 @@ const DDARaycast = function(raycaster, intersects){
       t = tMaxZ;
       tMaxZ += tDeltaZ;
     }
-    if (cx < 0 || cz < 0 || cx >= this.heightmap.length || cz >= this.heightmap[0].length) break;
+    if (cx < 0 || cz < 0 || cx >= this.heightmap.xLen || cz >= this.heightmap.yLen) break;
   }
 }
 
@@ -131,7 +133,6 @@ class BaseSteeringAI {
   }
 
   obstacleAvoidance() {
-    if (!this.mesh.geometry.boundsTree) return new THREE.Vector3();
     if (this.velocity.lengthSq() < 0.001) return new THREE.Vector3();
 
     const dir = this.velocity.clone().normalize();
@@ -140,7 +141,8 @@ class BaseSteeringAI {
 
     const ray = new THREE.Ray(origin, dir);
 
-    const hit = this.mesh.geometry.boundsTree.raycastFirst(ray);
+    raycaster.ray = ray;
+    const hit = raycaster.intersectObject(mesh,true)[0];
     if (!hit || hit.distance > this.lookAhead) return new THREE.Vector3();
 
     const avoid = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0));
@@ -196,13 +198,12 @@ class ClimberAI extends BaseSteeringAI {
   }
 
   isWallAhead() {
-    if (!this.mesh.geometry.boundsTree) return false;
-
     const dir = this.velocity.clone().normalize();
     const origin = this.position.clone().add(dir.multiplyScalar(this.radius)).add(new THREE.Vector3(0,1,0));
     const ray = new THREE.Ray(origin, dir);
 
-    const hit = this.mesh.geometry.boundsTree.raycastFirst(ray);
+    raycaster.ray = ray;
+    const hit = raycaster.intersectObject(mesh,true)[0];
     return hit && hit.distance < 0.7;
   }
 }
@@ -268,7 +269,6 @@ let raycastedMove;
 function startGame(tId,lId){
   const bullets = [];
   const enemies = [];
-  const raycaster = new THREE.Raycaster();
   let tMesh,tBox,lvl,meta,tColor1,tColor2,updater,spawner,eMaterial;
   
   function spawnEnemy(id){
@@ -316,7 +316,6 @@ function startGame(tId,lId){
     tMesh.geometry.computeBoundingBox();
     tMesh.geometry.computeBoundingSphere();
     tMesh.geometry.computeVertexNormals();
-    tMesh.geometry.boundsTree=new MeshBVH(tMesh.geometry,{lazyGeneration:false});
     tBox = new THREE.Box3().setFromObject(tMesh);
     objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./",".vrx"))};
     di("game").style.display="block";
@@ -406,7 +405,8 @@ function startGame(tId,lId){
     downRay.origin.copy(downOrigin);
     downRay.direction.set(0,-1,0);
 
-    const downHit = tMesh.geometry.boundsTree.raycastFirst(downRay);
+    raycaster.ray = downRay;
+    const downHit = raycaster.intersectObject(tMesh,true)[0];
     onGround = !!(downHit&&downHit.distance<Math.abs(vertVec.y)+2);
 
     if (onGround&&vertVec.y<0) vertVec.y = 0;
@@ -428,10 +428,14 @@ function startGame(tId,lId){
         r.origin.copy(origins[i]);
         r.direction.copy(vDir);
 
-        hits[i] = tMesh.geometry.boundsTree.raycastFirst(r, {maxDistance:horizLength});
-        const h = hits[i];
+        
+        raycaster.ray = r;
+        raycaster.far = horizLength;
+        const hit = raycaster.intersectObject(mesh,true)[0];
+        hits[i] = hit;
+        raycaster.far = Infinity;
 
-        if (h && h.distance < minHitDist)minHitDist = h.distance;
+        if (hit && hit.distance < minHitDist)minHitDist = hit.distance;
       }
     }
 
