@@ -306,7 +306,7 @@ function startGame(tId,lId){
     di("homeMenu").style.display = "none";
     lvl = manifest.levels[tId][lId];
     meta = manifest.levels[tId]?.meta??{};
-    const mmx = await importHeightmap("./objects/"+meta.obj+".bin");
+    const mmx = await importHeightmap("./objects/"+meta.obj+".vrx");
     tMesh = mmx.mesh;
     tMesh.heightmap = mmx.map;
     tMesh.raycast = DDARaycast;
@@ -318,7 +318,7 @@ function startGame(tId,lId){
     tMesh.geometry.computeVertexNormals();
     tMesh.geometry.boundsTree=new MeshBVH(tMesh.geometry,{lazyGeneration:false});
     tBox = new THREE.Box3().setFromObject(tMesh);
-    objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./enemies/",".bin"))};
+    objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./enemies/",".vrx"))};
     di("game").style.display="block";
     di("game").appendChild(renderer.domElement);
     tColor1 = meta.color;
