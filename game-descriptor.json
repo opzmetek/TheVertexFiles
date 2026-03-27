@@ -1,25 +1,23 @@
 {
   "all_files":[
-    "./objects/scene3.bin",
-    "./objects/solartower.bin"
+    "./solar_tower.vrx",
   ],
   "game_objects":[
   ],
   "levels":{
     "solar tower":{
       "meta":{
-        "obj":"tower1",
+        "obj":"solar_tower",
         "color":"orange"
       },
       "1":{
         "enemies":{
-          "5":"spider"
         }
       }
     },
     "cyber tower":{
       "meta":{
-        "obj":"tower2",
+        "obj":"cyber_tower",
         "color":"rgb(0,255,0)"
       },
       "1":{
@@ -30,7 +28,7 @@
     },
     "ice tower":{
       "meta":{
-        "obj":"tower1",
+        "obj":"ice_tower",
         "color":"#8AEBFF"
       },
       "1":{
@@ -43,7 +41,7 @@
       "meta":{
         "color":"#000000",
         "alt-color":"#ffffff",
-        "obj":"tower2"
+        "obj":"ether_tower"
       },
       "1":{
         "enemies":{
@@ -55,7 +53,7 @@
       "meta":{
         "alt-color":"#D62B29",
         "color":"#000000",
-        "obj":"tower3"
+        "obj":"crimson_tower"
       },
       "1":{
         "enemies":{
@@ -65,11 +63,5 @@
     }
   },
   "enemies":{
-    "spider":{
-      "aiType":"climber",
-      "obj":"spider",
-      "animations":"spider",
-      "scale":"5"
-    }
   }
 }
