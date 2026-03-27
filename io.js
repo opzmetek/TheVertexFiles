@@ -119,10 +119,28 @@ function heightmapToMesh(heightmap) {
 
   const used = Array.from({ length: height }, () => new Array(width).fill(false));
 
-  // Funkce pro převod indexu -> heightmap souřadnice
   const idxToCoord = (i, len) => {
-    // i = 0..len-1 → -len/2..len/2
-    return (i - len / 2 + 0.5); // +0.5 pro střed voxelů
+    return (i - len / 2 + 0.5);
+  }
+
+  {
+    const x0 = -width*0.5;
+    const x1 = width*0.5;
+    const z0 = -height*0.5;
+    const z1 = height*0.5;
+
+    vertices.push(
+      x0, 0, z0,
+      x1, 0, z0,
+      x0, 0, z1,
+      x1, 0, z1
+    );
+
+    indices.push(
+      index, index + 2, index + 1,
+      index + 1, index + 2, index + 3
+    );
+    index += 4;
   }
 
   for (let zi = 0; zi < height; zi++) {
@@ -132,13 +150,15 @@ function heightmapToMesh(heightmap) {
       const x = idxToCoord(xi, width);
       const z = idxToCoord(zi, height);
       const h = heightmap.get(z, x);
+      if (h<=0){
+        used[zi][xi] = true;
+        continue;
+      }
 
-      // šířka
       let w = 1;
       while (xi + w < width && !used[zi][xi + w] &&
              heightmap.get(idxToCoord(xi + w, width), z) === h) w++;
 
-      // hloubka
       let d = 1;
       outer: while (zi + d < height) {
         for (let k = 0; k < w; k++) {
@@ -149,14 +169,12 @@ function heightmapToMesh(heightmap) {
         d++;
       }
 
-      // označit used
       for (let dz = 0; dz < d; dz++) {
         for (let dx = 0; dx < w; dx++) {
           used[zi + dz][xi + dx] = true;
         }
       }
 
-      // souřadnice vertexů
       const x0 = idxToCoord(xi, width);
       const x1 = idxToCoord(xi + w, width);
       const z0 = idxToCoord(zi, height);
@@ -169,12 +187,16 @@ function heightmapToMesh(heightmap) {
         x0, y, z1,
         x1, y, z1
       );
-
-      indices.push(
-        index, index + 2, index + 1,
-        index + 1, index + 2, index + 3
-      );
+      indices.push(index, index+2, index+1, index+1, index+2, index+3);
       index += 4;
+      vertices.push(x0,0,z0, x1,0,z0, x0,y,z0, x1,y,z0);
+      indices.push(index,index+2,index+1,index+1,index+2,index+3); index+=4;
+      vertices.push(x0,0,z1, x1,0,z1, x0,y,z1, x1,y,z1);
+      indices.push(index,index+1,index+2,index+1,index+3,index+2); index+=4;
+      vertices.push(x0,0,z0, x0,0,z1, x0,y,z0, x0,y,z1);
+      indices.push(index,index+2,index+1,index+1,index+2,index+3); index+=4;
+      vertices.push(x1,0,z0, x1,0,z1, x1,y,z0, x1,y,z1);
+      indices.push(index,index+1,index+2,index+1,index+3,index+2); index+=4;
     }
   }
 
