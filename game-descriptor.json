@@ -1,6 +1,10 @@
 {
   "all_files":[
     "./solar_tower.vrx",
+    "./cyber_tower.vrx",
+    "./ice_tower.vrx",
+    "./ether_tower.vrx",
+    "./crimson_tower.vrx"
   ],
   "game_objects":[
   ],
