@@ -110,16 +110,16 @@ export async function exportHeightmap(heightmap){
 }
 
 function heightmapToMesh(heightmap) {
-  const width = heightmap.xLen;
-  const height = heightmap.yLen;
+  const width = heightmap.xLen/2;
+  const height = heightmap.yLen/2;
 
   const vertices = [];
   const indices = [];
   let index = 0;
   const used = Array.from({ length: height }, () => new Array(width).fill(false));
 
-  for (let z = 0; z < height; z++) {
-    for (let x = 0; x < width; x++) {
+  for (let z = -height; z < height; z++) {
+    for (let x = -width; x < width; x++) {
       if (used[z][x]) continue;
 
       const h = heightmap.get(z,x);
