@@ -110,48 +110,70 @@ export async function exportHeightmap(heightmap){
 }
 
 function heightmapToMesh(heightmap) {
-  
   const width = heightmap.xLen;
-const height = heightmap.yLen;
-const used = Array.from({ length: height }, () => new Array(width).fill(false));
-const xScale = width / 2;
-const zScale = height / 2;
-for (let zi = 0; zi < height; zi++) {
-  for (let xi = 0; xi < width; xi++) {
-    if (used[zi][xi]) continue;
-    const x = (xi - xScale);
-    const z = (zi - zScale);
-    const h = heightmap.get(z, x);
-    let w = 1;
-    while (xi + w < width && !used[zi][xi + w] && heightmap.get(z, x + w) === h) w++;
-    let d = 1;
-    outer: while (zi + d < height) {
-      for (let k = 0; k < w; k++) {
-        if (used[zi + d][xi + k] || heightmap.get(z + d, x + k) !== h) break outer;
+  const height = heightmap.yLen;
+
+  const vertices = [];
+  const indices = [];
+  let index = 0;
+
+  // used array pracuje čistě s indexy 0..width-1 / 0..height-1
+  const used = Array.from({ length: height }, () => new Array(width).fill(false));
+
+  // scale pro převod indexu na souřadnici -size..size
+  const xOffset = width / 2;
+  const zOffset = height / 2;
+
+  for (let zi = 0; zi < height; zi++) {
+    for (let xi = 0; xi < width; xi++) {
+      if (used[zi][xi]) continue;
+
+      // převedení indexů na heightmap souřadnice
+      const x = xi - xOffset;
+      const z = zi - zOffset;
+      const h = heightmap.get(z, x);
+
+      // zjistit šířku bloku se stejnou výškou
+      let w = 1;
+      while (xi + w < width && !used[zi][xi + w] && heightmap.get(z, xi + w - xOffset) === h) w++;
+
+      // zjistit hloubku bloku se stejnou výškou
+      let d = 1;
+      outer: while (zi + d < height) {
+        for (let k = 0; k < w; k++) {
+          if (used[zi + d][xi + k] || heightmap.get(z + d - zOffset, xi + k - xOffset) !== h) break outer;
+        }
+        d++;
       }
-      d++;
-    }
-    for (let dz = 0; dz < d; dz++) {
-      for (let dx = 0; dx < w; dx++) {
-        used[zi + dz][xi + dx] = true;
+
+      // označit used
+      for (let dz = 0; dz < d; dz++) {
+        for (let dx = 0; dx < w; dx++) {
+          used[zi + dz][xi + dx] = true;
+        }
       }
+
+      // souřadnice vertexů
+      const x0 = x;
+      const x1 = x + w;
+      const z0 = z;
+      const z1 = z + d;
+      const y = h;
+
+      vertices.push(
+        x0, y, z0,
+        x1, y, z0,
+        x0, y, z1,
+        x1, y, z1
+      );
+
+      indices.push(
+        index, index + 2, index + 1,
+        index + 1, index + 2, index + 3
+      );
+      index += 4;
     }
-    const x0 = x, x1 = x + w;
-    const z0 = z, z1 = z + d;
-    const y = h;
-    vertices.push(
-      x0, y, z0,
-      x1, y, z0,
-      x0, y, z1,
-      x1, y, z1
-    );
-    indices.push(
-      index, index + 2, index + 1,
-      index + 1, index + 2, index + 3
-    );
-    index += 4;
   }
-}
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
