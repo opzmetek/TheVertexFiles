@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Vertex</title>
+
+    <!-- Manifest & Theme -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b0f1a">
+
+    <!-- Styl -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Ikona -->
+    <link rel="icon" href="icon.png" type="image/png">
+
+    <!-- Font fallback -->
+    <style>
+        body { font-family: 'DytSans', sans-serif; }
+    </style>
+</head>
+<body>
+    <!-- === LOADSCREEN === -->
+    <div id="loadscreen">
+      <div class="t">
+        <label class="extreme">The Vertex</label>
+        <label class="medium">Project by Dynamyt</label>
+      </div>
+      <label class="glow large">Loading...</label>
+    </div>
+
+    <!-- === HOME MENU === -->
+    <div id="homeMenu" style="display:none;">
+        <button class="large c glow" id="start-game">Start</button>
+        <button class="medium lb" id="settingsBtn">Settings</button>
+        <button class="medium rb" id="exitBtn" onclick="window.location.href = 'about:blank';">Leave</button>
+    </div>
+
+    <!-- === GAME CANVAS === -->
+    <div id="game" style="display:none;margin:0px;border:0px;position:absolute;left:0px;top:0px;width:100vw;height:100vh;"></div>
+    
+    <div id="joystick"></div>
+    
+    <script src="../libs/nipplejs.min.js"></script>
+    
+    <script type="module" src="./app.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker registred'))
+                .catch(err => console.warn('SW error:', err));
+        }
+    </script>
+</body>
+</html>
