@@ -110,54 +110,48 @@ export async function exportHeightmap(heightmap){
 }
 
 function heightmapToMesh(heightmap) {
-  const width = heightmap.xLen/2;
-  const height = heightmap.yLen/2;
-
-  const vertices = [];
-  const indices = [];
-  let index = 0;
-  const used = Array.from({ length: height }, () => new Array(width).fill(false));
-
-  for (let z = -height; z < height; z++) {
-    for (let x = -width; x < width; x++) {
-      if (used[z+height][x+width]) continue;
-
-      const h = heightmap.get(z,x);
-
-      let w = 1;
-      while (x + w < width && !used[z+height][x + w+width] && heightmap.get(z,x + w) === h) w++;
-
-      let d = 1;
-      outer: while (z + d < height) {
-        for (let k = 0; k < w; k++) {
-          if (used[z + d+height][x + k+width] || heightmap.get(z + d,x + k) !== h) break outer;
-        }
-        d++;
+  
+  const width = heightmap.xLen;
+const height = heightmap.yLen;
+const used = Array.from({ length: height }, () => new Array(width).fill(false));
+const xScale = width / 2;
+const zScale = height / 2;
+for (let zi = 0; zi < height; zi++) {
+  for (let xi = 0; xi < width; xi++) {
+    if (used[zi][xi]) continue;
+    const x = (xi - xScale);
+    const z = (zi - zScale);
+    const h = heightmap.get(z, x);
+    let w = 1;
+    while (xi + w < width && !used[zi][xi + w] && heightmap.get(z, x + w) === h) w++;
+    let d = 1;
+    outer: while (zi + d < height) {
+      for (let k = 0; k < w; k++) {
+        if (used[zi + d][xi + k] || heightmap.get(z + d, x + k) !== h) break outer;
       }
-
-      for (let dz = 0; dz < d; dz++) {
-        for (let dx = 0; dx < w; dx++) {
-          used[z + dz+height][x + dx+width] = true;
-        }
-      }
-
-      const x0 = x, x1 = x + w;
-      const z0 = z, z1 = z + d;
-      const y = h;
-
-      vertices.push(
-        x0, y, z0,
-        x1, y, z0,
-        x0, y, z1,
-        x1, y, z1
-      );
-      indices.push(
-        index, index + 2, index + 1,
-        index + 1, index + 2, index + 3
-      );
-      index += 4;
+      d++;
     }
+    for (let dz = 0; dz < d; dz++) {
+      for (let dx = 0; dx < w; dx++) {
+        used[zi + dz][xi + dx] = true;
+      }
+    }
+    const x0 = x, x1 = x + w;
+    const z0 = z, z1 = z + d;
+    const y = h;
+    vertices.push(
+      x0, y, z0,
+      x1, y, z0,
+      x0, y, z1,
+      x1, y, z1
+    );
+    indices.push(
+      index, index + 2, index + 1,
+      index + 1, index + 2, index + 3
+    );
+    index += 4;
   }
+}
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
