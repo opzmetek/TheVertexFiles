@@ -325,6 +325,7 @@ function startGame(tId,lId){
     let x0 = 0;
     while(tMesh.heightmap.get(0,x0)!=0)x0++;
     yaw.position.set(x0,2,0);
+    console.log(yaw.position);
     gameUI(tColor1);
     spawner = setInterval(spawn,5000);
   }
