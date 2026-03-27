@@ -120,24 +120,24 @@ function heightmapToMesh(heightmap) {
 
   for (let z = -height; z < height; z++) {
     for (let x = -width; x < width; x++) {
-      if (used[z][x]) continue;
+      if (used[z+height][x+width]) continue;
 
       const h = heightmap.get(z,x);
 
       let w = 1;
-      while (x + w < width && !used[z][x + w] && heightmap.get(z,x + w) === h) w++;
+      while (x + w < width && !used[z+height][x + w+width] && heightmap.get(z,x + w) === h) w++;
 
       let d = 1;
       outer: while (z + d < height) {
         for (let k = 0; k < w; k++) {
-          if (used[z + d][x + k] || heightmap.get(z + d,x + k) !== h) break outer;
+          if (used[z + d+height][x + k+width] || heightmap.get(z + d,x + k) !== h) break outer;
         }
         d++;
       }
 
       for (let dz = 0; dz < d; dz++) {
         for (let dx = 0; dx < w; dx++) {
-          used[z + dz][x + dx] = true;
+          used[z + dz+height][x + dx+width] = true;
         }
       }
 
