@@ -255,16 +255,14 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player;
+let player = {size:0.5};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
 const speed = 10;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" "};
-const vertVec = new THREE.Vector3(),gravity = 200,jumpStrength = 120;
-let onGround=true;
-let raycastedMove;
+const vertVec = 0,gravity = 400,jumpStrength = 240;
 
 function startGame(tId,lId){
   const bullets = [];
@@ -357,95 +355,44 @@ function startGame(tId,lId){
     const d = millis - last;
     last = millis;
     const dTime = d*0.001;
-    //move(dTime);
+    move(dTime);
     renderer.render(scene,camera);
     enemies.forEach(e=>e.move(dTime));
     requestAnimationFrame(loop);
   }
-  
-  const vFor = new THREE.Vector3();
-  const vRight = new THREE.Vector3();
-  const vMove = new THREE.Vector3();
-  const vDir = new THREE.Vector3();
-  const vTemp = new THREE.Vector3();
 
-  const origins = [
-    new THREE.Vector3(), 
-    new THREE.Vector3(), 
-    new THREE.Vector3(), 
-    new THREE.Vector3()
-  ];
+  const vars = new Float32Array(4);
+  const temp = new Float32Array(4);
 
-  const rays = [
-    new THREE.Ray(),
-    new THREE.Ray(),
-    new THREE.Ray(),
-    new THREE.Ray()
-  ];
-
-  const hits = [null, null, null, null];
-
-  const downOrigin = new THREE.Vector3();
-  const downRay = new THREE.Ray();
+  function computeVars(v,x,z){
+    const x0 = x-player.size*0.5;
+    const z0 = z-player.size*0.5;
+    const x0c = Math.floor(x0+player.size);
+    const z0c = Math.floor(z0+player.size);
+    const x1c = Math.floor(x0);
+    const z1c = Math.floor(z0);
+    v[0] = tMesh.heightmap.get(z0c,x0c);
+    v[1] = tMesh.heightmap.get(z0c,x1c);
+    v[2] = tMesh.heightmap.get(z1c,x0c);
+    v[3] = tMesh.heightmap.get(z1c,x1c);
+  }
   
   function move(dt){
-    camera.getWorldDirection(vFor);
-    vRight.crossVectors(vFor, camera.up).normalize();
-
-    vMove.set(0,0,0);
-    vMove.addScaledVector(vFor, mx);
-    vMove.addScaledVector(vRight, my);
-
-    const spd = vMove.length();
-    vMove.y = 0;
-
-    if (spd > 0) vMove.normalize().multiplyScalar(spd * speed * dt);
-    else vMove.set(0,0,0);
-
-    downOrigin.copy(yaw.position).y += Math.abs(vertVec.y);
-    downRay.origin.copy(downOrigin);
-    downRay.direction.set(0,-1,0);
-
-    raycaster.ray = downRay;
-    const downHit = raycaster.intersectObject(tMesh,true)[0];
-    onGround = !!(downHit&&downHit.distance<Math.abs(vertVec.y)+2);
-
-    if (onGround&&vertVec.y<0) vertVec.y = 0;
-    else if(!onGround) vertVec.y -= gravity * dt;
-
-    vDir.copy(vMove).normalize();
-    const horizLength = vMove.length();
-
-    origins[0].copy(yaw.position).addScaledVector(vRight,  0.25);
-    origins[1].copy(yaw.position).addScaledVector(vRight, -0.25);
-    origins[2].copy(yaw.position).add(camera.up);
-    origins[3].copy(yaw.position).addScaledVector(camera.up, -1);
-
-    let minHitDist = horizLength;
-
-    if (horizLength > 0) {
-      for (let i = 0; i < 4; i++){
-        const r = rays[i];
-        r.origin.copy(origins[i]);
-        r.direction.copy(vDir);
-
-        
-        raycaster.ray = r;
-        raycaster.far = horizLength;
-        const hit = raycaster.intersectObject(tMesh,true)[0];
-        hits[i] = hit;
-        raycaster.far = Infinity;
-
-        if (hit && hit.distance < minHitDist)minHitDist = hit.distance;
-      }
+    computeVars(vars,yaw.position.x,yaw.position.z);
+    const h00 = vars[0],h01 = vars[1], h10 = vars[2], h11 = vars[3];
+    const min = Math.min(h00,h01,h10,h11);
+    if(yaw.position.y>min+0.01){
+      vertVec-=gravity*dt;
+      yaw.position.y+=vertVec*dt;
+    }else if(key[keyCodes.jump]){
+      yaw.position.y = min;
+      vertVec = jumpStrength;
     }
-
-    let allowed = horizLength;
-    if (minHitDist < horizLength)allowed = Math.max(0, minHitDist - 0.5);
-
-    if (allowed > 0)yaw.position.addScaledVector(vDir, allowed);
-
-    yaw.position.y += vertVec.y * dt;
+    const mvx = mx*speed*dt, mvy = my*speed*dt;
+    computeVars(temp,yaw.position.x+mvx,yaw.position.z+mvy);
+    const m00 = temp[0],m01 = temp[1], m10 = temp[2], m11 = temp[3];
+    yaw.position.x+=mvx;
+    yaw.position.z+=mvy;
   }
   
   function updateEnemies(){
