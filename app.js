@@ -262,7 +262,8 @@ let level = 0;
 let mx=0,my=0;
 const speed = 10;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" "};
-const vertVec = 0,gravity = 400,jumpStrength = 240;
+let vertVec = 0;
+const gravity = 400,jumpStrength = 240;
 
 function startGame(tId,lId){
   const bullets = [];
