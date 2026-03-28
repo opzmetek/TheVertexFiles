@@ -262,7 +262,7 @@ let level = 0;
 let mx=0,my=0;
 const speed = 10;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" "};
-let vertVec = 0;
+let vertVec = 0,onGround = true;
 const gravity = 400,jumpStrength = 240;
 
 function startGame(tId,lId){
@@ -385,9 +385,9 @@ function startGame(tId,lId){
     if(yaw.position.y>min+0.01){
       vertVec-=gravity*dt;
       yaw.position.y+=vertVec*dt;
-    }else if(key[keyCodes.jump]){
+    }else{
       yaw.position.y = min;
-      vertVec = jumpStrength;
+      onGround = true;
     }
     const mvx = mx*speed*dt, mvy = my*speed*dt;
     computeVars(temp,yaw.position.x+mvx,yaw.position.z+mvy);
