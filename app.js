@@ -385,6 +385,7 @@ function startGame(tId,lId){
     if(yaw.position.y>min+0.01){
       vertVec-=gravity*dt;
       yaw.position.y+=vertVec*dt;
+      onGround = false;
     }else{
       yaw.position.y = min;
       onGround = true;
@@ -463,6 +464,7 @@ function loadUI(){
   window.addEventListener("resize",e=>{
     renderer.setSize(window.innerWidth,window.innerHeight);
     camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
   });
 }
 
@@ -471,13 +473,13 @@ function gameUI(color){
   document.addEventListener("keydown",e=>{
     const k = e.key.toLowerCase();
     keys[k]=true;
-    if(k===keyCodes.jump&&onGround)vertVec.y = jumpStrength;
+    if(k===keyCodes.jump&&onGround)vertVec = jumpStrength;
     updateKeys();
   });
   document.addEventListener("keyup",e=>{
     const k = e.key.toLowerCase();
     delete keys[k];
-    if(k===keyCodes.jump)vertVec.y = 0;
+    if(k===keyCodes.jump)vertVec = 0;
     updateKeys();
   });
   
