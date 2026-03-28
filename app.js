@@ -357,7 +357,7 @@ function startGame(tId,lId){
     const d = millis - last;
     last = millis;
     const dTime = d*0.001;
-    move(dTime);
+    //move(dTime);
     renderer.render(scene,camera);
     enemies.forEach(e=>e.move(dTime));
     requestAnimationFrame(loop);
