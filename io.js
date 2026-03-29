@@ -119,84 +119,94 @@ function heightmapToMesh(heightmap) {
 
   const used = Array.from({ length: height }, () => new Array(width).fill(false));
 
-  const idxToCoord = (i, len) => {
-    return (i - len / 2 + 0.5);
-  }
+  // velikost jednoho bloku
+  const BLOCK_SIZE = 1;
 
-  {
-    const x0 = -width*0.5;
-    const x1 = width*0.5;
-    const z0 = -height*0.5;
-    const z1 = height*0.5;
-
-    vertices.push(
-      x0, 0, z0,
-      x1, 0, z0,
-      x0, 0, z1,
-      x1, 0, z1
-    );
-
-    indices.push(
-      index, index + 2, index + 1,
-      index + 1, index + 2, index + 3
-    );
-    index += 4;
-  }
+  // pomocná funkce pro souřadnice bloku
+  const coordX = (i) => (i - width / 2 + 0.5) * BLOCK_SIZE;
+  const coordZ = (i) => (i - height / 2 + 0.5) * BLOCK_SIZE;
 
   for (let zi = 0; zi < height; zi++) {
     for (let xi = 0; xi < width; xi++) {
       if (used[zi][xi]) continue;
 
-      const x = idxToCoord(xi, width);
-      const z = idxToCoord(zi, height);
-      const h = heightmap.get(z, x);
-      if (h<=0){
+      const h = heightmap.get(zi, xi);
+      if (h <= 0) {
         used[zi][xi] = true;
         continue;
       }
 
+      // zjistíme maximální šířku stejné výšky
       let w = 1;
-      while (xi + w < width && !used[zi][xi + w] &&
-             heightmap.get(idxToCoord(xi + w, width), z) === h) w++;
+      while (xi + w < width && !used[zi][xi + w] && heightmap.get(zi, xi + w) === h) w++;
 
+      // zjistíme maximální hloubku stejné výšky
       let d = 1;
       outer: while (zi + d < height) {
         for (let k = 0; k < w; k++) {
-          if (used[zi + d][xi + k] ||
-              heightmap.get(idxToCoord(xi + k, width), idxToCoord(zi + d, height)) !== h)
-            break outer;
+          if (used[zi + d][xi + k] || heightmap.get(zi + d, xi + k) !== h) break outer;
         }
         d++;
       }
 
+      // označíme bloky jako použité
       for (let dz = 0; dz < d; dz++) {
         for (let dx = 0; dx < w; dx++) {
           used[zi + dz][xi + dx] = true;
         }
       }
 
-      const x0 = idxToCoord(xi, width);
-      const x1 = idxToCoord(xi + w, width);
-      const z0 = idxToCoord(zi, height);
-      const z1 = idxToCoord(zi + d, height);
+      // souřadnice kvádru
+      const x0 = coordX(xi);
+      const x1 = coordX(xi + w);
+      const z0 = coordZ(zi);
+      const z1 = coordZ(zi + d);
       const y = h;
 
+      // horní plocha
       vertices.push(
         x0, y, z0,
         x1, y, z0,
         x0, y, z1,
         x1, y, z1
       );
-      indices.push(index, index+2, index+1, index+1, index+2, index+3);
+      indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
       index += 4;
-      vertices.push(x0,0,z0, x1,0,z0, x0,y,z0, x1,y,z0);
-      indices.push(index,index+2,index+1,index+1,index+2,index+3); index+=4;
-      vertices.push(x0,0,z1, x1,0,z1, x0,y,z1, x1,y,z1);
-      indices.push(index,index+1,index+2,index+1,index+3,index+2); index+=4;
-      vertices.push(x0,0,z0, x0,0,z1, x0,y,z0, x0,y,z1);
-      indices.push(index,index+2,index+1,index+1,index+2,index+3); index+=4;
-      vertices.push(x1,0,z0, x1,0,z1, x1,y,z0, x1,y,z1);
-      indices.push(index,index+1,index+2,index+1,index+3,index+2); index+=4;
+
+      // stěny (jen pokud sousední blok nemá stejnou výšku)
+      const neighbors = [
+        { dx: -1, dz: 0 }, // levá
+        { dx: 1, dz: 0 },  // pravá
+        { dx: 0, dz: -1 }, // přední
+        { dx: 0, dz: 1 }   // zadní
+      ];
+
+      for (const n of neighbors) {
+        const nx = xi + n.dx;
+        const nz = zi + n.dz;
+        const nh = (nx >= 0 && nx < width && nz >= 0 && nz < height)
+          ? heightmap.get(nz, nx) : 0;
+        if (nh >= h) continue; // soused má stejnou nebo vyšší výšku
+
+        // stěna ve směru n.dx/nz
+        let sx0 = x0, sx1 = x1;
+        let sz0 = z0, sz1 = z1;
+        let sy0 = 0, sy1 = y;
+
+        if (n.dx === -1) { sx1 = sx0; }        // levá
+        else if (n.dx === 1) { sx0 = sx1; }    // pravá
+        else if (n.dz === -1) { sz1 = sz0; }   // přední
+        else if (n.dz === 1) { sz0 = sz1; }    // zadní
+
+        vertices.push(
+          sx0, sy0, sz0,
+          sx1, sy0, sz1,
+          sx0, sy1, sz0,
+          sx1, sy1, sz1
+        );
+        indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+        index += 4;
+      }
     }
   }
 
