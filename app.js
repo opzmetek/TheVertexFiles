@@ -255,12 +255,12 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25};
+let player = {size:0.5,halfSize:0.25,speed:100};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
-const speed = 10;
+const speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" "};
 let vertVec = 0,onGround = true;
 const gravity = 400,jumpStrength = 240;
@@ -496,6 +496,8 @@ function gameUI(color){
     if(keys[keyCodes.moveLeft])my=-1;
     else if(keys[keyCodes.moveRight])my=1;
     else my=0;
+    if(keys[keyCodes.sprint])speed = player.speed*2;
+    else speed = player.speed;
   }
   if("ontouchstart" in window||navigator.maxTouchPoints>0||window.location.search.includes("mobile=true")){
     let ly,lx;
