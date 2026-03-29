@@ -255,7 +255,7 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5};
+let player = {size:0.5,halfSize:size*0.5};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
@@ -361,40 +361,44 @@ function startGame(tId,lId){
     enemies.forEach(e=>e.move(dTime));
     requestAnimationFrame(loop);
   }
-
-  const vars = new Float32Array(4);
-  const temp = new Float32Array(4);
-
-  function computeVars(v,x,z){
-    const x0 = x-player.size*0.5;
-    const z0 = z-player.size*0.5;
-    const x0c = Math.floor(x0+player.size);
-    const z0c = Math.floor(z0+player.size);
-    const x1c = Math.floor(x0);
-    const z1c = Math.floor(z0);
-    v[0] = tMesh.heightmap.get(z0c,x0c);
-    v[1] = tMesh.heightmap.get(z0c,x1c);
-    v[2] = tMesh.heightmap.get(z1c,x0c);
-    v[3] = tMesh.heightmap.get(z1c,x1c);
-  }
+  
+  const vFor = new THREE.Vector3();
+  let hm;
   
   function move(dt){
-    computeVars(vars,yaw.position.x,yaw.position.z);
-    const h00 = vars[0],h01 = vars[1], h10 = vars[2], h11 = vars[3];
-    const min = Math.min(h00,h01,h10,h11);
-    if(yaw.position.y>min+0.01){
-      vertVec-=gravity*dt;
-      yaw.position.y+=vertVec*dt;
-      onGround = false;
-    }else{
-      yaw.position.y = min;
-      onGround = true;
+    camera.getWorldDirection(vFor);
+    const mvx = (mx * vFor.x + my * -vFor.y) * dt;
+    const mvz = (mx * vFor.y + my *  vFor.x) * dt;
+    let x = yaw.position.x,let z = yaw.position.z, y = yaw.position.y + 0.5;
+    let nx = x + mvx;
+    let nx0 = Math.floor(nx - player.halfSize),nx1 = Math.floor(nx + player.halfSize);
+    let z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
+    if (y < hm.get(z0, nx0) || y < hm.get(z1, nx0) || y < hm.get(z0, nx1) || y < hm.get(z1, nx1)){
+      if (mvx > 0)nx = nx1 - player.halfSize;
+      else if (mvx < 0)nx = nx0 + 1 + player.halfSize;
     }
-    const mvx = mx*speed*dt, mvy = my*speed*dt;
-    computeVars(temp,yaw.position.x+mvx,yaw.position.z+mvy);
-    const m00 = temp[0],m01 = temp[1], m10 = temp[2], m11 = temp[3];
-    yaw.position.x+=mvx;
-    yaw.position.z+=mvy;
+    x = nx;
+    let nz = z + mvz;
+    let x0 = Math.floor(x - player.halfSize),x1 = Math.floor(x + player.halfSize);
+    let nz0 = Math.floor(nz - player.halfSize),nz1 = Math.floor(nz + player.halfSize);
+    if (y < hm.get(nz0, x0) || y < hm.get(nz1, x0) || y < hm.get(nz0, x1) || y < hm.get(nz1, x1)){
+      if (mvz > 0)nz = nz1 - player.halfSize;
+      else if (mvz < 0)nz = nz0 + 1 + player.halfSize;
+    }
+    z = nz;
+    x0 = Math.floor(x - player.halfSize),x1 = Math.floor(x + player.halfSize);
+    z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
+    const h = Math.max(hm.get(z0,x0),hm.get(z1,x0),hm.get(z0,x1),hm.get(z1,x1));
+    y += vertVec*dt;
+    if(y<=h){
+      onGround = true;
+      y = h+0.001;//eps
+      vertVec = 0;
+    }else{
+      onGround = false;
+      vertVec -= gravity*dt;
+    }
+    yaw.position.set(x,y,z);
   }
   
   function updateEnemies(){
@@ -404,6 +408,7 @@ function startGame(tId,lId){
   }
   
   start().then(()=>{
+    hm = tMesh.heightmap;
     requestAnimationFrame(loop);
     updater = setInterval(updateEnemies,100);
   });
