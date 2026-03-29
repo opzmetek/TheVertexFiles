@@ -255,7 +255,7 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:size*0.5};
+let player = {size:0.5,halfSize:this.size*0.5};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
