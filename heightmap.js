@@ -8,16 +8,16 @@ export default class Heightmap {
   }
 
   get(x, y) {
-    const xx = Math.floor(this.xCenter + x);
-    const yy = Math.floor(this.yCenter + y);
+    const xx = (this.xCenter + x)|0;
+    const yy = (this.yCenter + y)|0;
     if (xx < 0 || xx >= this.xLen || yy < 0 || yy >= this.yLen) return 0;
-    return this.map[yy * this.xLen + xx]; // správně řádek*width + sloupec
+    return this.map[yy * this.xLen + xx];
   }
 
   set(x, y, value) {
-    const xx = Math.floor(this.xCenter + x);
-    const yy = Math.floor(this.yCenter + y);
+    const xx = (this.xCenter + x)|0;
+    const yy = (this.yCenter + y)|0;
     if (xx < 0 || xx >= this.xLen || yy < 0 || yy >= this.yLen) return;
-    this.map[yy * this.xLen + xx] = value; // správně řádek*width + sloupec
+    this.map[yy * this.xLen + xx] = value;
   }
 }
