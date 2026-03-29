@@ -369,7 +369,7 @@ function startGame(tId,lId){
     camera.getWorldDirection(vFor);
     const mvx = (mx * vFor.x + my * -vFor.y) * dt;
     const mvz = (mx * vFor.y + my *  vFor.x) * dt;
-    let x = yaw.position.x, z = yaw.position.z, y = yaw.position.y + 0.5;
+    let x = yaw.position.x, z = yaw.position.z, y = yaw.position.y+0.5;
     let nx = x + mvx;
     let nx0 = Math.floor(nx - player.halfSize),nx1 = Math.floor(nx + player.halfSize);
     let z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
@@ -390,9 +390,9 @@ function startGame(tId,lId){
     z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
     const h = Math.max(hm.get(z0,x0),hm.get(z1,x0),hm.get(z0,x1),hm.get(z1,x1));
     y += vertVec*dt;
-    if(y<=h){
+    if(y-0.5<=h){
       onGround = true;
-      y = h+0.50001;//eps
+      y = h+0.00001;//eps
       vertVec = 0;
     }else{
       onGround = false;
