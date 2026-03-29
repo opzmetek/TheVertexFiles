@@ -392,7 +392,7 @@ function startGame(tId,lId){
     y += vertVec*dt;
     if(y<=h){
       onGround = true;
-      y = h+0.001;//eps
+      y = h+0.50001;//eps
       vertVec = 0;
     }else{
       onGround = false;
