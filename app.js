@@ -369,7 +369,7 @@ function startGame(tId,lId){
     camera.getWorldDirection(vFor);
     const mvx = (mx * vFor.x + my * -vFor.y) * dt;
     const mvz = (mx * vFor.y + my *  vFor.x) * dt;
-    let x = yaw.position.x,let z = yaw.position.z, y = yaw.position.y + 0.5;
+    let x = yaw.position.x, z = yaw.position.z, y = yaw.position.y + 0.5;
     let nx = x + mvx;
     let nx0 = Math.floor(nx - player.halfSize),nx1 = Math.floor(nx + player.halfSize);
     let z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
