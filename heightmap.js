@@ -17,6 +17,7 @@ export default class Heightmap {
   set(x, y, value) {
     const xx = (this.xCenter + x)|0;
     const yy = (this.yCenter + y)|0;
+    console.log("setting {"+xx+"/"+this.xLen+", "+yy+"/"+this.yLen+"} to "+value);
     if (xx < 0 || xx >= this.xLen || yy < 0 || yy >= this.yLen) return;
     this.map[yy * this.xLen + xx] = value;
   }
