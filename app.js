@@ -255,7 +255,7 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:100};
+let player = {size:0.5,halfSize:0.25,speed:700};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
@@ -263,7 +263,7 @@ let mx=0,my=0;
 const speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"x"};
 let vertVec = 0,onGround = true;
-const gravity = 400,jumpStrength = 240;
+const gravity = 600,jumpStrength = 280;
 
 function startGame(tId,lId){
   const bullets = [];
@@ -326,7 +326,7 @@ function startGame(tId,lId){
     yaw.position.set(x0,2,0);
     console.log(yaw.position);
     gameUI(tColor1);
-    spawner = setInterval(spawn,5000);
+    //spawner = setInterval(spawn,5000);
   }
   
   function spawn(){
