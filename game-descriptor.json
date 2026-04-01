@@ -1,7 +1,6 @@
 {
   "all_files":[
     "./solar_tower.vrx",
-    "./tower.vrx",
     "./ice_tower.vrx",
     "./ether_tower.vrx",
     "./crimson_tower.vrx"
@@ -11,7 +10,7 @@
   "levels":{
     "solar tower":{
       "meta":{
-        "obj":"tower",
+        "obj":"solar_tower",
         "color":"orange"
       },
       "1":{
