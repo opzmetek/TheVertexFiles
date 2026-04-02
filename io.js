@@ -186,54 +186,69 @@ function heightmapToMesh(heightmap) {
       const z1 = idxToEdge(zi + d, height);
       const y = h;
 
-      // horní plocha
+// horní plocha (směrem nahoru)
 vertices.push(
-  x0, y, z0,
-  x1, y, z0,
-  x0, y, z1,
-  x1, y, z1
+  x0, y, z0,  // 0
+  x1, y, z0,  // 1
+  x0, y, z1,  // 2
+  x1, y, z1   // 3
 );
-indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+indices.push(
+  index, index + 2, index + 1,
+  index + 1, index + 2, index + 3
+);
 index += 4;
 
-// přední stěna (k z0)
+// přední stěna (směrem k z0)
 vertices.push(
-  x0, 0, z0,
-  x1, 0, z0,
-  x0, y, z0,
-  x1, y, z0
+  x0, 0, z0,  // 0
+  x1, 0, z0,  // 1
+  x0, y, z0,  // 2
+  x1, y, z0   // 3
 );
-indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+indices.push(
+  index, index + 2, index + 1,
+  index + 1, index + 2, index + 3
+);
 index += 4;
 
-// zadní stěna (k z1)
+// zadní stěna (směrem k z1)
 vertices.push(
-  x0, 0, z1,
-  x1, 0, z1,
-  x0, y, z1,
-  x1, y, z1
+  x0, 0, z1,  // 0
+  x1, 0, z1,  // 1
+  x0, y, z1,  // 2
+  x1, y, z1   // 3
 );
-indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
+indices.push(
+  index, index + 1, index + 2,
+  index + 2, index + 1, index + 3
+);
 index += 4;
 
-// levá stěna (k x0)
+// levá stěna (směrem k x0)
 vertices.push(
-  x0, 0, z0,
-  x0, 0, z1,
-  x0, y, z0,
-  x0, y, z1
+  x0, 0, z0,  // 0
+  x0, 0, z1,  // 1
+  x0, y, z0,  // 2
+  x0, y, z1   // 3
 );
-indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+indices.push(
+  index, index + 2, index + 1,
+  index + 1, index + 2, index + 3
+);
 index += 4;
 
-// pravá stěna (k x1)
+// pravá stěna (směrem k x1)
 vertices.push(
-  x1, 0, z0,
-  x1, 0, z1,
-  x1, y, z0,
-  x1, y, z1
+  x1, 0, z0,  // 0
+  x1, 0, z1,  // 1
+  x1, y, z0,  // 2
+  x1, y, z1   // 3
 );
-indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
+indices.push(
+  index, index + 1, index + 2,
+  index + 2, index + 1, index + 3
+);
 index += 4;
     }
   }
