@@ -255,11 +255,12 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:40,dashLength: 10};
+let player = {size:0.5,halfSize:0.25,speed:40,dashLength: 30, dashDelay: 1000};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
+let timers = {dash:0};
 const speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x"};
 let vertVec = 0,onGround = true;
@@ -416,8 +417,12 @@ function startGame(tId,lId){
 }
 
 function dash(){
+  if(performance.now()-timers.dash<player.dashDelay)return;
+  timers.dash = performance.now();
   camera.getWorldDirection(vFor);
-  const ray = new THREE.Ray(yaw.position.clone(),vFor);
+  const o = yaw.position.clone();
+  o.y+=0.5;
+  const ray = new THREE.Ray(o,vFor);
   const hit = DDARaycast(tMesh, ray, 0, player.dashLength);
   yaw.position.x = Math.floor(hit.point.x)+0.5;
   yaw.position.z = Math.floor(hit.point.z)+0.5;
