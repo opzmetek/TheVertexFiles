@@ -12,13 +12,11 @@ const raycaster = new THREE.Raycaster();
 raycaster.firstHitOnly = true;
 const urlParams = new URLSearchParams(window.location.search);
 
-const DDARaycast = function(raycaster, intersects){
-  if(!this.heightmap)return;
-  const ray = raycaster.ray;
+function DDARaycast(mesh, ray, near=0, far=Infinity){
+  if(!mesh.heightmap)return {hit:false,point:ray.origin,object:mesh,error:true,distance:0};
   const dx = ray.direction.x;
   const dy = ray.direction.y;
   const dz = ray.direction.z;
-  const len = ray.direction.length();
   let ox = ray.origin.x;
   let oy = ray.origin.y;
   let oz = ray.origin.z;
@@ -32,18 +30,18 @@ const DDARaycast = function(raycaster, intersects){
   let tMaxX = dx > 0 ? ((cx + 1) * cellSize - ox) / dx : dx < 0 ? (cx * cellSize - ox) / dx : Infinity;
   let tMaxZ = dz > 0 ? ((cz + 1) * cellSize - oz) / dz : dz < 0 ? (cz * cellSize - oz) / dz : Infinity;
   let t = 0;
-  while (t < raycaster.far) {
-    const h = this.heightmap.get(cx,cz);
+  while (t < far) {
+    const h = mesh.heightmap.get(cx,cz);
     if (h !== undefined) {
       const yHit = oy + dy * t;
-      if (yHit <= h && t >= raycaster.near) {
+      if (yHit <= h && t >= near) {
         const point = ray.at(t, new THREE.Vector3());
-        intersects.push({
+        return {
+          hit: true,
           distance: t,
           point,
-          object: this
-        });
-        break;
+          object: mesh
+        };
       }
     }
     if (tMaxX < tMaxZ) {
@@ -55,8 +53,9 @@ const DDARaycast = function(raycaster, intersects){
       t = tMaxZ;
       tMaxZ += tDeltaZ;
     }
-    if (cx < 0 || cz < 0 || cx >= this.heightmap.xLen || cz >= this.heightmap.yLen) break;
+    if (cx < 0 || cz < 0 || cx >= mesh.heightmap.xLen || cz >= mesh.heightmap.yLen) break;
   }
+  return {hit: false, distance: far, point: ray.at(far, new THREE.Vector3()), object:mesh};
 }
 
 //classes
@@ -256,13 +255,13 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:40};
+let player = {size:0.5,halfSize:0.25,speed:40,dashLength: 10};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
 const speed = player.speed;
-const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c"};
+const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 
@@ -309,7 +308,6 @@ function startGame(tId,lId){
     const mmx = await importHeightmap("./"+meta.obj+".vrx");
     tMesh = mmx.mesh;
     tMesh.heightmap = mmx.map;
-    tMesh.raycast = DDARaycast;
     tMesh.geometry.computeBoundingBox();
     tMesh.geometry.computeBoundingSphere();
     tMesh.geometry.computeVertexNormals();
@@ -327,7 +325,7 @@ function startGame(tId,lId){
     yaw.position.set(x0,2,0);
     console.log(yaw.position);
     if(urlParams.get("debug")==="true")showDebug();
-    gameUI(tColor1);
+    gameUI(tColor1,dash);
     //spawner = setInterval(spawn,5000);
   }
 
@@ -416,6 +414,15 @@ function startGame(tId,lId){
   }
   yaw.position.set(x, y, z);
 }
+
+function dash(){
+  camera.getWorldDirection(vFor);
+  const ray = new THREE.Ray(yaw.position.clone(),vFor);
+  const hit = DDARaycast(tMesh, ray, 0, player.dashLength);
+  yaw.position.x = Math.floor(hit.point.x)+0.5;
+  yaw.position.z = Math.floor(hit.point.z)+0.5;
+}
+  
 function checkCollisionXZ(px, pz, py) {
   const x0 = Math.floor(px - player.halfSize);
   const x1 = Math.floor(px + player.halfSize);
@@ -514,13 +521,14 @@ function loadUI(){
   });
 }
 
-function gameUI(color){
+function gameUI(color,dash){
   const keys = {};
   document.addEventListener("keydown",e=>{
     e.preventDefault();
     const k = e.key.toLowerCase();
     keys[k]=true;
     if(k===keyCodes.jump&&onGround)vertVec = jumpStrength;
+    else if(k===keyCodes.dash)dash();
     updateKeys();
   });
   document.addEventListener("keyup",e=>{
@@ -541,7 +549,7 @@ function gameUI(color){
     if(keys[keyCodes.sprint])speed = player.speed*2;
     else speed = player.speed;
   }
-  if("ontouchstart" in window||navigator.maxTouchPoints>0||window.location.search.includes("mobile=true")){
+  if("ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true"){
     let ly,lx;
     renderer.domElement.addEventListener("pointermove",e=>{
       const x = e.clientX,y = e.clientY;
