@@ -213,7 +213,7 @@ function heightmapToMesh(heightmap) {
         x0, y, z1,
         x1, y, z1
       );
-      indices.push(index, index + 1, index + 2, index + 1, index + 3, index + 2);
+      indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
       index += 4;
 
       // levá stěna
@@ -233,7 +233,7 @@ function heightmapToMesh(heightmap) {
         x1, y, z0,
         x1, y, z1
       );
-      indices.push(index, index + 1, index + 2, index + 1, index + 3, index + 2);
+      indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
       index += 4;
     }
   }
