@@ -255,13 +255,13 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:70};
+let player = {size:0.5,halfSize:0.25,speed:40};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
 const speed = player.speed;
-const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"x"};
+const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"control"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 
@@ -374,82 +374,27 @@ function startGame(tId,lId){
       move(stepDt);
     }
   }
-  
-  /*function move(dt){
-    camera.getWorldDirection(vFor);
-    const mvx = (mx * vFor.x + my * -vFor.z) * dt * speed;
-    const mvz = (mx * vFor.z + my *  vFor.x) * dt * speed;
-    let x = yaw.position.x, z = yaw.position.z, y = yaw.position.y+0.5;//offset for stair move
-    let nx = x + mvx;
-    let nx0 = Math.floor(nx - player.halfSize),nx1 = Math.floor(nx + player.halfSize);
-    let z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
-    if (y < hm.get(z0, nx0) || y < hm.get(z1, nx0) || y < hm.get(z0, nx1) || y < hm.get(z1, nx1)){
-      if (mvx > 0)nx = nx1 - player.halfSize;
-      else if (mvx < 0)nx = nx0 + 1 + player.halfSize;
-    }
-    x = nx;
-    let nz = z + mvz;
-    let x0 = Math.floor(x - player.halfSize),x1 = Math.floor(x + player.halfSize);
-    let nz0 = Math.floor(nz - player.halfSize),nz1 = Math.floor(nz + player.halfSize);
-    if (y < hm.get(nz0, x0) || y < hm.get(nz1, x0) || y < hm.get(nz0, x1) || y < hm.get(nz1, x1)){
-      if (mvz > 0)nz = nz1 - player.halfSize;
-      else if (mvz < 0)nz = nz0 + 1 + player.halfSize;
-    }
-    z = nz;
-    x0 = Math.floor(x - player.halfSize),x1 = Math.floor(x + player.halfSize);
-    z0  = Math.floor(z - player.halfSize),z1  = Math.floor(z + player.halfSize);
-    const h = Math.max(hm.get(z0,x0),hm.get(z1,x0),hm.get(z0,x1),hm.get(z1,x1));
-    y += vertVec*dt;
-    y -= 0.5;//remove offset for stair move
-    if(y<=h){
-      onGround = true;
-      y = h-0.00001;//eps
-      vertVec = 0;
-    }else{
-      onGround = false;
-      vertVec -= gravity*dt;
-    }
-    yaw.position.set(x,y,z);
-  }*/
 
   function move(dt) {
-  // směr kamery
   camera.getWorldDirection(vFor);
-
-  // normovaný pohyb podle vstupu
   let len = Math.hypot(mx, my);
   let inputX = len > 0 ? mx / len : 0;
   let inputZ = len > 0 ? my / len : 0;
-
-  // rychlost
   const speedStep = speed * dt;
-
   const mvx = (inputX * vFor.x + inputZ * -vFor.z) * speedStep;
   const mvz = (inputX * vFor.z + inputZ *  vFor.x) * speedStep;
-
   let x = yaw.position.x;
   let z = yaw.position.z;
   let y = yaw.position.y;
-
-  // --- X pohyb ---
   let nx = x + mvx;
-  if (!checkCollisionXZ(nx, z, y)) nx = x; // pokud kolize → nechodit
-
-  // --- Z pohyb ---
+  if (!checkCollisionXZ(nx, z, y)) nx = x;
   let nz = z + mvz;
-  if (!checkCollisionXZ(nx, nz, y)) nz = z; // pokud kolize → nechodit
-
+  if (!checkCollisionXZ(nx, nz, y)) nz = z;
   x = nx;
   z = nz;
-
-  // --- Y pohyb ---
   vertVec -= gravity * dt;
   y += vertVec * dt;
-
-  // zjisti podlahu a strop z heightmapy
   const floorH = getMaxFloor(x, z);
-
-  // podlaha
   if (y <= floorH) {
     y = floorH;
     vertVec = 0;
@@ -459,22 +404,17 @@ function startGame(tId,lId){
   }
   yaw.position.set(x, y, z);
 }
-
-// --- pomocné funkce ---
-
 function checkCollisionXZ(px, pz, py) {
   const x0 = Math.floor(px - player.halfSize);
   const x1 = Math.floor(px + player.halfSize);
   const z0 = Math.floor(pz - player.halfSize);
   const z1 = Math.floor(pz + player.halfSize);
-
   const h00 = hm.get(z0, x0);
   const h01 = hm.get(z1, x0);
   const h10 = hm.get(z0, x1);
   const h11 = hm.get(z1, x1);
-
   const maxH = Math.max(h00, h01, h10, h11);
-  return py > maxH - 0.00001; // true = volno, false = kolize
+  return py > maxH - 0.00001;
 }
 
 function getMaxFloor(px, pz) {
@@ -482,7 +422,6 @@ function getMaxFloor(px, pz) {
   const x1 = Math.floor(px + player.halfSize);
   const z0 = Math.floor(pz - player.halfSize);
   const z1 = Math.floor(pz + player.halfSize);
-
   return Math.max(
     hm.get(z0, x0),
     hm.get(z1, x0),
@@ -566,12 +505,14 @@ function loadUI(){
 function gameUI(color){
   const keys = {};
   document.addEventListener("keydown",e=>{
+    e.preventDefault();
     const k = e.key.toLowerCase();
     keys[k]=true;
     if(k===keyCodes.jump&&onGround)vertVec = jumpStrength;
     updateKeys();
   });
   document.addEventListener("keyup",e=>{
+    e.preventDefault();
     const k = e.key.toLowerCase();
     delete keys[k];
     if(k===keyCodes.jump)vertVec = 0;
