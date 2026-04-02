@@ -579,6 +579,7 @@ function gameUI(color,dash,anchor){
     });
     renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
+lx=e.clientX;ly=e.clientY;
     });
     di("game").appendChild(di("joystick"));
     const joystick = window.nipplejs.create({
