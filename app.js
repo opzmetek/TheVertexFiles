@@ -262,7 +262,7 @@ let level = 0;
 let mx=0,my=0;
 let timers = {dash:0};
 const speed = player.speed;
-const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x"};
+const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 
@@ -326,7 +326,7 @@ function startGame(tId,lId){
     yaw.position.set(x0,2,0);
     console.log(yaw.position);
     if(urlParams.get("debug")==="true")showDebug();
-    gameUI(tColor1,dash);
+    gameUI(tColor1,dash,anchor);
     //spawner = setInterval(spawn,5000);
   }
 
@@ -428,6 +428,13 @@ function dash(){
   yaw.position.z = Math.floor(hit.point.z)+0.5;
   yaw.position.y = hit.point.y;
 }
+
+function anchor(){
+  const floorH = getMaxFloor(yaw.position.x, yaw.position.z);
+  y = floorH;
+  vertVec = 0;
+  onGround = true;
+}
   
 function checkCollisionXZ(px, pz, py) {
   const x0 = Math.floor(px - player.halfSize);
@@ -527,7 +534,7 @@ function loadUI(){
   });
 }
 
-function gameUI(color,dash){
+function gameUI(color,dash,anchor){
   const keys = {};
   document.addEventListener("keydown",e=>{
     e.preventDefault();
@@ -535,6 +542,7 @@ function gameUI(color,dash){
     keys[k]=true;
     if(k===keyCodes.jump&&onGround)vertVec = jumpStrength;
     else if(k===keyCodes.dash)dash();
+    else if(k===keyCodes.anchor)anchor();
     updateKeys();
   });
   document.addEventListener("keyup",e=>{
