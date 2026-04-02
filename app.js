@@ -426,6 +426,7 @@ function dash(){
   const hit = DDARaycast(tMesh, ray, 0, player.dashLength);
   yaw.position.x = Math.floor(hit.point.x)+0.5;
   yaw.position.z = Math.floor(hit.point.z)+0.5;
+  yaw.position.y = hit.point.y;
 }
   
 function checkCollisionXZ(px, pz, py) {
