@@ -375,7 +375,7 @@ function startGame(tId,lId){
     }
   }
   
-  function move(dt){
+  /*function move(dt){
     camera.getWorldDirection(vFor);
     const mvx = (mx * vFor.x + my * -vFor.z) * dt * speed;
     const mvz = (mx * vFor.z + my *  vFor.x) * dt * speed;
@@ -410,7 +410,86 @@ function startGame(tId,lId){
       vertVec -= gravity*dt;
     }
     yaw.position.set(x,y,z);
+  }*/
+
+  function move(dt) {
+  // směr kamery
+  camera.getWorldDirection(vFor);
+
+  // normovaný pohyb podle vstupu
+  let len = Math.hypot(mx, my);
+  let inputX = len > 0 ? mx / len : 0;
+  let inputZ = len > 0 ? my / len : 0;
+
+  // rychlost
+  const speedStep = speed * dt;
+
+  const mvx = (inputX * vFor.x + inputZ * -vFor.z) * speedStep;
+  const mvz = (inputX * vFor.z + inputZ *  vFor.x) * speedStep;
+
+  let x = yaw.position.x;
+  let z = yaw.position.z;
+  let y = yaw.position.y;
+
+  // --- X pohyb ---
+  let nx = x + mvx;
+  if (!checkCollisionXZ(nx, z, y)) nx = x; // pokud kolize → nechodit
+
+  // --- Z pohyb ---
+  let nz = z + mvz;
+  if (!checkCollisionXZ(nx, nz, y)) nz = z; // pokud kolize → nechodit
+
+  x = nx;
+  z = nz;
+
+  // --- Y pohyb ---
+  vertVec -= gravity * dt;
+  y += vertVec * dt;
+
+  // zjisti podlahu a strop z heightmapy
+  const floorH = getMaxFloor(x, z);
+
+  // podlaha
+  if (y <= floorH) {
+    y = floorH;
+    vertVec = 0;
+    onGround = true;
+  } else {
+    onGround = false;
   }
+  yaw.position.set(x, y, z);
+}
+
+// --- pomocné funkce ---
+
+function checkCollisionXZ(px, pz, py) {
+  const x0 = Math.floor(px - player.halfSize);
+  const x1 = Math.floor(px + player.halfSize);
+  const z0 = Math.floor(pz - player.halfSize);
+  const z1 = Math.floor(pz + player.halfSize);
+
+  const h00 = hm.get(z0, x0);
+  const h01 = hm.get(z1, x0);
+  const h10 = hm.get(z0, x1);
+  const h11 = hm.get(z1, x1);
+
+  const maxH = Math.max(h00, h01, h10, h11);
+  return py > maxH - 0.00001; // true = volno, false = kolize
+}
+
+function getMaxFloor(px, pz) {
+  const x0 = Math.floor(px - player.halfSize);
+  const x1 = Math.floor(px + player.halfSize);
+  const z0 = Math.floor(pz - player.halfSize);
+  const z1 = Math.floor(pz + player.halfSize);
+
+  return Math.max(
+    hm.get(z0, x0),
+    hm.get(z1, x0),
+    hm.get(z0, x1),
+    hm.get(z1, x1)
+  );
+}
   
   function updateEnemies(){
     enemies.forEach(e=>{
