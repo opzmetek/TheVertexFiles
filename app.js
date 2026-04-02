@@ -364,6 +364,16 @@ function startGame(tId,lId){
   
   const vFor = new THREE.Vector3();
   let hm;
+
+  function moveStep(dt){
+    const stepSize = speed * dt;
+    const MAX_STEP = 0.3;
+    const steps = Math.ceil(stepSize / MAX_STEP);
+    const stepDt = dt / steps;
+    for (let i = 0; i < steps; i++) {
+      move(stepDt);
+    }
+  }
   
   function move(dt){
     camera.getWorldDirection(vFor);
