@@ -335,17 +335,10 @@ function startGame(tId,lId){
     const axesHelper = new THREE.AxesHelper(1);
     axesHelper.position.copy(tMesh.position);
     scene.add(axesHelper);
-
-    const vertexNormalsHelper = new THREE.VertexNormalsHelper(tMesh, 0.2, 0x00ff00, 1);
-    scene.add(vertexNormalsHelper);
-
-    const faceNormalsHelper = new THREE.FaceNormalsHelper(tMesh, 0.5, 0xff0000, 1);
-    scene.add(faceNormalsHelper);
-
     const skeletonHelper = new THREE.SkeletonHelper(tMesh);
     scene.add(skeletonHelper);
 
-    return { axesHelper, vertexNormalsHelper, faceNormalsHelper, skeletonHelper };
+    return { axesHelper, skeletonHelper };
   }
   
   function spawn(){
