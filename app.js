@@ -255,7 +255,7 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:700};
+let player = {size:0.5,halfSize:0.25,speed:70};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
@@ -367,8 +367,8 @@ function startGame(tId,lId){
   
   function move(dt){
     camera.getWorldDirection(vFor);
-    const mvx = (mx * vFor.x + my * -vFor.z) * dt;
-    const mvz = (mx * vFor.z + my *  vFor.x) * dt;
+    const mvx = (mx * vFor.x + my * -vFor.z) * dt * speed;
+    const mvz = (mx * vFor.z + my *  vFor.x) * dt * speed;
     let x = yaw.position.x, z = yaw.position.z, y = yaw.position.y+0.5;//offset for stair move
     let nx = x + mvx;
     let nx0 = Math.floor(nx - player.halfSize),nx1 = Math.floor(nx + player.halfSize);
