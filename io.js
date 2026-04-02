@@ -187,54 +187,54 @@ function heightmapToMesh(heightmap) {
       const y = h;
 
       // horní plocha
-      vertices.push(
-        x0, y, z0,
-        x1, y, z0,
-        x0, y, z1,
-        x1, y, z1
-      );
-      indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
-      index += 4;
+vertices.push(
+  x0, y, z0,
+  x1, y, z0,
+  x0, y, z1,
+  x1, y, z1
+);
+indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+index += 4;
 
-      // přední stěna
-      vertices.push(
-        x0, 0, z0,
-        x1, 0, z0,
-        x0, y, z0,
-        x1, y, z0
-      );
-      indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
-      index += 4;
+// přední stěna (k z0)
+vertices.push(
+  x0, 0, z0,
+  x1, 0, z0,
+  x0, y, z0,
+  x1, y, z0
+);
+indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+index += 4;
 
-      // zadní stěna
-      vertices.push(
-        x0, 0, z1,
-        x1, 0, z1,
-        x0, y, z1,
-        x1, y, z1
-      );
-      indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
-      index += 4;
+// zadní stěna (k z1)
+vertices.push(
+  x0, 0, z1,
+  x1, 0, z1,
+  x0, y, z1,
+  x1, y, z1
+);
+indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
+index += 4;
 
-      // levá stěna
-      vertices.push(
-        x0, 0, z0,
-        x0, 0, z1,
-        x0, y, z0,
-        x0, y, z1
-      );
-      indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
-      index += 4;
+// levá stěna (k x0)
+vertices.push(
+  x0, 0, z0,
+  x0, 0, z1,
+  x0, y, z0,
+  x0, y, z1
+);
+indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+index += 4;
 
-      // pravá stěna
-      vertices.push(
-        x1, 0, z0,
-        x1, 0, z1,
-        x1, y, z0,
-        x1, y, z1
-      );
-      indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
-      index += 4;
+// pravá stěna (k x1)
+vertices.push(
+  x1, 0, z0,
+  x1, 0, z1,
+  x1, y, z0,
+  x1, y, z1
+);
+indices.push(index, index + 1, index + 2, index + 2, index + 1, index + 3);
+index += 4;
     }
   }
 
