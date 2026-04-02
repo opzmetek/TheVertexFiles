@@ -261,7 +261,7 @@ pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
 const speed = player.speed;
-const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"control"};
+const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 
