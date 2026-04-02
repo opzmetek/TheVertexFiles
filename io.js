@@ -122,6 +122,7 @@ function heightmapToMesh(heightmap) {
 
   // pomocná funkce pro převod indexu na souřadnici
   const idxToCoord = (i, len) => (i - len / 2 + 0.5);
+  const idxToEdge   = (i, len) => (i - len / 2);
 
   // první podložka (plane)
   const x0_plane = -width * 0.5;
@@ -179,10 +180,10 @@ function heightmapToMesh(heightmap) {
       }
 
       // souřadnice bloků
-      const x0 = idxToCoord(xi, width);
-      const x1 = idxToCoord(xi + w, width);
-      const z0 = idxToCoord(zi, height);
-      const z1 = idxToCoord(zi + d, height);
+      const x0 = idxToEdge(xi, width);
+      const x1 = idxToEdge(xi + w, width);
+      const z0 = idxToEdge(zi, height);
+      const z1 = idxToEdge(zi + d, height);
       const y = h;
 
       // horní plocha
