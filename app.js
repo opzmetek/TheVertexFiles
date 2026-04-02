@@ -431,7 +431,7 @@ function dash(){
 
 function anchor(){
   const floorH = getMaxFloor(yaw.position.x, yaw.position.z);
-  y = floorH;
+  yaw.position.y = floorH;
   vertVec = 0;
   onGround = true;
 }
