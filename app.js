@@ -10,6 +10,7 @@ import {importVRX,importHeightmap} from './io.js';
 //custom raycast
 const raycaster = new THREE.Raycaster();
 raycaster.firstHitOnly = true;
+const urlParams = new URLSearchParams(window.location.search);
 
 const DDARaycast = function(raycaster, intersects){
   if(!this.heightmap)return;
@@ -325,8 +326,26 @@ function startGame(tId,lId){
     while(tMesh.heightmap.get(0,x0)!=0)x0++;
     yaw.position.set(x0,2,0);
     console.log(yaw.position);
+    if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1);
     //spawner = setInterval(spawn,5000);
+  }
+
+  function showDebug() {
+    const axesHelper = new THREE.AxesHelper(1);
+    axesHelper.position.copy(tMesh.position);
+    scene.add(axesHelper);
+
+    const vertexNormalsHelper = new THREE.VertexNormalsHelper(tMesh, 0.2, 0x00ff00, 1);
+    scene.add(vertexNormalsHelper);
+
+    const faceNormalsHelper = new THREE.FaceNormalsHelper(tMesh, 0.5, 0xff0000, 1);
+    scene.add(faceNormalsHelper);
+
+    const skeletonHelper = new THREE.SkeletonHelper(tMesh);
+    scene.add(skeletonHelper);
+
+    return { axesHelper, vertexNormalsHelper, faceNormalsHelper, skeletonHelper };
   }
   
   function spawn(){
