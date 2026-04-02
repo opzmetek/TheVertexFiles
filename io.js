@@ -139,7 +139,6 @@ function heightmapToMesh(heightmap) {
   indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
   index += 4;
 
-  // projití celé heightmapy
   for (let zi = 0; zi < height; zi++) {
     for (let xi = 0; xi < width; xi++) {
       if (used[zi][xi]) continue;
@@ -148,18 +147,16 @@ function heightmapToMesh(heightmap) {
       const z = idxToCoord(zi, height);
       const h = heightmap.get(z, x);
 
-      // pokud je nulová výška, jen označíme jako used
       if (h <= 0) {
         used[zi][xi] = true;
         continue;
       }
 
-      // zjistí šířku stejné výšky
       let w = 1;
       while (
         xi + w < width &&
         !used[zi][xi + w] &&
-        heightmap.get(idxToCoord(xi + w, width), z) === h
+        heightmap.get(z, idxToCoord(xi + w, width)) === h
       ) w++;
 
       // zjistí délku stejné výšky
@@ -168,7 +165,7 @@ function heightmapToMesh(heightmap) {
         for (let k = 0; k < w; k++) {
           if (
             used[zi + d][xi + k] ||
-            heightmap.get(idxToCoord(xi + k, width), idxToCoord(zi + d, height)) !== h
+            heightmap.get(idxToCoord(zi + d, height),idxToCoord(xi + k, width)) !== h
           ) break outer;
         }
         d++;
