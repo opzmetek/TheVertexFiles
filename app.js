@@ -578,7 +578,7 @@ const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => ne
     squareSize: { value: squareSize },
     baseColor: { value: new THREE.Color(bc) },
   },
-  side: THREE.DoubleSide,
+  side: THREE.FrontSide,
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
