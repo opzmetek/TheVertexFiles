@@ -59,156 +59,87 @@ function DDARaycast(mesh, ray, near=0, far=Infinity){
 }
 
 //classes
-
-class BaseSteeringAI {
-  constructor(mesh,pos) {
+class EnemyAI{
+  constructor(mesh,enemy){
     this.mesh = mesh;
-
-    this.velocity = new THREE.Vector3();
-    this.acceleration = new THREE.Vector3();
-
-    this.maxSpeed = 10;
-    this.maxForce = 1;
-
-    this.lookAhead = 2.0;
-    this.radius = 0.5;
-
-    this.target = null;
-    this.position=pos.clone();
+    this.hm = mesh.heightmap;
+    this.enemy = enemy;
   }
 
-  update(dt) {
-    let steer = new THREE.Vector3();
-
-    if (this.target) {
-      steer.add(this.computeSteering(dt));
+  aStar(){
+    const openSet = new Set();
+    const closeSet = new Set();
+    const nData = {};
+    nData[this.key(this.enemy.p,this.enemy.p.z)] = {g:0, h:this.heuristic(this.enemy.p.x,this.enemy.p.z), f:this.heuristic(this.enemy.p.x,this.enemy.p.z), parentX:null,parentZ:null};
+    openSet.add(this.key(this.enemy.p.x,this.enemy.p.z));
+    const dirs = [[1,0],[0,1],[-1,0],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+    while(openSet.size()>0){
+      let currentKey = null;
+      let lowestF = Infinity;
+      for(const k of openSet){
+        if(nData[k].f<lowestF){
+          lowestF = nData[k].f;
+          currentKey = k;
+        }
+      }
+      const [cx,cz] = this.pos(currentKey);
+      if(this.heuristic(cx,cz)<4){
+        return this.reconstructPath(nData,currentKey);
+      }
+      openSet.delete(currentKey);
+      closedSet.add(currentKey);
+      const ch = this.hm.get(cz,cx);
+      for(const [dx,dz] of dirs){
+        const nx = cx+dx, nz = cz+dz;
+        const nKey = this.key(nx,nz);
+        if(closedSet.has(nKey))continue;
+        const nh = this.hm.get(nz,nx);
+        const hDiff = Math.max(nh-ch,0);
+        if(hDiff > this.enemy.maxJump)continue;
+        const cost = (dx*dx+dz*dz===2?1.41:1)+hDiff*10;
+        const gScore = nData[currentKey].g + cost;
+        if(!nData[nKey]||gScore<nData[nKey].g){
+          const hScore = this.heuristic(nx,nz);
+          nData[nKey] = {g:gScore,h:hScore,f:gScore+hScore,parentX:currentX,parentZ:currentZ};
+          openSet.add(nKey);
+        }
+      }
     }
-
-    steer.add(this.obstacleAvoidance());
-
-    steer.clampLength(0, this.maxForce);
-
-    this.applyForces(steer);
-    this.integrate(dt);
+    return null;
   }
 
-  computeSteering(dt) {
-    return this.seek(this.target.position);
+  heuristic(x1,x2,z1,z2){
+    return (x2-x1)**2+(z2-z1)**2;
   }
 
-  seek(target) {
-    console.log(target);
-    const desired = target.clone().sub(this.position);
-    const d = desired.length();
-
-    if (d === 0) return new THREE.Vector3();
-
-    desired.normalize().multiplyScalar(this.maxSpeed);
-    return desired.sub(this.velocity);
-  }
-  
-  flee(target) {
-    const desired = new THREE.Vector3().subVectors(this.position, target);
-
-    if (desired.lengthSq() === 0) return new THREE.Vector3();
-
-    desired.normalize().multiplyScalar(this.maxSpeed);
-
-    const steer = desired.sub(this.velocity);
-    steer.clampLength(0, this.maxForce);
-
-    return steer;
-  }
-
-
-  applyForces(f) {
-    this.acceleration.add(f);
-  }
-
-  integrate(dt) {
-    this.velocity.addScaledVector(this.acceleration, dt);
-    this.velocity.clampLength(0, this.maxSpeed);
-
-    this.acceleration.set(0, 0, 0);
-  }
-
-  obstacleAvoidance() {
-    if (this.velocity.lengthSq() < 0.001) return new THREE.Vector3();
-
-    const dir = this.velocity.clone().normalize();
-
-    const origin = this.position.clone().addScaledVector(dir, this.radius).add(new THREE.Vector3(0,1,0));
-
-    const ray = new THREE.Ray(origin, dir);
-
-    raycaster.ray = ray;
-    const hit = raycaster.intersectObject(this.mesh,true)[0];
-    if (!hit || hit.distance > this.lookAhead) return new THREE.Vector3();
-
-    const avoid = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0));
-    avoid.normalize().multiplyScalar(this.maxForce * 2);
-
-    return avoid;
-  }
-
-  setTarget(v) {
-    this.target = { position: v };
-  }
-}
-
-class SniperAI extends BaseSteeringAI {
-  constructor(mesh) {
-    super(mesh);
-    this.preferredDist = 10;
-    this.orbitStrength = 0.5;
-  }
-
-  computeSteering(dt) {
-    const targetPos = this.target.position;
-
-    const dist = this.position.distanceTo(targetPos);
-
-    if (dist < this.preferredDist - 1)
-      return this.flee(targetPos);
-
-    if (dist > this.preferredDist + 1)
-      return this.seek(targetPos).add(this.orbit());
-
-    return this.orbit();
-  }
-  orbit(){
-    const tangent = new THREE.Vector3(0, 1, 0)
-      .cross(this.position.clone().sub(this.target.position))
-      .normalize();
-
-    return tangent.multiplyScalar(this.orbitStrength);
-  }
-}
-
-class ClimberAI extends BaseSteeringAI {
-
-  computeSteering(dt) {
-    const steer = super.computeSteering(dt);
-
-    if (this.isWallAhead()) {
-      steer.add(new THREE.Vector3(0, this.maxForce * 2, 0));
+  reconstructPath(nData,len){
+    const path = [];
+    let i = 0;
+    while(i<len){
+      path.push();
+      const n = nData[key];
+      if(n.parentX===null)break;
+      key = this.key(n.parentX,n.parentZ);
     }
-
-    return steer;
+    return path.reverse();
   }
 
-  isWallAhead() {
-    const dir = this.velocity.clone().normalize();
-    const origin = this.position.clone().add(dir.multiplyScalar(this.radius)).add(new THREE.Vector3(0,1,0));
-    const ray = new THREE.Ray(origin, dir);
-
-    raycaster.ray = ray;
-    const hit = raycaster.intersectObject(this.mesh,true)[0];
-    return hit && hit.distance < 0.7;
+  static setup(lx,lz){
+    lx+=2;
+    lz+=2;//reserve
+    const len = lx*lz;
+    const cx = lx*0.5>127?Int16Array:Int8Array, cz = lz*0.5>127?Int16Array:Int8Array;
+    EnemyAI.oSX = new cx(len);
+    EnemyAI.oSZ = new cz(len);
+    EnemyAI.cSX = new cx(len);
+    EnemyAI.oSZ = new cz(len);
+    EnemyAI.gArr = new Float32Array(len);
+    EnemyAI.hArr = new Float32Array(len);
+    EnemyAI.fArr = new Float32Array(len);
+    EnemyAI.parentXArr = new cx(len);
+    EnemyAI.parentZArr = new cz(len);
   }
 }
-
-
 
 const aiTypes = {base:BaseSteeringAI,sniper:SniperAI,climber:ClimberAI};
 
@@ -327,6 +258,7 @@ function startGame(tId,lId){
     console.log(yaw.position);
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
+    EnemyAI.setup(mmx.map.lenX,mmx.map.lenZ);
     //spawner = setInterval(spawn,5000);
   }
 
