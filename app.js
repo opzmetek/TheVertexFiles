@@ -58,86 +58,177 @@ function DDARaycast(mesh, ray, near=0, far=Infinity){
   return {hit: false, distance: far, point: ray.at(far, new THREE.Vector3()), object:mesh};
 }
 
-//classes
-class EnemyAI{
-  constructor(mesh,enemy){
-    this.mesh = mesh;
-    this.hm = mesh.heightmap;
-    this.enemy = enemy;
+class FastAStar {
+  constructor(width, height){
+    const len = width * height;
+    this.w = width;
+    this.h = height;
+    this.len = len;
+    this.g = new Float32Array(len);
+    this.f = new Float32Array(len);
+    this.parent = new Int32Array(len);
+    this.closed = new Uint8Array(len);
+    this.heap = new Int32Array(len);
+    this.heapSize = 0;
+    this.DX = new Int8Array([1,0,-1,0, 1,1,-1,-1]);
+    this.DZ = new Int8Array([0,1,0,-1, 1,-1,1,-1]);
   }
 
-  aStar(){
-    const openSet = new Set();
-    const closeSet = new Set();
-    const nData = {};
-    nData[this.key(this.enemy.p,this.enemy.p.z)] = {g:0, h:this.heuristic(this.enemy.p.x,this.enemy.p.z), f:this.heuristic(this.enemy.p.x,this.enemy.p.z), parentX:null,parentZ:null};
-    openSet.add(this.key(this.enemy.p.x,this.enemy.p.z));
-    const dirs = [[1,0],[0,1],[-1,0],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
-    while(openSet.size()>0){
-      let currentKey = null;
-      let lowestF = Infinity;
-      for(const k of openSet){
-        if(nData[k].f<lowestF){
-          lowestF = nData[k].f;
-          currentKey = k;
-        }
+  reset(){
+    this.heapSize = 0;
+    this.closed.fill(0);
+    this.g.fill(Infinity);
+  }
+
+  heapPush(idx){
+    let i = this.heapSize++;
+    const heap = this.heap;
+    const f = this.f;
+    while (i > 0){
+      const p = (i - 1) >> 1;
+      const parentIdx = heap[p];
+      if (f[parentIdx] <= f[idx]) break;
+      heap[i] = parentIdx;
+      i = p;
+    }
+    heap[i] = idx;
+  }
+
+  heapPop(){
+    const heap = this.heap;
+    const f = this.f;
+    const root = heap[0];
+    const last = heap[--this.heapSize];
+    let i = 0;
+    while (true){
+      let l = i * 2 + 1;
+      let r = l + 1;
+      if (l >= this.heapSize) break;
+      let best = heap[l];
+      let bestI = l;
+      if (r < this.heapSize && f[heap[r]] < f[best]){
+        best = heap[r];
+        bestI = r;
       }
-      const [cx,cz] = this.pos(currentKey);
-      if(this.heuristic(cx,cz)<4){
-        return this.reconstructPath(nData,currentKey);
+      if (f[last] <= f[best]) break;
+      heap[i] = best;
+      i = bestI;
+    }
+    heap[i] = last;
+    return root;
+  }
+  find(hm, sx, sz, tx, tz, maxJump){
+    const w = this.w, h = this.h;
+    const hw = w>>1, hh = h>>1;
+    const DX = this.DX, DZ = this.DZ;
+    const start = (sx+hw) * w + (sz+hh);
+    const target =(tx+hw) * w + (tz+hh);
+    this.reset();
+    const g = this.g;
+    const f = this.f;
+    const parent = this.parent;
+    const closed = this.closed;
+    g[start] = 0;
+    f[start] = (tx - sx) * (tx - sx) + (tz - sz) * (tz - sz);
+    this.heapPush(start);
+    while (this.heapSize > 0){
+      const current = this.heapPop();
+      if (closed[current]) continue;
+      closed[current] = 1;
+      if (current === target){
+        return this.reconstruct(target);
       }
-      openSet.delete(currentKey);
-      closedSet.add(currentKey);
-      const ch = this.hm.get(cz,cx);
-      for(const [dx,dz] of dirs){
-        const nx = cx+dx, nz = cz+dz;
-        const nKey = this.key(nx,nz);
-        if(closedSet.has(nKey))continue;
-        const nh = this.hm.get(nz,nx);
-        const hDiff = Math.max(nh-ch,0);
-        if(hDiff > this.enemy.maxJump)continue;
-        const cost = (dx*dx+dz*dz===2?1.41:1)+hDiff*10;
-        const gScore = nData[currentKey].g + cost;
-        if(!nData[nKey]||gScore<nData[nKey].g){
-          const hScore = this.heuristic(nx,nz);
-          nData[nKey] = {g:gScore,h:hScore,f:gScore+hScore,parentX:currentX,parentZ:currentZ};
-          openSet.add(nKey);
+      const cx = (Math.floor(current / w))-hw;
+      const cz = (current % w)-hh;
+      const ch = hm.get(cz, cx);
+      for (let i = 0; i < 8; i++){
+        const dx = DX[i];
+        const dz = DZ[i];
+        const nx = cx + dx;
+        const nz = cz + dz;
+        if (nx < -hw || nz < -hh || nx >= hw || nz >= hh) continue;
+        const nIdx = (nx+hw) * w + (nz+hh);
+        if (closed[nIdx]) continue;
+        const nh = hm.get(nz, nx);
+        const diff = nh - ch;
+        const hDiff = diff > 0 ? diff : 0;
+        if (hDiff > maxJump) continue;
+        const cost = (dx && dz ? 1.4142 : 1) + hDiff * 10;
+        const newG = g[current] + cost;
+        if (newG < g[nIdx]){
+          g[nIdx] = newG;
+          const ddx = tx - nx;
+          const ddz = tz - nz;
+          const h = ddx * ddx + ddz * ddz;
+          f[nIdx] = newG + h;
+          parent[nIdx] = current;
+          this.heapPush(nIdx);
         }
       }
     }
     return null;
   }
-
-  heuristic(x1,x2,z1,z2){
-    return (x2-x1)**2+(z2-z1)**2;
-  }
-
-  reconstructPath(nData,len){
+  reconstruct(end){
+    const parent = this.parent;
     const path = [];
-    let i = 0;
-    while(i<len){
-      path.push();
-      const n = nData[key];
-      if(n.parentX===null)break;
-      key = this.key(n.parentX,n.parentZ);
+    let cur = end;
+    while (cur !== -1){
+      path.push(cur);
+      cur = parent[cur];
     }
-    return path.reverse();
+    path.reverse();
+    return path;
   }
+}
 
-  static setup(lx,lz){
-    lx+=2;
-    lz+=2;//reserve
-    const len = lx*lz;
-    const cx = lx*0.5>127?Int16Array:Int8Array, cz = lz*0.5>127?Int16Array:Int8Array;
-    EnemyAI.oSX = new cx(len);
-    EnemyAI.oSZ = new cz(len);
-    EnemyAI.cSX = new cx(len);
-    EnemyAI.oSZ = new cz(len);
-    EnemyAI.gArr = new Float32Array(len);
-    EnemyAI.hArr = new Float32Array(len);
-    EnemyAI.fArr = new Float32Array(len);
-    EnemyAI.parentXArr = new cx(len);
-    EnemyAI.parentZArr = new cz(len);
+//classes
+class EnemyAI{
+  constructor(mesh,enemy,aStar){
+    this.mesh = mesh;
+    this.hm = mesh.heightmap;
+    this.enemy = enemy;
+    this.lastAiUpdate = 0;
+    this.lastAiDP = 0;
+    this.aStar = aStar;
+    this.path = [];
+    this.t = 0;
+    this.i = 0;
+    this.update();
+  }
+  move(dt, dp){
+    this.lastAiDP+=dp;//delta position
+    this.lastAiUpdate+=dt;//delta time
+    if(this.lastAiDP>20||this.lastAiUpdate>2)this.update();
+    this.t += this.enemy.speed * dt;
+    if(this.t>=this.totalDist){
+      this.t -= this.totalDist;
+      this.i++;
+      this.increment();
+      this.move(0, 0);
+      return;
+    }
+    this.enemy.p.x = this.x0 + this.dx * this.t * this.totalDistInv;
+    this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
+  }
+  increment(){
+    if(this.i+1>=this.path.length)this.update();
+    const l = this.hm.xLen;
+    const p0 = this.path[this.i];
+    const p1 = this.path[this.i+1];
+    this.x0 = p0/l;
+    this.z0 = p0%l;
+    const dx = p1/l-this.x0,dz = p1%l-this.z0;
+    this.totalDist = Math.sqrt(dx*dx+dz*dz);
+    this.totalDistInv = 1/this.totalDist;
+    this.dx = dx;
+    this.dz = dz;
+  }
+  update(){
+    this.lastAiDP = 0;
+    this.lastAiUpdate = 0;
+    this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,yaw.position.x,yaw.position.z,this.enemy.maxJump);
+    this.increment();
+    this.i = 0;
   }
 }
 
