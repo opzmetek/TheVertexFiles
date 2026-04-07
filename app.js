@@ -232,7 +232,7 @@ class EnemyAI{
   }
 }
 
-const aiTypes = {base:BaseSteeringAI,sniper:SniperAI,climber:ClimberAI};
+const aiTypes = {base:EnemyAI,sniper:SniperAI,climber:ClimberAI};
 
 class Enemy{
   constructor(name,tMesh,pos){
@@ -240,11 +240,9 @@ class Enemy{
     const meta = manifest.enemies[name];
     if(!meta)console.error("No enemy found:",name);
     this.maxHp = this.hp = meta.maxHP??100;
-    const aiConst = aiTypes[meta.aiType];
+    const aiConst = aiTypes[meta.aiType]||"base";
     if(!aiConst)console.error("No ai found:",meta.aiType);
     this.ai = new aiConst(tMesh,pos);
-    this.ai.maxSpeed = meta.maxSpeed??1.5;
-    this.ai.maxForce = meta.maxForce??0.05;
     if(meta.ai&&typeof meta.ai==="object"){
       Object.assign(this.ai,meta.ai);
     }
@@ -252,14 +250,9 @@ class Enemy{
     this.r=null;
     this.m=null;
     this.meta = meta;
-    this.ai.setTarget(yaw.position);
-  }
-  update(dt=100){
-    this.ai.update(dt*0.001);
   }
   move(dt){
-    this.ai.position.addScaledVector(this.ai.velocity,dt);
-    this.p.copy(this.ai.position);
+    this.ai.move(dt);
   }
 }
 
@@ -298,15 +291,7 @@ function startGame(tId,lId){
     const enemy = template.clone();
     const x = rnd(tBox.min.x,tBox.max.x);
     const z = rnd(tBox.min.z,tBox.max.z);
-    let y;
-    const maxY = tBox.max.y+10;
-    raycaster.set(new THREE.Vector3(x,maxY,z),new THREE.Vector3(0,-1,0));
-    const intersects = raycaster.intersectObject(tMesh, true);
-    if (intersects.length > 0) {
-      y = intersects[0].point.y;
-    } else {
-      y = maxY;
-    }
+    const y = tMesh.heightmap.get(z,x)+1;
     enemy.position.set(x,y,z);
     const e = new Enemy(id,tMesh,enemy.position);
     e.m = enemy;
