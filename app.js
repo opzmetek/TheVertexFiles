@@ -350,7 +350,7 @@ function startGame(tId,lId){
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
     EnemyAI.setup(mmx.map.lenX,mmx.map.lenZ);
-    //spawner = setInterval(spawn,5000);
+    spawner = setInterval(spawn,5000);
   }
 
   function showDebug() {
@@ -392,7 +392,7 @@ function startGame(tId,lId){
     const dTime = d*0.001;
     move(dTime);
     renderer.render(scene,camera);
-    enemies.forEach(e=>e.move(dTime));
+    enemies.forEach(e=>e.move(dTime,0));
     requestAnimationFrame(loop);
   }
   
@@ -485,16 +485,9 @@ function getMaxFloor(px, pz) {
   );
 }
   
-  function updateEnemies(){
-    enemies.forEach(e=>{
-      e.update(100);
-    });
-  }
-  
   start().then(()=>{
     hm = tMesh.heightmap;
     requestAnimationFrame(loop);
-    updater = setInterval(updateEnemies,100);
   });
 }
 
