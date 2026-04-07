@@ -6,6 +6,7 @@
     "./crimson_tower.vrx"
   ],
   "game_objects":[
+    "./enemy.vrx"
   ],
   "levels":{
     "solar tower":{
@@ -15,6 +16,7 @@
       },
       "1":{
         "enemies":{
+          "enemy"
         }
       }
     },
@@ -66,5 +68,8 @@
     }
   },
   "enemies":{
+    "enemy":{
+      "obj":"./enemy.vrx"
+    }
   }
 }
