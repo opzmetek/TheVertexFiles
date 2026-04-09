@@ -78,6 +78,7 @@ class FastAStar {
     this.heapSize = 0;
     this.closed.fill(0);
     this.g.fill(Infinity);
+    this.parent.fill(-1);
   }
 
   heapPush(idx){
@@ -130,6 +131,7 @@ class FastAStar {
     const closed = this.closed;
     g[start] = 0;
     f[start] = (tx - sx) * (tx - sx) + (tz - sz) * (tz - sz);
+    parent[start] = -1;
     this.heapPush(start);
     while (this.heapSize > 0){
       const current = this.heapPop();
@@ -172,7 +174,7 @@ class FastAStar {
     const parent = this.parent;
     const path = [];
     let cur = end;
-    while (cur !== -1){
+    while (cur !== -1&&path.length<100){
       path.push(cur);
       cur = parent[cur];
     }
@@ -278,7 +280,7 @@ pitch.position.y+=2;
 let level = 0;
 let mx=0,my=0;
 let timers = {dash:0};
-const speed = player.speed;
+let speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
