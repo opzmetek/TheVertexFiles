@@ -53,7 +53,7 @@ function DDARaycast(mesh, ray, near=0, far=Infinity){
       t = tMaxZ;
       tMaxZ += tDeltaZ;
     }
-    if (cx < 0 || cz < 0 || cx >= mesh.heightmap.xLen || cz >= mesh.heightmap.yLen) break;
+    if (cx < 0 || cz < 0 || cx >= mesh.heightmap.lenX || cz >= mesh.heightmap.lenY) break;
   }
   return {hit: false, distance: far, point: ray.at(far, new THREE.Vector3()), object:mesh};
 }
@@ -186,7 +186,7 @@ class EnemyAI{
   constructor(mesh,enemy){
     this.mesh = mesh;
     this.hm = mesh.heightmap;
-    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.xLen/2,this.hm.yLen/2);
+    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.lenX/2,this.hm.lenY/2);
     this.enemy = enemy;
     this.lastAiUpdate = 0;
     this.lastAiDP = 0;
@@ -212,7 +212,7 @@ class EnemyAI{
   }
   increment(){
     if(this.i+1>=this.path.length)this.update();
-    const l = this.hm.xLen;
+    const l = this.hm.lenX;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
     this.x0 = p0/l;
@@ -336,7 +336,6 @@ function startGame(tId,lId){
     console.log(yaw.position);
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
-    EnemyAI.setup(mmx.map.lenX,mmx.map.lenZ);
     spawner = setInterval(spawn,5000);
   }
 
