@@ -82,6 +82,7 @@ class FastAStar {
   }
 
   heapPush(idx){
+    console.log("heap push");
     let i = this.heapSize++;
     const heap = this.heap;
     const f = this.f;
@@ -96,6 +97,7 @@ class FastAStar {
   }
 
   heapPop(){
+    console.log("heap pop");
     const heap = this.heap;
     const f = this.f;
     const root = heap[0];
