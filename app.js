@@ -166,7 +166,7 @@ class FastAStar {
         }
       }
     }
-    return null;
+    return this.reconstruct(this.heapPop());
   }
   reconstruct(end){
     const parent = this.parent;
@@ -183,17 +183,17 @@ class FastAStar {
 
 //classes
 class EnemyAI{
-  constructor(mesh,enemy,aStar){
+  constructor(mesh,enemy){
     this.mesh = mesh;
     this.hm = mesh.heightmap;
+    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.xLen/2,this.hm.yLen/2);
     this.enemy = enemy;
     this.lastAiUpdate = 0;
     this.lastAiDP = 0;
-    this.aStar = aStar;
+    this.aStar = EnemyAI.sharedAStar;
     this.path = [];
     this.t = 0;
     this.i = 0;
-    this.update();
   }
   move(dt, dp){
     this.lastAiDP+=dp;//delta position
@@ -232,7 +232,7 @@ class EnemyAI{
   }
 }
 
-const aiTypes = {base:EnemyAI,sniper:SniperAI,climber:ClimberAI};
+const aiTypes = {base:EnemyAI};
 
 class Enemy{
   constructor(name,tMesh,pos){
@@ -240,9 +240,11 @@ class Enemy{
     const meta = manifest.enemies[name];
     if(!meta)console.error("No enemy found:",name);
     this.maxHp = this.hp = meta.maxHP??100;
+    this.maxJump = meta.maxJump??30;
+    this.speed = meta.speed??100;
     const aiConst = aiTypes[meta.aiType]||"base";
     if(!aiConst)console.error("No ai found:",meta.aiType);
-    this.ai = new aiConst(tMesh,pos);
+    this.ai = new aiConst(tMesh,this);
     if(meta.ai&&typeof meta.ai==="object"){
       Object.assign(this.ai,meta.ai);
     }
