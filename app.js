@@ -168,13 +168,13 @@ class FastAStar {
         }
       }
     }
-    return this.reconstruct(this.heapPop());
+    return [];
   }
   reconstruct(end){
     const parent = this.parent;
     const path = [];
     let cur = end;
-    while (cur !== -1&&path.length<100){
+    while (cur >= 0&&path.length<100){
       path.push(cur);
       cur = parent[cur];
     }
