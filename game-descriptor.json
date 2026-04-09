@@ -16,7 +16,7 @@
       },
       "1":{
         "enemies":{
-          "enemy"
+          "5":"enemy"
         }
       }
     },
@@ -69,7 +69,10 @@
   },
   "enemies":{
     "enemy":{
-      "obj":"./enemy.vrx"
+      "maxHp":120,
+      "speed":50,
+      "maxJump":25,
+      "aiType":"base"
     }
   }
 }
