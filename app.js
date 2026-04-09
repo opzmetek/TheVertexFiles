@@ -151,7 +151,7 @@ class FastAStar {
         const dz = DZ[i];
         const nx = cx + dx;
         const nz = cz + dz;
-        console.log("nx, ny: ", nx, ny);
+        console.log("nx, nz: ", nx, nz);
         if (nx < -hw || nz < -hh || nx >= hw || nz >= hh) continue;
         const nIdx = (nx+hw) * w + (nz+hh);
         if (closed[nIdx]) continue;
