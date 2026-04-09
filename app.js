@@ -179,17 +179,19 @@ class FastAStar {
       cur = parent[cur];
     }
     path.reverse();
+    console.log("Returning path with length: ",path.length);
     return path;
   }
 }
 
 //classes
 class EnemyAI{
-  constructor(mesh,enemy){
+  constructor(mesh,enemy,target){
     this.mesh = mesh;
     this.hm = mesh.heightmap;
     if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.lenX/2,this.hm.lenY/2);
     this.enemy = enemy;
+    this.target = target;
     this.lastAiUpdate = 0;
     this.lastAiDP = 0;
     this.aStar = EnemyAI.sharedAStar;
@@ -211,6 +213,7 @@ class EnemyAI{
     }
     this.enemy.p.x = this.x0 + this.dx * this.t * this.totalDistInv;
     this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
+    console.log("Position: ",this.enemy.p,"player: ",this.target);
   }
   increment(){
     if(this.i+1>=this.path.length)this.update();
@@ -228,7 +231,7 @@ class EnemyAI{
   update(){
     this.lastAiDP = 0;
     this.lastAiUpdate = 0;
-    this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,yaw.position.x,yaw.position.z,this.enemy.maxJump);
+    this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,this.target.x,this.target.z,this.enemy.maxJump);
     this.increment();
     this.i = 0;
   }
@@ -237,7 +240,7 @@ class EnemyAI{
 const aiTypes = {base:EnemyAI};
 
 class Enemy{
-  constructor(name,tMesh,pos){
+  constructor(name,tMesh,pos,target){
     this.name = name;
     const meta = manifest.enemies[name];
     if(!meta)console.error("No enemy found:",name);
@@ -246,7 +249,7 @@ class Enemy{
     this.speed = meta.speed??100;
     const aiConst = aiTypes[meta.aiType]||"base";
     if(!aiConst)console.error("No ai found:",meta.aiType);
-    this.ai = new aiConst(tMesh,this);
+    this.ai = new aiConst(tMesh,this,target);
     if(meta.ai&&typeof meta.ai==="object"){
       Object.assign(this.ai,meta.ai);
     }
@@ -297,7 +300,7 @@ function startGame(tId,lId){
     const z = rnd(tBox.min.z,tBox.max.z);
     const y = tMesh.heightmap.get(z,x)+1;
     enemy.position.set(x,y,z);
-    const e = new Enemy(id,tMesh,enemy.position);
+    const e = new Enemy(id,tMesh,enemy.position,yaw.position);
     e.m = enemy;
     e.p = enemy.position;
     e.r = enemy.rotation;
