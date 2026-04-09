@@ -119,6 +119,7 @@ class FastAStar {
     return root;
   }
   find(hm, sx, sz, tx, tz, maxJump){
+    console.log("Calling find with: ", hm, sx, sz, tx, tz, maxJump);
     const w = this.w, h = this.h;
     const hw = w>>1, hh = h>>1;
     const DX = this.DX, DZ = this.DZ;
@@ -189,7 +190,7 @@ class EnemyAI{
   constructor(mesh,enemy,target){
     this.mesh = mesh;
     this.hm = mesh.heightmap;
-    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.lenX/2,this.hm.lenY/2);
+    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.lenX,this.hm.lenY);
     this.enemy = enemy;
     this.target = target;
     this.lastAiUpdate = 0;
@@ -235,6 +236,7 @@ class EnemyAI{
     this.lastAiDP = 0;
     this.lastAiUpdate = 0;
     this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,this.target.x,this.target.z,this.enemy.maxJump);
+    if(!this.path||this.path.length===0) return;
     console.log("Path successfully updated to: ",this.path);
     this.i = 0;
     this.increment();
