@@ -198,6 +198,8 @@ class EnemyAI{
     this.path = [];
     this.t = 0;
     this.i = 0;
+    this.totalDistInv = 0;
+    this.totalDist = 0.1;
   }
   move(dt, dp){
     this.lastAiDP+=dp;//delta position
@@ -216,24 +218,26 @@ class EnemyAI{
     console.log("Position: ",this.enemy.p,"player: ",this.target);
   }
   increment(){
-    if(this.i+1>=this.path.length)this.update();
+    if(this.i+2>=this.path.length)this.update();
     const l = this.hm.lenX;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
     this.x0 = p0/l;
     this.z0 = p0%l;
     const dx = p1/l-this.x0,dz = p1%l-this.z0;
-    this.totalDist = Math.sqrt(dx*dx+dz*dz);
+    this.totalDist = Math.sqrt(dx*dx+dz*dz)??0.001;
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
   }
   update(){
+    console.log("Updating path...");
     this.lastAiDP = 0;
     this.lastAiUpdate = 0;
     this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,this.target.x,this.target.z,this.enemy.maxJump);
-    this.increment();
+    console.log("Path successfully updated to: ",this.path);
     this.i = 0;
+    this.increment();
   }
 }
 
