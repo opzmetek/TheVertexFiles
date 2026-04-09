@@ -151,6 +151,7 @@ class FastAStar {
         const dz = DZ[i];
         const nx = cx + dx;
         const nz = cz + dz;
+        console.log("nx, ny: ", nx, ny);
         if (nx < -hw || nz < -hh || nx >= hw || nz >= hh) continue;
         const nIdx = (nx+hw) * w + (nz+hh);
         if (closed[nIdx]) continue;
@@ -160,6 +161,7 @@ class FastAStar {
         if (hDiff > maxJump) continue;
         const cost = (dx && dz ? 1.4142 : 1) + hDiff * 10;
         const newG = g[current] + cost;
+        console.log("diff, hDiff, cost, newG, g: ",diff, hDiff, cost, newG, g[nIdx]);
         if (newG < g[nIdx]){
           g[nIdx] = newG;
           const ddx = tx - nx;
