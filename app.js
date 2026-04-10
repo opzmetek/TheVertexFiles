@@ -233,7 +233,7 @@ class EnemyAI{
     this.lastAiDP = 0;
     this.lastAiUpdate = 0;
     this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,this.target.x,this.target.z,this.enemy.maxJump);
-    if(!this.path||this.path.length===0) return;
+    if(!this.path||this.path.length===0){console.log("Path build failed...",this.path, this.enemy.p, this.target); return;}
     console.log("Path successfully updated to: ",this.path);
     this.i = 0;
     this.increment();
