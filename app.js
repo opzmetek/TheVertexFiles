@@ -203,9 +203,6 @@ class EnemyAI{
     this.totalDist = 0.1;
   }
   move(dt, dp){
-    this.lastAiDP+=dp;//delta position
-    this.lastAiUpdate+=dt;//delta time
-    if(this.lastAiDP>20||this.lastAiUpdate>2)this.update();
     this.t += this.enemy.speed * dt;
     if(this.t>=this.totalDist){
       this.t -= this.totalDist;
@@ -218,7 +215,7 @@ class EnemyAI{
     this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
   }
   increment(){
-    if(this.i+2>=this.path.length)this.update();
+    if(this.i+2>=this.path.length){this.update();return;}
     const l = this.hm.xLen;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
