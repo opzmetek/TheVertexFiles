@@ -119,6 +119,7 @@ class FastAStar {
     return root;
   }
   find(hm, sx, sz, tx, tz, maxJump){
+    sx|=0;sz|=0;tx|=0;tz|=0;
     console.log("Calling find with: ", hm, sx, sz, tx, tz, maxJump);
     const w = this.w, h = this.h;
     const hw = w>>1, hh = h>>1;
