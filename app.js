@@ -202,6 +202,7 @@ class EnemyAI{
     this.i = 0;
     this.totalDistInv = 0;
     this.totalDist = 0.1;
+    this.targetReached = false;
   }
   move(dt, dp){
     this.t += this.enemy.speed * dt;
@@ -216,22 +217,30 @@ class EnemyAI{
     this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
   }
   increment(){
-    if(this.i+2>=this.path.length){this.update();return;}
+    if(this.i+2>=this.path.length&&!this.targetReached){this.update();return;}
     const l = this.hm.xLen;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
     this.x0 = Math.floor(p0/l)-this.hm.xCenter;
     this.z0 = (p0%l)-this.hm.yCenter;
-    const x1 = Math.floor(p1/l)-this.hm.xCenter;
-    const z1 = (p1%l)-this.hm.yCenter;
+    let x1 = Math.floor(p1/l)-this.hm.xCenter;
+    let z1 = (p1%l)-this.hm.yCenter;
+    if(this.targetReached){
+      x1 = this.target.x;
+      z1 = this.target.z;
+    }
     const dx = x1-this.x0,dz = z1-this.z0;
     this.totalDist = Math.sqrt(dx*dx+dz*dz)||0.001;
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
+    const pdx = this.target.x - this.enemy.p.x, pdz = this.target.z - this.enemy.p.z;
+    if(pdx*pdx+pdz*pdz<1.5)this.targetReached = true;
+    else this.targetReached = false;
     console.log("dx,dz,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dz, this.totalDist, this.totalDistInv, this.x0, this.z0, p0, p1, l);
   }
   update(){
+    if(this.targetReached)return;
     console.log("Updating path...");
     this.lastAiDP = 0;
     this.lastAiUpdate = 0;
