@@ -220,7 +220,6 @@ class EnemyAI{
     }
     this.enemy.p.x = this.x0 + this.dx * this.t * this.totalDistInv;
     this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
-    console.log("Position: ",this.enemy.p,"player: ",this.target);
   }
   increment(){
     if(this.i+2>=this.path.length)this.update();
@@ -234,6 +233,7 @@ class EnemyAI{
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
+    console.log("dx,dy,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dy, totalDist, totalDistInv, this.x0, this.z0, p0, p1, l);
   }
   update(){
     console.log("Updating path...");
