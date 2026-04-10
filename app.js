@@ -222,7 +222,7 @@ class EnemyAI{
     this.x0 = p0/l;
     this.z0 = p0%l;
     const dx = p1/l-this.x0,dz = p1%l-this.z0;
-    this.totalDist = Math.sqrt(dx*dx+dz*dz)??0.001;
+    this.totalDist = Math.sqrt(dx*dx+dz*dz)||0.001;
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
