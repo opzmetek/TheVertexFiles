@@ -220,9 +220,11 @@ class EnemyAI{
     const l = this.hm.xLen;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
-    this.x0 = (p0/l)-this.hm.xCenter;
+    this.x0 = Math.floor(p0/l)-this.hm.xCenter;
     this.z0 = (p0%l)-this.hm.yCenter;
-    const dx = p1/l-this.x0,dz = p1%l-this.z0;
+    const x1 = Math.floor(p1/l)-this.hm.xCenter;
+    const z1 = (p1%l)-this.hm.yCenter;
+    const dx = x1-this.x0,dz = z1-this.z0;
     this.totalDist = Math.sqrt(dx*dx+dz*dz)||0.001;
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
