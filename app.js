@@ -53,7 +53,7 @@ function DDARaycast(mesh, ray, near=0, far=Infinity){
       t = tMaxZ;
       tMaxZ += tDeltaZ;
     }
-    if (cx < 0 || cz < 0 || cx >= mesh.heightmap.lenX || cz >= mesh.heightmap.lenY) break;
+    if (cx < 0 || cz < 0 || cx >= mesh.heightmap.xLen || cz >= mesh.heightmap.yLen) break;
   }
   return {hit: false, distance: far, point: ray.at(far, new THREE.Vector3()), object:mesh};
 }
@@ -194,7 +194,7 @@ class EnemyAI{
   constructor(mesh,enemy,target){
     this.mesh = mesh;
     this.hm = mesh.heightmap;
-    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.lenX,this.hm.lenY);
+    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.xLen,this.hm.yLen);
     this.enemy = enemy;
     this.target = target;
     this.lastAiUpdate = 0;
@@ -224,7 +224,7 @@ class EnemyAI{
   }
   increment(){
     if(this.i+2>=this.path.length)this.update();
-    const l = this.hm.lenX;
+    const l = this.hm.xLen;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
     this.x0 = p0/l;
