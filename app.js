@@ -82,7 +82,6 @@ class FastAStar {
   }
 
   heapPush(idx){
-    console.log("heap push");
     let i = this.heapSize++;
     const heap = this.heap;
     const f = this.f;
@@ -97,7 +96,6 @@ class FastAStar {
   }
 
   heapPop(){
-    console.log("heap pop");
     const heap = this.heap;
     const f = this.f;
     const root = heap[0];
@@ -151,7 +149,6 @@ class FastAStar {
         const dz = DZ[i];
         const nx = cx + dx;
         const nz = cz + dz;
-        console.log("nx, nz, cx, cz, current, w, hw, hh: ", nx, nz, cx, cz, current, w, hw, hh);
         if (nx < -hw || nz < -hh || nx >= hw || nz >= hh) continue;
         const nIdx = (nx+hw) * w + (nz+hh);
         if (closed[nIdx]) continue;
@@ -161,7 +158,6 @@ class FastAStar {
         if (hDiff > maxJump) continue;
         const cost = (dx && dz ? 1.4142 : 1) + hDiff * 10;
         const newG = g[current] + cost;
-        console.log("diff, hDiff, cost, newG, g: ",diff, hDiff, cost, newG, g[nIdx]);
         if (newG < g[nIdx]){
           g[nIdx] = newG;
           const ddx = tx - nx;
@@ -348,7 +344,6 @@ function startGame(tId,lId){
     let x0 = 0;
     while(tMesh.heightmap.get(0,x0)!=0)x0++;
     yaw.position.set(x0,2,0);
-    console.log(yaw.position);
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
