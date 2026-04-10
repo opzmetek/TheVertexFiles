@@ -233,7 +233,7 @@ class EnemyAI{
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
-    console.log("dx,dy,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dy, totalDist, totalDistInv, this.x0, this.z0, p0, p1, l);
+    console.log("dx,dz,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dz, totalDist, totalDistInv, this.x0, this.z0, p0, p1, l);
   }
   update(){
     console.log("Updating path...");
@@ -382,7 +382,6 @@ function startGame(tId,lId){
     const chosenEnemyKey = keys[result];
     const template = lvl.enemies[chosenEnemyKey];
     spawnEnemy(template);
-    console.log(yaw.position);
   }
   
   let last = 0;
