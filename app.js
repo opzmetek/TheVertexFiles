@@ -217,6 +217,8 @@ class EnemyAI{
     this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
   }
   increment(){
+    const pdx = this.target.x - this.enemy.p.x, pdz = this.target.z - this.enemy.p.z;
+    this.targetReached = pdx*pdx+pdz*pdz<1.5;
     if(this.i+2>=this.path.length&&!this.targetReached){this.update();return;}
     const l = this.hm.xLen;
     const p0 = this.path[this.i];
@@ -234,8 +236,6 @@ class EnemyAI{
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
-    const pdx = this.target.x - this.enemy.p.x, pdz = this.target.z - this.enemy.p.z;
-    if(pdx*pdx+pdz*pdz<1.5)this.targetReached = true;
     else this.targetReached = false;
     console.log("dx,dz,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dz, this.totalDist, this.totalDistInv, this.x0, this.z0, p0, p1, l);
   }
