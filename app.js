@@ -236,7 +236,6 @@ class EnemyAI{
     this.totalDistInv = 1/this.totalDist;
     this.dx = dx;
     this.dz = dz;
-    else this.targetReached = false;
     console.log("dx,dz,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dz, this.totalDist, this.totalDistInv, this.x0, this.z0, p0, p1, l);
   }
   update(){
