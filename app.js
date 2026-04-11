@@ -206,20 +206,18 @@ class EnemyAI{
   }
   move(dt, dp){
     this.t += this.enemy.speed * dt;
-    if(this.t>=this.totalDist){
+    while(this.t>=this.totalDist){
       this.t -= this.totalDist;
       this.i++;
       this.increment();
-      this.move(0, 0);
-      return;
     }
     this.enemy.p.x = this.x0 + this.dx * this.t * this.totalDistInv;
     this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
   }
   increment(){
     const pdx = this.target.x - this.enemy.p.x, pdz = this.target.z - this.enemy.p.z;
-    this.targetReached = pdx*pdx+pdz*pdz<1.5;
-    if(this.i+2>=this.path.length&&!this.targetReached){this.update();return;}
+    this.targetReached = pdx*pdx+pdz*pdz<2.25;
+    if(this.i+1>=this.path.length&&!this.targetReached){this.update();return;}
     const l = this.hm.xLen;
     const p0 = this.path[this.i];
     const p1 = this.path[this.i+1];
@@ -241,8 +239,6 @@ class EnemyAI{
   update(){
     if(this.targetReached)return;
     console.log("Updating path...");
-    this.lastAiDP = 0;
-    this.lastAiUpdate = 0;
     this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,this.target.x,this.target.z,this.enemy.maxJump);
     if(!this.path||this.path.length===0){console.log("Path build failed...",this.path, this.enemy.p, this.target); return;}
     console.log("Path successfully updated to: ",this.path);
