@@ -194,9 +194,7 @@ class EnemyAI{
     if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.xLen,this.hm.yLen);
     this.enemy = enemy;
     this.target = target;
-    this.lastAiUpdate = 0;
-    this.lastAiDP = 0;
-    this.aStar = EnemyAI.sharedAStar;
+    this.aStar = new FastAStar(this.hm.xLen,this.hm.yLen);
     this.path = [];
     this.t = 0;
     this.i = 0;
