@@ -594,11 +594,10 @@ function gameUI(color,dash,anchor){
       if(!document.pointerLockElement)pointerLock();
 lx=e.clientX;ly=e.clientY;
     });
-    di("game").appendChild(di("joystick"));
     const joystick = window.nipplejs.create({
-      zone:di("joystick"),
+      zone:renderer.domElement,
       mode:"static",
-      position:{left:"50%",right:"50%"},
+      position:{left:"50px",right:"50px"},
       size:100,
       color:color
     });
