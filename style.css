@@ -11,8 +11,8 @@
 
 #joystick{
   position:absolute;
-  left:10px;
-  bottom:10px;
+  left:50px;
+  bottom:50px;
   width: 100px;
   height: 100px;
 }
