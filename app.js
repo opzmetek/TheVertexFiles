@@ -595,9 +595,9 @@ function gameUI(color,dash,anchor){
 lx=e.clientX;ly=e.clientY;
     });
     const joystick = window.nipplejs.create({
-      zone:renderer.domElement,
+      zone:renderer.domElement.parentElement,
       mode:"static",
-      position:{left:"50px",right:"50px"},
+      position:{left:"50px",bottom:"50px"},
       size:100,
       color:color
     });
