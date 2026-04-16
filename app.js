@@ -353,7 +353,7 @@ function startGame(tId,lId){
   async function initAudio(name){
     audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 16;
+    analyser.fftSize = 32;
     const res = await fetch(name);
     const buff = await res.arrayBuffer();
     const buffer = await audioCtx.decodeAudioData(buff);
