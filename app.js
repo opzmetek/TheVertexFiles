@@ -291,6 +291,7 @@ let speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
+let audioCtx, analyser, bin;
 
 function startGame(tId,lId){
   const bullets = [];
@@ -343,8 +344,24 @@ function startGame(tId,lId){
     while(tMesh.heightmap.get(0,x0)!=0)x0++;
     yaw.position.set(x0,2,0);
     if(urlParams.get("debug")==="true")showDebug();
+    loader.textContent = "Loading audio...";
+    initAudio(lvl.music||"./music_01.mp3");
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
+  }
+
+  function initAudio(name){
+    audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 16;
+    const res = await fetch(name);
+    const buff = await res.arrayBuffer();
+    const buffer = await audioCtx.decodeAudioData(buff);
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    source.start();
   }
 
   function showDebug() {
