@@ -10,6 +10,7 @@ import {importVRX,importHeightmap} from './io.js';
 //custom raycast
 const raycaster = new THREE.Raycaster();
 raycaster.firstHitOnly = true;
+const UP = new THREE.Vector3(0, 1, 0);
 const urlParams = new URLSearchParams(window.location.search);
 
 function DDARaycast(mesh, ray, near=0, far=Infinity){
@@ -195,22 +196,25 @@ class EnemyAI{
     this.target = target;
     this.temp = new THREE.Vector3();
     this.rotate = new THREE.Vector3();
+    this.vel = new THREE.Vector3();
   }
-  computeSteering(){
-    return this.temp.subVectors(this.target, this.enemy.p).add(this.rotate);
+  computeSteering(dt){
+    const p = this.enemy.p;
+    const dir = this.temp.subVectors(this.target, this.enemy.p).add(this.rotate);
+    dir.normalize();
+    dir.multiplyScalar(dt*this.enemy.speed);
   }
-  updateSteering(){
+  updateSteering(dt){
     this.rotate.x += (Math.random()-0.5)*0.05;
     this.rotate.z += (Math.random()-0.5)*0.05;
   }
   move(dt){
     const p = this.enemy.p;
-    this.updateSteering();
-    const dir = this.computeSteering();
-    const len = dir.length();
-    if(len===0)return;
+    this.updateSteering(dt);
+    const dir = this.computeSteering(dt);
+    this.vel.addScaledVector(dir, 0.3);
     const y = p.y;
-    let nx = p.x+dir.x/len*this.enemy.speed*dt, nz = p.z+dir.z/len*this.enemy.speed*dt;
+    let nx = p.x+this.vel.x, nz = p.z+this.vel.z;
     this.rotate.multiplyScalar(0.95);
     if(this.tryMove(nx, y, nz))return;
     else if(this.tryMove(nx, y, p.z))return;//only x
