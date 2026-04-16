@@ -203,6 +203,7 @@ class EnemyAI{
     const dir = this.temp.subVectors(this.target, this.enemy.p).add(this.rotate);
     dir.normalize();
     dir.multiplyScalar(dt*this.enemy.speed);
+    return dir;
   }
   updateSteering(dt){
     this.rotate.x += (Math.random()-0.5)*0.05;
