@@ -410,14 +410,10 @@ function startGame(tId,lId){
   }
 
   function analyse() {
-    analyser.getByteTimeDomainData(bin);
-    let sum = 0;
-    for (let i = 0; i < bin.length; i++) {
-      sum += bin[i];
-    }
-    const avg = sum / bin.length;
+    analyser.getByteFrequencyData(bin);
+    const sum = bin[0]+bin[1]+bin[2];
+    const avg = sum/3;
     const energy = avg / 128;
-    console.log(energy);
     tMesh.material.uniforms.thickness.value = 0.5+energy;
   }
   
