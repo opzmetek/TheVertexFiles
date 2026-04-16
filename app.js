@@ -196,19 +196,29 @@ class EnemyAI{
     this.temp = new THREE.Vector3();
     this.rotate = new THREE.Vector3();
   }
+  computeSteering(){
+    return this.temp.subVectors(this.target, this.enemy.p).add(this.rotate);
+  }
+  updateSteering(){
+    this.rotate.x += (Math.random()-0.5)*0.05;
+    this.rotate.z += (Math.random()-0.5)*0.05;
+  }
   move(dt){
     const p = this.enemy.p;
-    const dir = this.temp.subVectors(this.enemy.p,this.target).add(this.rotate);
+    this.updateSteering();
+    const dir = this.computeSteering();
     const len = dir.length();
+    if(len===0)return;
     const y = p.y;
-    let nx = p.x+dir.x/len, nz = p.z+dir.z/len;
-    if(tryMove(nx, y, nz)){}
-    else if(tryMove(nx, y, p.z)){}//only x
-    else if(tryMove(p.x, y, nz)){}//only z
-    else {
-      this.rotate.x += Math.random()-0.5;
-      this.rotate.z += Math.random()-0.5;
-    }
+    let nx = p.x+dir.x/len*this.enemy.speed*dt, nz = p.z+dir.z/len*this.enemy.speed*dt;
+    this.rotate.multiplyScalar(0.95);
+    if(this.tryMove(nx, y, nz))return;
+    else if(this.tryMove(nx, y, p.z))return;//only x
+    else if(this.tryMove(p.x, y, nz))return;//only z
+    this.stuck();
+  }
+  stuck(){
+    this.rotate.set(Math.random()-0.5, 0, Math.random()-0.5);
   }
   tryMove(x,y,z){
     const f = this.getMaxFloor(x, z);
@@ -217,8 +227,9 @@ class EnemyAI{
     return true;
   }
   getMaxFloor(px, pz) {
-    const x0 = Math.floor(px - player.halfSize), x1 = Math.floor(px + player.halfSize);
-    const z0 = Math.floor(pz - player.halfSize), z1 = Math.floor(pz + player.halfSize);
+    const hm = this.hm;
+    const x0 = Math.floor(px - this.enemy.halfSize), x1 = Math.floor(px + this.enemy.halfSize);
+    const z0 = Math.floor(pz - this.enemy.halfSize), z1 = Math.floor(pz + this.enemy.halfSize);
     return Math.max(hm.get(z0, x0),hm.get(z1, x0),hm.get(z0, x1),hm.get(z1, x1));
   }
 }
@@ -233,6 +244,8 @@ class Enemy{
     this.maxHp = this.hp = meta.maxHP??100;
     this.maxJump = meta.maxJump??30;
     this.speed = meta.speed??100;
+    this.size = meta.size??1;
+    this.halfSize = this.size/2;
     const aiConst = aiTypes[meta.aiType]||"base";
     if(!aiConst)console.error("No ai found:",meta.aiType);
     this.ai = new aiConst(tMesh,this,target);
