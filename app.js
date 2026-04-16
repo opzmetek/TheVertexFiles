@@ -362,6 +362,7 @@ function startGame(tId,lId){
     source.buffer = buffer;
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
+    bin = new Uint8Array(analyser.frequencyBinCount);
     source.start();
   }
 
@@ -402,9 +403,22 @@ function startGame(tId,lId){
     last = millis;
     const dTime = d*0.001;
     move(dTime);
+    analyse();
     renderer.render(scene,camera);
     enemies.forEach(e=>e.move(dTime,0));
     requestAnimationFrame(loop);
+  }
+
+  function analyse() {
+    analyser.getByteTimeDomainData(bin);
+    let sum = 0;
+    for (let i = 0; i < bin.length; i++) {
+      const v = bin[i] - 128;
+      sum += Math.abs(v);
+    }
+    const avg = sum / bin.length;
+    const energy = avg / 128;
+    tMaterial.uniforms.thickness = 0.5+energy;
   }
   
   const vFor = new THREE.Vector3();
@@ -637,6 +651,7 @@ const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => ne
   uniforms: {
     lineColor: { value: new THREE.Color(lineColor) },
     squareSize: { value: squareSize },
+    thickness: { value: 1.0 },
     baseColor: { value: new THREE.Color(bc) },
   },
   side: THREE.DoubleSide,
@@ -650,10 +665,10 @@ const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => ne
   fragmentShader: `
 precision highp float;
 uniform float squareSize;
+uniform float thickness;
 uniform vec3 lineColor;
 uniform vec3 baseColor;
 varying vec3 vWorldPos;
-varying vec3 vBary;
 
 void main() 
 {
@@ -668,9 +683,9 @@ void main()
     float dXz = abs(dFdx(pos.z));
     float dYz = abs(dFdy(pos.z));
 
-    float widthX = max(dXx, dYx) * 2.5;
-    float widthY = max(dXy, dYy) * 2.5;
-    float widthZ = max(dXz, dYz) * 2.5;
+    float widthX = max(dXx, dYx) * 2.5 * thickness;
+    float widthY = max(dXy, dYy) * 2.5 * thickness;
+    float widthZ = max(dXz, dYz) * 2.5 * thickness;
 
     float alpha = 0.0;
 
