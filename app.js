@@ -345,12 +345,12 @@ function startGame(tId,lId){
     yaw.position.set(x0,2,0);
     if(urlParams.get("debug")==="true")showDebug();
     loader.textContent = "Loading audio...";
-    initAudio(lvl.music||"./music_01.mp3");
+    await initAudio(lvl.music||"./music_01.mp3");
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
   }
 
-  function initAudio(name){
+  async function initAudio(name){
     audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
     analyser = audioContext.createAnalyser();
     analyser.fftSize = 16;
