@@ -413,11 +413,11 @@ function startGame(tId,lId){
     analyser.getByteTimeDomainData(bin);
     let sum = 0;
     for (let i = 0; i < bin.length; i++) {
-      const v = bin[i] - 128;
-      sum += Math.abs(v);
+      sum += bin[i];
     }
     const avg = sum / bin.length;
     const energy = avg / 128;
+    console.log(energy);
     tMesh.material.uniforms.thickness = 0.5+energy;
   }
   
