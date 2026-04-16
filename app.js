@@ -418,7 +418,7 @@ function startGame(tId,lId){
     }
     const avg = sum / bin.length;
     const energy = avg / 128;
-    tMaterial.uniforms.thickness = 0.5+energy;
+    tMesh.material.uniforms.thickness = 0.5+energy;
   }
   
   const vFor = new THREE.Vector3();
