@@ -356,6 +356,7 @@ function startGame(tId,lId){
     analyser.fftSize = 32;
     const res = await fetch(name);
     const buff = await res.arrayBuffer();
+    console.log(res, buff);
     const buffer = await audioCtx.decodeAudioData(buff);
     const source = audioCtx.createBufferSource();
     source.buffer = buffer;
