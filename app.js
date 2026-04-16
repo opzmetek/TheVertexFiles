@@ -191,57 +191,35 @@ class EnemyAI{
   constructor(mesh,enemy,target){
     this.mesh = mesh;
     this.hm = mesh.heightmap;
-    if(!EnemyAI.sharedAStar)EnemyAI.sharedAStar = new FastAStar(this.hm.xLen,this.hm.yLen);
     this.enemy = enemy;
     this.target = target;
-    this.aStar = new FastAStar(this.hm.xLen,this.hm.yLen);
-    this.path = [];
-    this.t = 0;
-    this.i = 0;
-    this.totalDistInv = 0;
-    this.totalDist = 0.1;
-    this.targetReached = false;
+    this.temp = new THREE.Vector3();
+    this.rotate = new THREE.Vector3();
   }
-  move(dt, dp){
-    this.t += this.enemy.speed * dt;
-    while(this.t>=this.totalDist){
-      this.t -= this.totalDist;
-      this.i++;
-      this.increment();
+  move(dt){
+    const p = this.enemy.p;
+    const dir = this.temp.subVectors(this.enemy.p,this.target).add(this.rotate);
+    const len = dir.length();
+    const y = p.y;
+    let nx = p.x+dir.x/len, nz = p.z+dir.z/len;
+    if(tryMove(nx, y, nz)){}
+    else if(tryMove(nx, y, p.z)){}//only x
+    else if(tryMove(p.x, y, nz)){}//only z
+    else {
+      this.rotate.x += Math.random()-0.5;
+      this.rotate.z += Math.random()-0.5;
     }
-    this.enemy.p.x = this.x0 + this.dx * this.t * this.totalDistInv;
-    this.enemy.p.z = this.z0 + this.dz * this.t * this.totalDistInv;
   }
-  increment(){
-    const pdx = this.target.x - this.enemy.p.x, pdz = this.target.z - this.enemy.p.z;
-    this.targetReached = pdx*pdx+pdz*pdz<2.25;
-    if(this.i+1>=this.path.length&&!this.targetReached){this.update();return;}
-    const l = this.hm.xLen;
-    const p0 = this.path[this.i];
-    const p1 = this.path[this.i+1];
-    this.x0 = Math.floor(p0/l)-this.hm.xCenter;
-    this.z0 = (p0%l)-this.hm.yCenter;
-    let x1 = Math.floor(p1/l)-this.hm.xCenter;
-    let z1 = (p1%l)-this.hm.yCenter;
-    if(this.targetReached){
-      x1 = this.target.x;
-      z1 = this.target.z;
-    }
-    const dx = x1-this.x0,dz = z1-this.z0;
-    this.totalDist = Math.sqrt(dx*dx+dz*dz)||0.001;
-    this.totalDistInv = 1/this.totalDist;
-    this.dx = dx;
-    this.dz = dz;
-    console.log("dx,dz,totalDist,totalDistInv,x0,z0,p0,p1,len: ",dx, dz, this.totalDist, this.totalDistInv, this.x0, this.z0, p0, p1, l);
+  tryMove(x,y,z){
+    const f = this.getMaxFloor(x, z);
+    if(f > y+0.2)return false;
+    this.enemy.p.set(x, f+0.001, z);
+    return true;
   }
-  update(){
-    if(this.targetReached)return;
-    console.log("Updating path...");
-    this.path = this.aStar.find(this.hm,this.enemy.p.x,this.enemy.p.z,this.target.x,this.target.z,this.enemy.maxJump);
-    if(!this.path||this.path.length===0){console.log("Path build failed...",this.path, this.enemy.p, this.target); return;}
-    console.log("Path successfully updated to: ",this.path);
-    this.i = 0;
-    this.increment();
+  getMaxFloor(px, pz) {
+    const x0 = Math.floor(px - player.halfSize), x1 = Math.floor(px + player.halfSize);
+    const z0 = Math.floor(pz - player.halfSize), z1 = Math.floor(pz + player.halfSize);
+    return Math.max(hm.get(z0, x0),hm.get(z1, x0),hm.get(z0, x1),hm.get(z1, x1));
   }
 }
 
