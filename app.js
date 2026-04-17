@@ -439,7 +439,7 @@ function startGame(tId,lId){
     }
     const avg = sum/bin.length;
     const energy = avg / 255;
-    tMesh.material.uniforms.thickness.value = 1.0+energy*energy;
+    tMesh.material.uniforms.thickness.value = 1.0+energy * energy * 2.0;
   }
   
   const vFor = new THREE.Vector3();
@@ -474,9 +474,9 @@ function startGame(tId,lId){
     let x = yaw.position.x;
     let z = yaw.position.z;
     let y = yaw.position.y;
-    let nx = x + velocityX;
+    let nx = x + velocityX * t;
     if (!checkCollisionXZ(nx, z, y)) nx = x;
-    let nz = z + velocityY;
+    let nz = z + velocityY * t;
     if (!checkCollisionXZ(nx, nz, y)) nz = z;
     x = nx;
     z = nz;
