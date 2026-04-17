@@ -70,7 +70,7 @@
   "enemies":{
     "enemy":{
       "maxHp":120,
-      "speed":50,
+      "speed":15,
       "maxJump":25,
       "aiType":"base"
     }
