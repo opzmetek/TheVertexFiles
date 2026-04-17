@@ -410,11 +410,14 @@ function startGame(tId,lId){
   }
 
   function analyse() {
-    analyser.getByteFrequencyData(bin);
-    const sum = bin[0]+bin[1]+bin[2];
-    const avg = sum/3;
-    const energy = avg / 128;
-    tMesh.material.uniforms.thickness.value = 0.5+energy;
+    analyser.getByteTimeDomainData(bin);
+    const sum = 0;
+    for(let i=0;i<bin.length;i++){
+        sum+=bin[i];
+    }
+    const avg = sum/bin.length;
+    const energy = avg / 255;
+    tMesh.material.uniforms.thickness.value = 1.0+energy*energy;
   }
   
   const vFor = new THREE.Vector3();
