@@ -292,6 +292,7 @@ const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" "
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 let audioCtx, analyser, bin;
+const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
 
 function startGame(tId,lId){
   const bullets = [];
@@ -333,6 +334,8 @@ function startGame(tId,lId){
     tMesh.geometry.computeVertexNormals();
     tBox = new THREE.Box3().setFromObject(tMesh);
     objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./",".vrx"))};
+    loader.textContent = "Loading audio...";
+    await initAudio(lvl.music||"./music_01.mp3");
     di("game").style.display="block";
     di("game").appendChild(renderer.domElement);
     tColor1 = meta.color;
@@ -344,8 +347,6 @@ function startGame(tId,lId){
     while(tMesh.heightmap.get(0,x0)!=0)x0++;
     yaw.position.set(x0,2,0);
     if(urlParams.get("debug")==="true")showDebug();
-    loader.textContent = "Loading audio...";
-    await initAudio(lvl.music||"./music_01.mp3");
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
   }
@@ -372,7 +373,35 @@ function startGame(tId,lId){
     scene.add(axesHelper);
     const skeletonHelper = new THREE.SkeletonHelper(tMesh);
     scene.add(skeletonHelper);
+    if(mobile){
+       const origWarn = console.warn;
+  const origError = console.error;
 
+  console.warn = function (...args) {
+    alert("WARN:\n" + args.join(" "));
+    origWarn.apply(console, args);
+  };
+
+  console.error = function (...args) {
+    alert("ERROR:\n" + args.join(" "));
+    origError.apply(console, args);
+  };
+window.onerror = function (message, source, lineno, colno, error) {
+  alert(
+    "EXCEPTION:\n" +
+    message +
+    "\n" +
+    source +
+    ":" +
+    lineno +
+    ":" +
+    colno
+  );
+};
+window.onunhandledrejection = function (event) {
+  alert("UNHANDLED PROMISE:\n" + event.reason);
+};
+    }
     return { axesHelper, skeletonHelper };
   }
   
@@ -568,7 +597,7 @@ async function loadGame(){
 function loadUI(){
   di("start-game").onclick=createStartingPanel;
   window.addEventListener("resize",e=>{
-    renderer.setSize(window.innerWidth,window.innerHeight);
+   renderer.setSize(window.innerWidth,window.innerHeight);
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();
   });
@@ -603,7 +632,7 @@ function gameUI(color,dash,anchor){
     if(keys[keyCodes.sprint])speed = player.speed*2;
     else speed = player.speed;
   }
-  if("ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true"){
+  if(mobile){
     let ly,lx;
     renderer.domElement.addEventListener("pointermove",e=>{
       const x = e.clientX,y = e.clientY;
