@@ -249,7 +249,7 @@ class Enemy{
     if(!meta)console.error("No enemy found:",name);
     this.maxHp = this.hp = meta.maxHP??100;
     this.maxJump = meta.maxJump??30;
-    this.speed = meta.speed??100;
+    this.speed = meta.speed??20;
     this.size = meta.size??1;
     this.halfSize = this.size/2;
     const aiConst = aiTypes[meta.aiType]||"base";
@@ -282,7 +282,7 @@ const yaw = new THREE.Object3D();
 yaw.add(pitch);
 yaw.position.set(-2,0,-2);
 pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:40,dashLength: 30, dashDelay: 1000};
+let player = {size:0.5,halfSize:0.25,speed:20,dashLength: 30, dashDelay: 1000};
 scene.add(yaw);
 pitch.position.y+=2;
 let level = 0;
@@ -464,7 +464,7 @@ function startGame(tId,lId){
     let inputZ = len > 0 ? my / len : 0;
     const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * speed;
     const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * speed;
-    const t = Math.min(dt * 6, 1);
+    const t = Math.min(dt * 2, 1);
     velocityX = Math.min(speed, velocityX + (targetVX - velocityX) * t);
     velocityY = Math.min(speed, velocityY + (targetVZ - velocityY) * t);
     if (len === 0) {
