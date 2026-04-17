@@ -199,10 +199,10 @@ class EnemyAI{
     this.vel = new THREE.Vector3();
   }
   computeSteering(dt){
-    const p = this.enemy.p;
     const dir = this.temp.subVectors(this.target, this.enemy.p).add(this.rotate);
     dir.normalize();
-    dir.multiplyScalar(dt*this.enemy.speed);
+    dir.multiplyScalar(this.enemy.speed);
+    dir.sub(this.vel);
     return dir;
   }
   updateSteering(dt){
@@ -213,9 +213,9 @@ class EnemyAI{
     const p = this.enemy.p;
     this.updateSteering(dt);
     const dir = this.computeSteering(dt);
-    this.vel.addScaledVector(dir, 0.3);
+    this.vel.addScaledVector(dir, dt*3);
     const y = p.y;
-    let nx = p.x+this.vel.x, nz = p.z+this.vel.z;
+    let nx = p.x+this.vel.x*dt, nz = p.z+this.vel.z*dt;
     this.rotate.multiplyScalar(0.95);
     if(this.tryMove(nx, y, nz))return;
     else if(this.tryMove(nx, y, p.z))return;//only x
