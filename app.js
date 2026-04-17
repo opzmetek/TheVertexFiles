@@ -293,6 +293,7 @@ const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" "
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 let audioCtx, analyser, bin;
+let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
 
 function startGame(tId,lId){
@@ -456,18 +457,26 @@ function startGame(tId,lId){
 
   function move(dt) {
     camera.getWorldDirection(vFor);
+    vFor.y = 0;
+    vFor.normalize();
     let len = Math.hypot(mx, my);
     let inputX = len > 0 ? mx / len : 0;
     let inputZ = len > 0 ? my / len : 0;
-    const speedStep = speed * dt;
-    const mvx = (inputX * vFor.x + inputZ * -vFor.z) * speedStep;
-    const mvz = (inputX * vFor.z + inputZ *  vFor.x) * speedStep;
+    const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * speed;
+    const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * speed;
+    const t = Math.min(dt * 6, 1);
+    velocityX += (targetVX - velocityX) * t;
+    velocityY += (targetVZ - velocityY) * t;
+    if (len === 0) {
+      velocityX *= Math.pow(0.8, dt * 60);
+      velocityY *= Math.pow(0.8, dt * 60);
+    }
     let x = yaw.position.x;
     let z = yaw.position.z;
     let y = yaw.position.y;
-    let nx = x + mvx;
+    let nx = x + velocityX;
     if (!checkCollisionXZ(nx, z, y)) nx = x;
-    let nz = z + mvz;
+    let nz = z + velocityY;
     if (!checkCollisionXZ(nx, nz, y)) nz = z;
     x = nx;
     z = nz;
@@ -629,7 +638,7 @@ function gameUI(color,dash,anchor){
       }
       const dx = lx-x,dy=ly-y;
       yaw.rotation.y+=dx*sensivity;
-      pitch.rotation.x+=dy*sensivity;
+      pitch.rotation.x = Math.max(Math.min(pitch.rotation.x+dy*sensivity,Math.PI),-Math.PI);
       lx=x;
       ly=y;
     });
@@ -651,7 +660,7 @@ lx=e.clientX;ly=e.clientY;
   }else{
     renderer.domElement.addEventListener("pointermove",e=>{
       yaw.rotation.y-=e.movementX*sensivity;
-      pitch.rotation.x-=e.movementY*sensivity;
+      pitch.rotation.x = Math.max(Math.min(pitch.rotation.x-e.movementY*sensivity,Math.PI),-Math.PI);
     });
     renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
