@@ -369,38 +369,29 @@ function startGame(tId,lId){
 
   function showDebug() {
     const axesHelper = new THREE.AxesHelper(1);
-    axesHelper.position.copy(tMesh.position);
+    axesHelper.position = yaw.position;
     scene.add(axesHelper);
     const skeletonHelper = new THREE.SkeletonHelper(tMesh);
     scene.add(skeletonHelper);
     if(mobile){
-       const origWarn = console.warn;
-  const origError = console.error;
+      const origWarn = console.warn;
+      const origError = console.error;
 
-  console.warn = function (...args) {
-    alert("WARN:\n" + args.join(" "));
-    origWarn.apply(console, args);
-  };
+      console.warn = function (...args) {
+        alert("WARN:\n" + args.join(" "));
+        origWarn.apply(console, args);
+      };
 
-  console.error = function (...args) {
-    alert("ERROR:\n" + args.join(" "));
-    origError.apply(console, args);
-  };
-window.onerror = function (message, source, lineno, colno, error) {
-  alert(
-    "EXCEPTION:\n" +
-    message +
-    "\n" +
-    source +
-    ":" +
-    lineno +
-    ":" +
-    colno
-  );
-};
-window.onunhandledrejection = function (event) {
-  alert("UNHANDLED PROMISE:\n" + event.reason);
-};
+      console.error = function (...args) {
+        alert("ERROR:\n" + args.join(" "));
+        origError.apply(console, args);
+      };
+      window.onerror = function (message, source, lineno, colno, error) {
+        alert("EXCEPTION:\n" + message + "\n" + source + ":" + lineno + ":" + colno);
+      };
+      window.onunhandledrejection = function (event) {
+        alert("UNHANDLED PROMISE:\n" + event.reason);
+      };
     }
     return { axesHelper, skeletonHelper };
   }
@@ -440,7 +431,7 @@ window.onunhandledrejection = function (event) {
 
   function analyse() {
     analyser.getByteTimeDomainData(bin);
-    const sum = 0;
+    let sum = 0;
     for(let i=0;i<bin.length;i++){
         sum+=bin[i];
     }
@@ -463,80 +454,75 @@ window.onunhandledrejection = function (event) {
   }
 
   function move(dt) {
-  camera.getWorldDirection(vFor);
-  let len = Math.hypot(mx, my);
-  let inputX = len > 0 ? mx / len : 0;
-  let inputZ = len > 0 ? my / len : 0;
-  const speedStep = speed * dt;
-  const mvx = (inputX * vFor.x + inputZ * -vFor.z) * speedStep;
-  const mvz = (inputX * vFor.z + inputZ *  vFor.x) * speedStep;
-  let x = yaw.position.x;
-  let z = yaw.position.z;
-  let y = yaw.position.y;
-  let nx = x + mvx;
-  if (!checkCollisionXZ(nx, z, y)) nx = x;
-  let nz = z + mvz;
-  if (!checkCollisionXZ(nx, nz, y)) nz = z;
-  x = nx;
-  z = nz;
-  vertVec -= gravity * dt;
-  y += vertVec * dt;
-  const floorH = getMaxFloor(x, z);
-  if (y <= floorH) {
-    y = floorH;
+    camera.getWorldDirection(vFor);
+    let len = Math.hypot(mx, my);
+    let inputX = len > 0 ? mx / len : 0;
+    let inputZ = len > 0 ? my / len : 0;
+    const speedStep = speed * dt;
+    const mvx = (inputX * vFor.x + inputZ * -vFor.z) * speedStep;
+    const mvz = (inputX * vFor.z + inputZ *  vFor.x) * speedStep;
+    let x = yaw.position.x;
+    let z = yaw.position.z;
+    let y = yaw.position.y;
+    let nx = x + mvx;
+    if (!checkCollisionXZ(nx, z, y)) nx = x;
+    let nz = z + mvz;
+    if (!checkCollisionXZ(nx, nz, y)) nz = z;
+    x = nx;
+    z = nz;
+    vertVec -= gravity * dt;
+    y += vertVec * dt;
+    const floorH = getMaxFloor(x, z);
+    if (y <= floorH) {
+      y = floorH;
+      vertVec = 0;
+      onGround = true;
+    } else {
+      onGround = false;
+    }
+    yaw.position.set(x, y, z);
+  }
+
+  function dash(){
+    if(performance.now()-timers.dash<player.dashDelay)return;
+    timers.dash = performance.now();
+    camera.getWorldDirection(vFor);
+    const o = yaw.position.clone();
+    o.y+=0.5;
+    const ray = new THREE.Ray(o,vFor);
+    const hit = DDARaycast(tMesh, ray, 0, player.dashLength);
+    yaw.position.x = Math.floor(hit.point.x)+0.5;
+    yaw.position.z = Math.floor(hit.point.z)+0.5;
+    yaw.position.y = hit.point.y;
+  }
+
+  function anchor(){
+    const floorH = getMaxFloor(yaw.position.x, yaw.position.z);
+    yaw.position.y = floorH;
     vertVec = 0;
     onGround = true;
-  } else {
-    onGround = false;
   }
-  yaw.position.set(x, y, z);
-}
-
-function dash(){
-  if(performance.now()-timers.dash<player.dashDelay)return;
-  timers.dash = performance.now();
-  camera.getWorldDirection(vFor);
-  const o = yaw.position.clone();
-  o.y+=0.5;
-  const ray = new THREE.Ray(o,vFor);
-  const hit = DDARaycast(tMesh, ray, 0, player.dashLength);
-  yaw.position.x = Math.floor(hit.point.x)+0.5;
-  yaw.position.z = Math.floor(hit.point.z)+0.5;
-  yaw.position.y = hit.point.y;
-}
-
-function anchor(){
-  const floorH = getMaxFloor(yaw.position.x, yaw.position.z);
-  yaw.position.y = floorH;
-  vertVec = 0;
-  onGround = true;
-}
   
-function checkCollisionXZ(px, pz, py) {
-  const x0 = Math.floor(px - player.halfSize);
-  const x1 = Math.floor(px + player.halfSize);
-  const z0 = Math.floor(pz - player.halfSize);
-  const z1 = Math.floor(pz + player.halfSize);
-  const h00 = hm.get(z0, x0);
-  const h01 = hm.get(z1, x0);
-  const h10 = hm.get(z0, x1);
-  const h11 = hm.get(z1, x1);
-  const maxH = Math.max(h00, h01, h10, h11);
-  return py > maxH - 0.00001;
-}
+  function checkCollisionXZ(px, pz, py) {
+    const x0 = Math.floor(px - player.halfSize);
+    const x1 = Math.floor(px + player.halfSize);
+    const z0 = Math.floor(pz - player.halfSize);
+    const z1 = Math.floor(pz + player.halfSize);
+    const h00 = hm.get(z0, x0);
+    const h01 = hm.get(z1, x0);
+    const h10 = hm.get(z0, x1);
+    const h11 = hm.get(z1, x1);
+    const maxH = Math.max(h00, h01, h10, h11);
+    return py > maxH - 0.00001;
+  }
 
-function getMaxFloor(px, pz) {
-  const x0 = Math.floor(px - player.halfSize);
-  const x1 = Math.floor(px + player.halfSize);
-  const z0 = Math.floor(pz - player.halfSize);
-  const z1 = Math.floor(pz + player.halfSize);
-  return Math.max(
-    hm.get(z0, x0),
-    hm.get(z1, x0),
-    hm.get(z0, x1),
-    hm.get(z1, x1)
-  );
-}
+  function getMaxFloor(px, pz) {
+    const x0 = Math.floor(px - player.halfSize);
+    const x1 = Math.floor(px + player.halfSize);
+    const z0 = Math.floor(pz - player.halfSize);
+    const z1 = Math.floor(pz + player.halfSize);
+    return Math.max(hm.get(z0, x0), hm.get(z1, x0), hm.get(z0, x1), hm.get(z1, x1));
+  }
   
   start().then(()=>{
     hm = tMesh.heightmap;
