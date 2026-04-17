@@ -465,8 +465,8 @@ function startGame(tId,lId){
     const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * speed;
     const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * speed;
     const t = Math.min(dt * 6, 1);
-    velocityX += (targetVX - velocityX) * t;
-    velocityY += (targetVZ - velocityY) * t;
+    velocityX = Math.min(speed, velocityX + (targetVX - velocityX) * t);
+    velocityY = Math.min(speed, velocityY + (targetVZ - velocityY) * t);
     if (len === 0) {
       velocityX *= Math.pow(0.8, dt * 60);
       velocityY *= Math.pow(0.8, dt * 60);
