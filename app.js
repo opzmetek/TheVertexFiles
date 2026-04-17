@@ -197,33 +197,34 @@ class EnemyAI{
     this.temp = new THREE.Vector3();
     this.rotate = new THREE.Vector3();
     this.vel = new THREE.Vector3();
+    this.stuck = 0;
+    this.easing = 2;
   }
   computeSteering(dt){
-    const dir = this.temp.subVectors(this.target, this.enemy.p).add(this.rotate);
-    dir.normalize();
-    dir.multiplyScalar(this.enemy.speed);
-    dir.sub(this.vel);
-    return dir;
+    return this.temp.subVectors(this.target, this.enemy.p).addScaledVector(this.rotate,this.stuck).normalize().multiplyScalar(this.enemy.speed);
   }
   updateSteering(dt){
     this.rotate.x += (Math.random()-0.5)*0.05;
     this.rotate.z += (Math.random()-0.5)*0.05;
   }
   move(dt){
+    if(dt>0.4)dt=0.4;//spike
     const p = this.enemy.p;
     this.updateSteering(dt);
     const dir = this.computeSteering(dt);
-    this.vel.addScaledVector(dir, dt*3);
+    this.vel.lerp(dir,dt*this.easing);
+    this.stuck*=Math.pow(0.98,dt);
     const y = p.y;
     let nx = p.x+this.vel.x*dt, nz = p.z+this.vel.z*dt;
     this.rotate.multiplyScalar(0.95);
     if(this.tryMove(nx, y, nz))return;
     else if(this.tryMove(nx, y, p.z))return;//only x
     else if(this.tryMove(p.x, y, nz))return;//only z
-    this.stuck();
+    this.onStuck();
   }
-  stuck(){
+  onStuck(){
     this.rotate.set(Math.random()-0.5, 0, Math.random()-0.5);
+    this.stuck = 1;
   }
   tryMove(x,y,z){
     const f = this.getMaxFloor(x, z);
