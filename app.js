@@ -464,7 +464,7 @@ function startGame(tId,lId){
     let inputZ = len > 0 ? my / len : 0;
     const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * speed;
     const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * speed;
-    const t = Math.min(dt * 2, 1);
+    const t = Math.min(dt * 4, 1);
     velocityX = Math.min(speed, velocityX + (targetVX - velocityX) * t);
     velocityY = Math.min(speed, velocityY + (targetVZ - velocityY) * t);
     if (len === 0) {
@@ -638,7 +638,7 @@ function gameUI(color,dash,anchor){
       }
       const dx = lx-x,dy=ly-y;
       yaw.rotation.y+=dx*sensivity;
-      pitch.rotation.x = Math.max(Math.min(pitch.rotation.x+dy*sensivity,Math.PI),-Math.PI);
+      pitch.rotation.x = Math.max(Math.min(pitch.rotation.x+dy*sensivity,Math.PI*0.5),-Math.PI*0.5);
       lx=x;
       ly=y;
     });
@@ -660,7 +660,7 @@ lx=e.clientX;ly=e.clientY;
   }else{
     renderer.domElement.addEventListener("pointermove",e=>{
       yaw.rotation.y-=e.movementX*sensivity;
-      pitch.rotation.x = Math.max(Math.min(pitch.rotation.x-e.movementY*sensivity,Math.PI),-Math.PI);
+      pitch.rotation.x = Math.max(Math.min(pitch.rotation.x-e.movementY*sensivity,Math.PI*0.5),-Math.PI*0.5);
     });
     renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
