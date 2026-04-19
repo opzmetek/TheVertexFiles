@@ -655,7 +655,7 @@ lx=e.clientX;ly=e.clientY;
     });
     joystick.on("move",(e,data)=>{
       mx=data.vector.x;
-      my=data.vector.y;
+      my=-data.vector.y;
     });
   }else{
     renderer.domElement.addEventListener("pointermove",e=>{
