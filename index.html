@@ -40,6 +40,10 @@
     <!-- === GAME CANVAS === -->
     <div id="game" style="display:none;margin:0px;border:0px;position:absolute;left:0px;top:0px;width:100vw;height:100vh;">
 <div id="joystick"></div>
+        <div id="options" style="display:none">
+            <label>Sensivity: 0.0 <input type="range" min="0" max="0.1" step="0.01" id="sensivity"> 0.05</label>
+            <label>Camera Far: 50 <input type="range" min="50" max="200" step="1" id="cfar"> 200</label>
+        </div>
 </div>
     
     <script src="./nipplejs.min.js"></script>
