@@ -289,12 +289,21 @@ let level = 0;
 let mx=0,my=0;
 let timers = {dash:0};
 let speed = player.speed;
-const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e"};
+const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e",escape:"escape"};
 let vertVec = 0,onGround = true;
 const gravity = 600,jumpStrength = 280;
 let audioCtx, analyser, bin;
 let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
+let paused = false;
+
+di("cfar").onchange = e=>{
+  camera.far = +e.target.value;
+}
+
+di("sensivity").onchange = e=>{
+  sensivity = +e.target.value;
+}
 
 function startGame(tId,lId){
   const bullets = [];
@@ -421,6 +430,13 @@ function startGame(tId,lId){
   let last = 0;
   
   function loop(millis){
+    if(paused){
+      last = millis;
+      requestAnimationFrame(loop);
+      analyse();
+      renderer.render(scene, camera);
+      return;
+    }
     const d = millis - last;
     last = millis;
     const dTime = d*0.001;
@@ -599,26 +615,37 @@ function loadUI(){
   });
 }
 
+function escape(){
+  paused = !paused;
+  if(paused){
+    di("options").style.display="flex";
+  }else{
+    di("options").style.display="none";
+  }
+}
+
 function gameUI(color,dash,anchor){
   const keys = {};
   document.addEventListener("keydown",e=>{
     e.preventDefault();
     const k = e.key.toLowerCase();
     keys[k]=true;
-    if(k===keyCodes.jump&&onGround)vertVec = jumpStrength;
-    else if(k===keyCodes.dash)dash();
-    else if(k===keyCodes.anchor)anchor();
+    if(k===keyCodes.jump&&onGround&&!paused)vertVec = jumpStrength;
+    else if(k===keyCodes.dash&&!paused)dash();
+    else if(k===keyCodes.anchor&&!paused)anchor();
+    else if(k===keyCodes.escape)escape();
     updateKeys();
   });
   document.addEventListener("keyup",e=>{
     e.preventDefault();
     const k = e.key.toLowerCase();
     delete keys[k];
-    if(k===keyCodes.jump)vertVec = 0;
+    if(k===keyCodes.jump&&!paused)vertVec = 0;
     updateKeys();
   });
   
   function updateKeys(){
+    if(paused)return;
     if(keys[keyCodes.moveBack])mx=-1;
     else if(keys[keyCodes.moveFront])mx=1;
     else mx=0;
