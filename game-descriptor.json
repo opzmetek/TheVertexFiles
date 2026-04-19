@@ -1,6 +1,7 @@
 {
   "all_files":[
     "./solar_tower.vrx",
+    "./cyber_tower.vrx",
     "./ice_tower.vrx",
     "./ether_tower.vrx",
     "./crimson_tower.vrx"
@@ -22,12 +23,12 @@
     },
     "cyber tower":{
       "meta":{
-        "obj":"tower",
+        "obj":"cyber_tower",
         "color":"rgb(0,255,0)"
       },
       "1":{
         "enemies":{
-          
+           "5":"enemy"
         }
       }
     },
