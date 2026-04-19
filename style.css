@@ -164,6 +164,18 @@ body > div{
   right:0px;
 }
 
+#options{
+    position:absolute;
+    left: 50%;
+    right: 50%;
+    --translate: translate(-50%, -50%);
+    width:40%;
+    height:70%;
+    overflow-y: scroll;
+    background-color: #0b0f1abb;
+    color: #b8d7ff;
+}
+
 /* === Glow efekt === */
 @keyframes pulse {
     0% {
