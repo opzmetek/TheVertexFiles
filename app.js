@@ -12,6 +12,7 @@ const raycaster = new THREE.Raycaster();
 raycaster.firstHitOnly = true;
 const UP = new THREE.Vector3(0, 1, 0);
 const urlParams = new URLSearchParams(window.location.search);
+const gravity = 600,jumpStrength = 280;
 
 function DDARaycast(mesh, ray, near=0, far=Infinity){
   if(!mesh.heightmap)return {hit:false,point:ray.origin,object:mesh,error:true,distance:0};
@@ -240,11 +241,53 @@ class EnemyAI{
   }
 }
 
+class StaticTargetAI{
+  constructor(mesh, enemy, target){
+    this.mesh = mesh;
+    this.enemy = enemy;
+    this.hm = mesh.heightmap;
+    StaticTargetAI.checkAStar(this.hm);
+    this.recompute(target);
+    this.i = 0;
+    this.t = 0;
+  }
+
+  recompute(target){
+    this.path = StaticTargetAI.find(this.hm, this.enemy.p.x, this.enemy.p.z, this.target.x, this.target.z, this.enemy.maxJump);
+    if(!this.path||this.path.length<2)return;
+  }
+
+  increment(){
+    if(this.i+1>=this.path.length)return false;
+    const p0 = this.path[this.i], p1 = this.path[this.i+1];
+    const l = this.hm.xLen;
+    this.x0 = p0%l+this.hm.xCenter;
+    this.y0 = p0/l+this.hm.yCenter;
+    const x1 = p1%l+this.hm.xCenter;
+    const y1 = p1/l+this.hm.yCenter;
+  }
+
+  computeVerticalSpeed(hDiff){
+    const L = Math.hypot(this.dx, this.dy);
+    const t = L/this.enemy.speed;
+    return (hDiff/t)+0.5*gravity*t;
+  }
+
+  move(dt){
+    
+  }
+
+  static checkAStar(hm){
+    if(!this.sharedAStar)this.sharedAStar = new FastAStar(hm.xLen, hm.yLen);
+  }
+}
+
 const aiTypes = {base:EnemyAI};
 
 class Enemy{
   constructor(name,tMesh,pos,target){
     this.name = name;
+    this.p = pos;
     const meta = manifest.enemies[name];
     if(!meta)console.error("No enemy found:",name);
     this.maxHp = this.hp = meta.maxHP??100;
@@ -258,7 +301,6 @@ class Enemy{
     if(meta.ai&&typeof meta.ai==="object"){
       Object.assign(this.ai,meta.ai);
     }
-    this.p=null;
     this.r=null;
     this.m=null;
     this.meta = meta;
@@ -291,7 +333,6 @@ let timers = {dash:0};
 let speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e",escape:"escape"};
 let vertVec = 0,onGround = true;
-const gravity = 600,jumpStrength = 280;
 let audioCtx, analyser, bin;
 let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
