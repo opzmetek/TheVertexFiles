@@ -387,7 +387,7 @@ function startGame(tId,lId){
     tBox = new THREE.Box3().setFromObject(tMesh);
     objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./",".vrx"))};
     loader.textContent = "Loading audio...";
-    await initAudio(lvl.music||"./music_01.mp3");
+    await initAudio(lvl.music||"music_01.mp3");
     di("game").style.display="block";
     di("game").appendChild(renderer.domElement);
     tColor1 = meta.color;
@@ -407,7 +407,7 @@ function startGame(tId,lId){
     audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 32;
-    const res = await fetch(name);
+    const res = await fetch("./music/"+name);
     const buff = await res.arrayBuffer();
     console.log(res, buff);
     const buffer = await audioCtx.decodeAudioData(buff);
@@ -712,7 +712,7 @@ function gameUI(color,dash,anchor){
     });
     renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
-lx=e.clientX;ly=e.clientY;
+      lx=e.clientX;ly=e.clientY;
     });
     const joystick = window.nipplejs.create({
       zone:di("joystick"),
@@ -721,6 +721,25 @@ lx=e.clientX;ly=e.clientY;
       size:100,
       color:color
     });
+    const ctrls = document.createElement("div");
+    ctrls.id = "mobile-controls";
+    const jumpBtn = document.createElement("button");
+    ctrls.appendChild(jumpBtn);
+    jumpBtn.onclick = e=>{
+      if(onGround&&!paused)vertVec = jumpStrength;
+    }
+    const dashBtn = document.createElement("button");
+    ctrls.appendChild(dashBtn);
+    dashBtn.onclick = dash;
+    const anchorBtn = document.createElement("button");
+    ctrls.appendChild(anchorBtn);
+    anchorBtn.onclick = anchor;
+    const sprintBtn = document.createElement("button");
+    ctrls.appendChild(sprintBtn);
+    sprintBtn.onclick = e=>{
+      if(speed>player.speed)speed = player.speed;
+      else if(speed===player.speed)speed = player.speed*2;
+    }
     joystick.on("move",(e,data)=>{
       mx=data.vector.x;
       my=-data.vector.y;
