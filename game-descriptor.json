@@ -1,10 +1,10 @@
 {
   "all_files":[
-    "./solar_tower.vrx",
-    "./cyber_tower.vrx",
-    "./ice_tower.vrx",
-    "./ether_tower.vrx",
-    "./crimson_tower.vrx"
+    "./towers/solar_tower.vrx",
+    "./towers/cyber_tower.vrx",
+    "./towers/ice_tower.vrx",
+    "./towers/ether_tower.vrx",
+    "./towers/crimson_tower.vrx"
   ],
   "game_objects":[
     "./enemy.vrx"
