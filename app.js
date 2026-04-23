@@ -378,7 +378,7 @@ function startGame(tId,lId){
     di("homeMenu").style.display = "none";
     lvl = manifest.levels[tId][lId];
     meta = manifest.levels[tId]?.meta??{};
-    const mmx = await importHeightmap("./"+meta.obj+".vrx");
+    const mmx = await importHeightmap("./towers/"+meta.obj+".vrx");
     tMesh = mmx.mesh;
     tMesh.heightmap = mmx.map;
     tMesh.geometry.computeBoundingBox();
