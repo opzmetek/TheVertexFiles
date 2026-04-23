@@ -663,6 +663,7 @@ function escape(){
   }else{
     di("options").style.display="none";
   }
+  console.log("escape");
 }
 
 function gameUI(color,dash,anchor){
