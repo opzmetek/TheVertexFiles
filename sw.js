@@ -8,7 +8,8 @@ const FILES_TO_CACHE = [
   '/dyt-sans.ttf',
   '/three.module.js',
   '/nipplejs.min.js',
-  '/io.js'
+  '/io.js',
+  '/heightmap.js'
   
 ];
 
