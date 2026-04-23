@@ -517,8 +517,8 @@ function startGame(tId,lId){
     vFor.y = 0;
     vFor.normalize();
     let len = Math.hypot(mx, my);
-    let inputX = len > 0 ? mx / len : 0;
-    let inputZ = len > 0 ? my / len : 0;
+    let inputX = len > 1 ? mx / len : mx;
+    let inputZ = len > 1 ? my / len : my;
     const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * speed;
     const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * speed;
     const t = Math.min(dt * 4, 1);
