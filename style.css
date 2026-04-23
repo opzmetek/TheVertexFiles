@@ -183,12 +183,17 @@ body > div{
     position:absolute;
     left: 50%;
     right: 50%;
-    --translate: translate(-50%, -50%);
+    --translate: translate(-50%, -30%);
     width:40%;
     height:70%;
     overflow-y: scroll;
     background-color: #0b0f1abb;
     color: #b8d7ff;
+    z-index: 999;
+}
+
+#options *{
+    display:block;
 }
 
 /* === Glow efekt === */
