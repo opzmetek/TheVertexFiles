@@ -742,8 +742,13 @@ function gameUI(color,dash,anchor){
       else if(speed===player.speed)speed = player.speed*2;
     }
     joystick.on("move",(e,data)=>{
-      mx=data.vector.x;
-      my=-data.vector.y;
+      my=data.vector.x * data.force;
+      mx=data.vector.y * data.force;
+      yaw.rotation.y = data.angle.radian;
+    });
+    joystick.on("end",()=>{
+      mx = 0;
+      my = 0;
     });
   }else{
     renderer.domElement.addEventListener("pointermove",e=>{
