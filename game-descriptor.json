@@ -4,7 +4,10 @@
     "./towers/cyber_tower.vrx",
     "./towers/ice_tower.vrx",
     "./towers/ether_tower.vrx",
-    "./towers/crimson_tower.vrx"
+    "./towers/crimson_tower.vrx",
+    "./music/music_01.mp3"
+    "./music/music_02.mp3",
+    "./enemy.vrx"
   ],
   "game_objects":[
     "./enemy.vrx"
