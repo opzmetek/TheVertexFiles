@@ -723,6 +723,7 @@ function gameUI(color,dash,anchor){
     });
     const ctrls = document.createElement("div");
     ctrls.id = "mobile-controls";
+    di("game").appendChild(ctrls);
     const jumpBtn = document.createElement("button");
     ctrls.appendChild(jumpBtn);
     jumpBtn.onclick = e=>{
