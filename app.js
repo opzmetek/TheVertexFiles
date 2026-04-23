@@ -387,7 +387,7 @@ function startGame(tId,lId){
     tBox = new THREE.Box3().setFromObject(tMesh);
     objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./",".vrx"))};
     loader.textContent = "Loading audio...";
-    await initAudio(lvl.music||"music_01.mp3");
+    await initAudio(meta.music||"music_01.mp3");
     di("game").style.display="block";
     di("game").appendChild(renderer.domElement);
     tColor1 = meta.color;
@@ -726,18 +726,18 @@ function gameUI(color,dash,anchor){
     di("game").appendChild(ctrls);
     const jumpBtn = document.createElement("button");
     ctrls.appendChild(jumpBtn);
-    jumpBtn.onclick = e=>{
+    jumpBtn.onpointerdown = e=>{
       if(onGround&&!paused)vertVec = jumpStrength;
     }
     const dashBtn = document.createElement("button");
     ctrls.appendChild(dashBtn);
-    dashBtn.onclick = dash;
+    dashBtn.onpointerdown = dash;
     const anchorBtn = document.createElement("button");
     ctrls.appendChild(anchorBtn);
-    anchorBtn.onclick = anchor;
+    anchorBtn.onpointerdown = anchor;
     const sprintBtn = document.createElement("button");
     ctrls.appendChild(sprintBtn);
-    sprintBtn.onclick = e=>{
+    sprintBtn.onpointerdown = e=>{
       if(speed>player.speed)speed = player.speed;
       else if(speed===player.speed)speed = player.speed*2;
     }
