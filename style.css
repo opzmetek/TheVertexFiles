@@ -18,9 +18,14 @@
   z-index:999;
 }
 
-.mobile{
+#mobile-controls{
+    display:flex;
     position:absolute;
+    flex-direction:column;
+    left:20px;
+    bottom:20px;
     z-index:999;
+    background:transparent;
 }
 
 /* Globální styl */
