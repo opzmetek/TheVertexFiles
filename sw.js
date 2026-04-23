@@ -1,11 +1,15 @@
 const CACHE_NAME = 'the-vertex-cache-v1';
 const FILES_TO_CACHE = [
-  'index.html',
-  'app.js',
-  'style.css',
-  'manifest.json',
-  'game-descriptor.json',
-  'dyt-sans.ttf'
+  '/',
+  '/app.js',
+  '/style.css',
+  '/manifest.json',
+  '/game-descriptor.json',
+  '/dyt-sans.ttf',
+  '/three.module.js',
+  '/nipplejs.min.js',
+  '/io.js'
+  
 ];
 
 // Instalace SW + cache základních souborů
