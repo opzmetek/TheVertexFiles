@@ -744,7 +744,6 @@ function gameUI(color,dash,anchor){
     joystick.on("move",(e,data)=>{
       my=data.vector.x * data.force;
       mx=data.vector.y * data.force;
-      yaw.rotation.y = data.angle.radian;
     });
     joystick.on("end",()=>{
       mx = 0;
