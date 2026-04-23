@@ -63,7 +63,7 @@ self.addEventListener('fetch', event => {
 
       // Jinak zkus síť a uložit nově stažené soubory
       return fetch(event.request).then(networkResponse => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+        if (!networkResponse || networkResponse.status !== 200 ) {
           return networkResponse;
         }
 
@@ -74,7 +74,7 @@ self.addEventListener('fetch', event => {
         return networkResponse;
       }).catch(() => {
         console.warn('[SW] Offline – nelze načíst:', event.request.url);
-        return caches.match('index.html');
+        return caches.match('/');
       });
     })
   );
