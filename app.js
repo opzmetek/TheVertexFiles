@@ -25,8 +25,8 @@ const gravity = 600,jumpStrength = 280;
 //variables
 
 let objects = {};
-let sensivity = 0.02;
-const scene = new THREE.Scene();
+Game.sensivity = 0.02;
+World.scene = new THREE.Scene();
 Game.renderer = new THREE.WebGLRenderer();
 Game.renderer.setSize(window.innerWidth, window.innerHeight);
 Game.camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
@@ -34,12 +34,10 @@ World.pitch = new THREE.Object3D();
 World.yaw = new THREE.Object3D();
 World.yaw.add(World.pitch);
 World.yaw.position.set(-2,0,-2);
-World.pitch.add(camera);
-scene.add(World.yaw);
+World.pitch.add(Game.camera);
+World.scene.add(World.yaw);
 World.pitch.position.y+=2;
 let level = 0;
-let audioCtx, analyser, bin, lWidth = 1;
-let velocityX = 0, velocityY = 0;
 Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("Game.mobile")==="true";
 
 export function startGame(tId,lId){
@@ -62,7 +60,7 @@ export function startGame(tId,lId){
       const s = e.meta.scale;
       enemy.scale.set(s,s,s);
     }
-    enemy.children.forEach(e=>e.material = eMaterial);
+    enemy.children.forEach(e=>e.material = World.eMaterial);
     enemies.push(e);
     World.scene.add(enemy);
   }
@@ -72,8 +70,8 @@ export function startGame(tId,lId){
     const loader = di("loader");
     loader.textContent="Loading level...";
     di("homeMenu").style.display = "none";
-    lvl = manifest.levels[tId][lId];
-    meta = manifest.levels[tId]?.meta??{};
+    lvl = Game.manifest.levels[tId][lId];
+    meta = Game.manifest.levels[tId]?.meta??{};
     const mmx = await importHeightmap("./towers/"+meta.obj+".vrx");
     World.mesh = mmx.mesh;
     World.mesh.heightmap = mmx.map;
@@ -89,11 +87,8 @@ export function startGame(tId,lId){
     tColor1 = meta.color;
     tColor2 = meta["alt-color"]||0x000000;
     World.mesh.material = GridMaterial(tColor2,tColor1);
-    eMaterial = GridMaterial(tColor1,tColor2,0.5);
-    scene.add(World.mesh);
-    let x0 = 0;
-    while(World.mesh.heightmap.get(0,x0)!=0)x0++;
-    World.yaw.position.set(x0,2,0);
+    Game.eMaterial = GridMaterial(tColor1,tColor2,0.5);
+    World.scene.add(World.mesh);
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
@@ -101,27 +96,27 @@ export function startGame(tId,lId){
   }
 
   async function initAudio(name){
-    audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 32;
+    Audio.audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
+    Audio.analyser = Audio.audioCtx.createAnalyser();
+    Audio.analyser.fftSize = 32;
     const res = await fetch("./music/"+name);
     const buff = await res.arrayBuffer();
     console.log(res, buff);
     const buffer = await audioCtx.decodeAudioData(buff);
-    const source = audioCtx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    bin = new Uint8Array(analyser.frequencyBinCount);
-    source.start();
+    Audio.source = audioCtx.createBufferSource();
+    Audio.source.buffer = buffer;
+    Audio.source.connect(analyser);
+    Audio.analyser.connect(audioCtx.destination);
+    Audio.bin = new Uint8Array(analyser.frequencyBinCount);
+    Audio.source.start();
   }
 
   function showDebug() {
     const axesHelper = new THREE.AxesHelper(1);
     axesHelper.position = World.yaw.position;
-    scene.add(axesHelper);
+    World.scene.add(axesHelper);
     const skeletonHelper = new THREE.SkeletonHelper(World.mesh);
-    scene.add(skeletonHelper);
+    World.scene.add(skeletonHelper);
     if(Game.mobile){
       const origWarn = console.warn;
       const origError = console.error;
@@ -176,7 +171,7 @@ export function startGame(tId,lId){
       last = millis;
       requestAnimationFrame(loop);
       analyse();
-      renderer.render(scene,camera);
+      renderer.render(World.scene,camera);
       return;
     }
     const d = millis - last;
@@ -184,7 +179,7 @@ export function startGame(tId,lId){
     const dTime = d*0.001;
     move(dTime);
     analyse();
-    renderer.render(scene,camera);
+    renderer.render(World.scene,camera);
     enemies.forEach(e=>e.move(dTime,0));
     requestAnimationFrame(loop);
   }
@@ -206,7 +201,7 @@ export function startGame(tId,lId){
     }
     const avg = sum/bin.length;
     const energy = avg / 255;
-    World.mesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * lWidth;
+    World.mesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * Game.lWidth;
   }
   
   const vFor = new THREE.Vector3();
@@ -232,18 +227,18 @@ export function startGame(tId,lId){
     const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * Player.speed;
     const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * Player.speed;
     const t = Math.min(dt * 4, 1);
-    velocityX = Math.min(Player.speed, velocityX + (targetVX - velocityX) * t);
-    velocityY = Math.min(Player.speed, velocityY + (targetVZ - velocityY) * t);
+    Player.velocityX = Math.min(Player.speed, Player.velocityX + (targetVX - Player.velocityX) * t);
+    Player.velocityY = Math.min(Player.speed, Player.velocityY + (targetVZ - Player.velocityY) * t);
     if (len === 0) {
-      velocityX *= Math.pow(0.8, dt * 60);
-      velocityY *= Math.pow(0.8, dt * 60);
+      Player.velocityX *= Math.pow(0.8, dt * 60);
+      Player.velocityY *= Math.pow(0.8, dt * 60);
     }
     let x = World.yaw.position.x;
     let z = World.yaw.position.z;
     let y = World.yaw.position.y;
-    let nx = x + velocityX * t;
+    let nx = x + Player.velocityX * t;
     if (!checkCollisionXZ(nx, z, y)) nx = x;
-    let nz = z + velocityY * t;
+    let nz = z + Player.velocityY * t;
     if (!checkCollisionXZ(nx, nz, y)) nz = z;
     x = nx;
     z = nz;
@@ -337,7 +332,7 @@ async function loadOne(o,loader){
 }
 
 function remove(m){
-  scene.remove(m);
+  World.scene.remove(m);
   if(m.material)m.material.dispatch();
   if(m.geometry)m.geometry.dispatch();
   if(m.childern)m.childern.forEach(c=>remove(c));
