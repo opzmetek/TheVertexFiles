@@ -16,7 +16,7 @@ import {EnemyAI, StaticTargetAI, aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
 import {Enemy} from "/TheVertexFiles/core/enemy.js";
 import {di, remove, loadOne, loadAll, rnd, getByPath} from "/TheVertexFiles/core/utils.js";
 import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
-import {moveStep, move} from "/TheVertexFiles/core/player/move.js";
+import {moveStep, move, dash, anchor} from "/TheVertexFiles/core/player/move.js";
 
 const UP = new THREE.Vector3(0, 1, 0);
 Game.urlParams = new URLSearchParams(window.location.search);
@@ -172,52 +172,6 @@ export function startGame(tId,lId){
     remove(World.mesh);
     clearInterval(spawner);
     console.log("CLEAR");
-  }
-  
-  const vFor = new THREE.Vector3();
-
-  
-  function dash(){
-    if(performance.now()-Game.timers.dash<PlayerConfig.dashDelay)return;
-    Game.timers.dash = performance.now();
-    Game.camera.getWorldDirection(vFor);
-    const o = World.yaw.position.clone();
-    o.y+=0.5;
-    const ray = new THREE.Ray(o,vFor);
-    const hit = DDARaycast(World.mesh, ray, 0, PlayerConfig.dashLength);
-    World.yaw.position.x = Math.floor(hit.point.x)+0.5;
-    World.yaw.position.z = Math.floor(hit.point.z)+0.5;
-    World.yaw.position.y = hit.point.y;
-  }
-
-  function anchor(){
-    const floorH = getMaxFloor(World.yaw.position.x, World.yaw.position.z);
-    World.yaw.position.y = floorH;
-    Player.vertVec = 0;
-    Player.onGround = true;
-  }
-  
-  function checkCollisionXZ(px, pz, py) {
-    const hm = World.mesh.heightmap;
-    const x0 = Math.floor(px - PlayerConfig.halfSize);
-    const x1 = Math.floor(px + PlayerConfig.halfSize);
-    const z0 = Math.floor(pz - PlayerConfig.halfSize);
-    const z1 = Math.floor(pz + PlayerConfig.halfSize);
-    const h00 = hm.get(z0, x0);
-    const h01 = hm.get(z1, x0);
-    const h10 = hm.get(z0, x1);
-    const h11 = hm.get(z1, x1);
-    const maxH = Math.max(h00, h01, h10, h11);
-    return py > maxH - 0.00001;
-  }
-
-  function getMaxFloor(px, pz) {
-    const hm = World.mesh.heightmap;
-    const x0 = Math.floor(px - PlayerConfig.halfSize);
-    const x1 = Math.floor(px + PlayerConfig.halfSize);
-    const z0 = Math.floor(pz - PlayerConfig.halfSize);
-    const z1 = Math.floor(pz + PlayerConfig.halfSize);
-    return Math.max(hm.get(z0, x0), hm.get(z1, x0), hm.get(z0, x1), hm.get(z1, x1));
   }
   
   start().then(()=>{
