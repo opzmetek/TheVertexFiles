@@ -15,6 +15,7 @@ import {FastAStar} from "/TheVertexFiles/ai/astar.js";
 import {EnemyAI, StaticTargetAI, aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
 import {Enemy} from "/TheVertexFiles/core/enemy.js";
 import {di, remove, loadOne, loadAll, rnd, getByPath} from "/TheVertexFiles/core/utils.js";
+import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
 
 const UP = new THREE.Vector3(0, 1, 0);
 Game.urlParams = new URLSearchParams(window.location.search);
@@ -88,22 +89,6 @@ export function startGame(tId,lId){
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
     di("loadscreen").style.display = "none";
-  }
-
-  async function initAudio(name){
-    Audio.audioCtx = new (window.AudioContext||window.WebkitAudioContext)();
-    Audio.analyser = Audio.audioCtx.createAnalyser();
-    Audio.analyser.fftSize = 32;
-    const res = await fetch("./music/"+name);
-    const buff = await res.arrayBuffer();
-    console.log(res, buff);
-    const buffer = await audioCtx.decodeAudioData(buff);
-    Audio.source = audioCtx.createBufferSource();
-    Audio.source.buffer = buffer;
-    Audio.source.connect(analyser);
-    Audio.analyser.connect(audioCtx.destination);
-    Audio.bin = new Uint8Array(analyser.frequencyBinCount);
-    Audio.source.start();
   }
 
   function showDebug() {
