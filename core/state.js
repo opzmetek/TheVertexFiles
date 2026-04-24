@@ -21,5 +21,7 @@ export const World{
   mesh: null,
   box: null,
   material: null,
-  eMaterial: null
+  eMaterial: null,
+  pitch: null,
+  yaw: null
 }
