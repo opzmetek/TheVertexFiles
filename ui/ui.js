@@ -1,6 +1,7 @@
 import {Game, World, Player} from "/TheVertexFiles/core/state.js";
 import {keyCodes} from "/TheVertexFiles/ui/control.js";
 import {di} from "/TheVertexFiles/core/utils.js";
+import {createStartingPanel} from "/TheVertexFiles/ui/start.js";
 
 export function loadUI(){
   di("cfar").onchange = e=>{
