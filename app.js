@@ -336,7 +336,7 @@ let vertVec = 0,onGround = true;
 let audioCtx, analyser, bin, lWidth;
 let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
-let paused = false;
+let paused = false, running = true;
 
 di("cfar").onchange = e=>{
   camera.far = +e.target.value;
@@ -349,6 +349,12 @@ di("sensivity").onchange = e=>{
 
 di("lWidth").onchange = e=>{
   lWidth = +e.target.value;
+}
+
+di("exitBtn").onclick=e=>{
+  running=false;
+  di("game").style.display="none";
+  di("homeMenu").style.display="block";
 }
 
 function startGame(tId,lId){
@@ -476,6 +482,7 @@ function startGame(tId,lId){
   let last = 0;
   
   function loop(millis){
+    if(!running) return;
     if(paused){
       last = millis;
       requestAnimationFrame(loop);
