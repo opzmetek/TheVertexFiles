@@ -20,6 +20,13 @@ setupFlags();
 
 export function startGame(tId,lId){
   async function start(){
+    di("loadscreen").style.display = "flex";
+    const loader = di("loader");
+    loader.textContent = "Loading level...";
+    di("homeMenu").style.display = "none";
+    const meta = await initLevel(tId, lId, loader);
+    await initUtil(meta, loader);
+    di("loadscreen").style.display = "none";
   }
   
   let last = 0;
@@ -61,16 +68,3 @@ export function startGame(tId,lId){
 
 loadGame();
 window.onload=loadUI;
-
-
-
-
-
-
-
-
-
-
-
-
-
