@@ -33,7 +33,7 @@ World.pitch.add(Game.camera);
 World.scene.add(World.yaw);
 World.pitch.position.y+=2;
 let level = 0;
-Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("Game.mobile")==="true";
+Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("Game.mobile")==="true";
 
 export function startGame(tId,lId){
   const bullets = [];
@@ -84,7 +84,7 @@ export function startGame(tId,lId){
     World.mesh.material = GridMaterial(tColor2,tColor1);
     Game.eMaterial = GridMaterial(tColor1,tColor2,0.5);
     World.scene.add(World.mesh);
-    if(urlParams.get("debug")==="true")showDebug();
+    if(Game.urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
     di("loadscreen").style.display = "none";
