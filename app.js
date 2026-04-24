@@ -5,21 +5,15 @@
 
 //imports
 import * as THREE from '/TheVertexFiles/three.module.js';
-import {importVRX,importHeightmap} from '/TheVertexFiles/io.js';
-import {Game, World, Audio, Player, PlayerConfig} from "/TheVertexFiles/core/state.js";
+import {importHeightmap} from '/TheVertexFiles/io.js';
+import {Game, World} from "/TheVertexFiles/core/state.js";
 import {gameUI, loadUI, escape, loadGame} from "/TheVertexFiles/ui/ui.js";
-import {createStartingPanel} from "/TheVertexFiles/ui/start.js";
 import {GridMaterial} from "/TheVertexFiles/core/shader.js";
-import {DDARaycast} from "/TheVertexFiles/core/raycast.js";
-import {FastAStar} from "/TheVertexFiles/ai/astar.js";
-import {EnemyAI, StaticTargetAI, aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
-import {Enemy} from "/TheVertexFiles/core/enemy/enemy.js";
-import {spawn, spawnEnemy} from "/TheVertexFiles/core/enemy/spawn.js";
-import {di, remove, loadOne, loadAll, rnd, getByPath, showDebug} from "/TheVertexFiles/core/utils.js";
+import {spawn} from "/TheVertexFiles/core/enemy/spawn.js";
+import {di, remove, loadAll, showDebug} from "/TheVertexFiles/core/utils.js";
 import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
-import {moveStep, move, dash, anchor} from "/TheVertexFiles/core/player/move.js";
+import {moveStep, dash, anchor} from "/TheVertexFiles/core/player/move.js";
 
-const UP = new THREE.Vector3(0, 1, 0);
 Game.urlParams = new URLSearchParams(window.location.search);
 
 Game.sensivity = 0.02;
@@ -37,8 +31,7 @@ World.pitch.position.y+=2;
 Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("Game.mobile")==="true";
 
 export function startGame(tId,lId){
-  const bullets = [];
-  let lvl,meta,tColor1,tColor2,spawner,eMaterial;
+  let lvl,meta,tColor1,tColor2,spawner;
   
   async function start(){
     di("loadscreen").style.display = "flex";
@@ -54,11 +47,11 @@ export function startGame(tId,lId){
     World.mesh.geometry.computeBoundingSphere();
     World.mesh.geometry.computeVertexNormals();
     World.box = new THREE.Box3().setFromObject(World.mesh);
-    await loadAll(Object.values(lvl.enemies), loader, "./",".vrx", Game.objects);
+    await loadAll(Object.values(Game.lvl.enemies), loader, "./",".vrx", Game.objects);
     loader.textContent = "Loading audio...";
     await initAudio(meta.music||"music_01.mp3");
     di("game").style.display="block";
-    di("game").appendChild(renderer.domElement);
+    di("game").appendChild(Game.renderer.domElement);
     tColor1 = meta.color;
     tColor2 = meta["alt-color"]||0x000000;
     World.mesh.material = GridMaterial(tColor2,tColor1);
@@ -84,10 +77,9 @@ export function startGame(tId,lId){
       Game.renderer.render(World.scene,Game.camera);
       return;
     }
-    const d = millis - last;
+    const dTime = (millis-last)*0.001;
     last = millis;
-    const dTime = d*0.001;
-    move(dTime);
+    moveStep(dTime);
     analyse();
     Game.renderer.render(World.scene,Game.camera);
     World.enemies.forEach(e=>e.move(dTime,0));
@@ -104,7 +96,6 @@ export function startGame(tId,lId){
   }
   
   start().then(()=>{
-    hm = World.mesh.heightmap;
     requestAnimationFrame(loop);
   });
 }
