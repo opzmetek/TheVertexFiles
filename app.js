@@ -17,7 +17,7 @@ import {Enemy} from "/TheVertexFiles/core/enemy.js";
 import {di, remove, loadOne, loadAll, rnd, getByPath} from "/TheVertexFiles/core/utils.js";
 
 const UP = new THREE.Vector3(0, 1, 0);
-const urlParams = new URLSearchParams(window.location.search);
+Game.urlParams = new URLSearchParams(window.location.search);
 
 let objects = {};
 Game.sensivity = 0.02;
