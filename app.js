@@ -19,36 +19,7 @@ setupScene();
 setupFlags();
 
 export function startGame(tId,lId){
-  let lvl,meta,tColor1,tColor2,spawner;
-  
   async function start(){
-    di("loadscreen").style.display = "flex";
-    const loader = di("loader");
-    loader.textContent="Loading level...";
-    di("homeMenu").style.display = "none";
-    Game.lvl = Game.manifest.levels[tId][lId];
-    meta = Game.manifest.levels[tId]?.meta??{};
-    const mmx = await importHeightmap("./towers/"+meta.obj+".vrx");
-    World.mesh = mmx.mesh;
-    World.mesh.heightmap = mmx.map;
-    World.mesh.geometry.computeBoundingBox();
-    World.mesh.geometry.computeBoundingSphere();
-    World.mesh.geometry.computeVertexNormals();
-    World.box = new THREE.Box3().setFromObject(World.mesh);
-    await loadAll(Object.values(Game.lvl.enemies), loader, "./",".vrx", Game.objects);
-    loader.textContent = "Loading audio...";
-    await initAudio(meta.music||"music_01.mp3");
-    di("game").style.display="block";
-    di("game").appendChild(Game.renderer.domElement);
-    tColor1 = meta.color;
-    tColor2 = meta["alt-color"]||0x000000;
-    World.mesh.material = GridMaterial(tColor2,tColor1);
-    Game.eMaterial = GridMaterial(tColor1,tColor2,0.5);
-    World.scene.add(World.mesh);
-    if(Game.urlParams.get("debug")==="true")showDebug();
-    gameUI(tColor1,dash,anchor);
-    spawner = setInterval(spawn,5000);
-    di("loadscreen").style.display = "none";
   }
   
   let last = 0;
