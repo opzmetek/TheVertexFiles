@@ -666,6 +666,13 @@ function escape(){
   console.log("escape");
 }
 
+function remove(m){
+  scene.remove(m);
+  if(m.material)m.material.dispatch();
+  if(m.geometry)m.geometry.dispatch();
+  if(m.childern)m.childern.forEach(c=>remove(c));
+}
+
 function gameUI(color,dash,anchor){
   const keys = {};
   document.addEventListener("keydown",e=>{
