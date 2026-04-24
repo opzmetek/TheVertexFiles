@@ -665,11 +665,8 @@ function loadUI(){
   di("lWidth").onchange = e=>{
     lWidth = +e.target.value;
   }
-
-  const exitBtn = di("exitBtn");
-  console.log(exitBtn);
-  exitBtn.addEventListener("click",e=>{
-    console.log("Exit click!");
+  
+  di("leaveBtn").onclick = e=>{
     running=false;
     renderer.domElement.remove();
     di("game").style.display="none";
