@@ -1,5 +1,5 @@
-import {Game, World, Player} from "/core/state.js";
-import {keyCodes} from "/ui/control.js";
+import {Game, World, Player} from "/TheVertexFiles/core/state.js";
+import {keyCodes} from "/TheVertexFiles/ui/control.js";
 
 export function loadUI(){
   di("cfar").onchange = e=>{
