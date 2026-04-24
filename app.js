@@ -4,17 +4,17 @@
 //license: none
 
 //imports
-import * as THREE from './three.module.js';
-import {importVRX,importHeightmap} from './io.js';
-import {Game, World, Audio, Player, PlayerConfig} from "/core/state.js";
-import {gameUI, loadUI, escape, loadGame} from "/ui/ui.js";
-import {createStartingPanel} from "/ui/start.js";
-import {GridMaterial} from "/core/shader.js";
-import {DDARaycast} from "/core/raycast.js";
-import {FastAStar} from "/ai/astar.js";
-import {EnemyAI, StaticTargetAI, aiTypes} from "/ai/enemy_ai.js";
-import {Enemy} from "/core/enemy.js";
-import {di, remove, loadOne, loadAll, rnd, getByPath} from "/core/utils.js";
+import * as THREE from '/TheVertexFiles/three.module.js';
+import {importVRX,importHeightmap} from '/TheVertexFiles/io.js';
+import {Game, World, Audio, Player, PlayerConfig} from "/TheVertexFiles/core/state.js";
+import {gameUI, loadUI, escape, loadGame} from "/TheVertexFiles/ui/ui.js";
+import {createStartingPanel} from "/TheVertexFiles/ui/start.js";
+import {GridMaterial} from "/TheVertexFiles/core/shader.js";
+import {DDARaycast} from "/TheVertexFiles/core/raycast.js";
+import {FastAStar} from "/TheVertexFiles/ai/astar.js";
+import {EnemyAI, StaticTargetAI, aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
+import {Enemy} from "/TheVertexFiles/core/enemy.js";
+import {di, remove, loadOne, loadAll, rnd, getByPath} from "/TheVertexFiles/core/utils.js";
 
 const UP = new THREE.Vector3(0, 1, 0);
 const urlParams = new URLSearchParams(window.location.search);
