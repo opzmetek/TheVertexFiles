@@ -142,6 +142,13 @@ export function gameUI(color,dash,anchor){
   }
 }
 
+export function pointerLock(){
+  const gcanvas = di("game");
+  gcanvas.requestFullscreen().then(()=>{
+    if(!Game.mobile)Game.renderer.domElement.requestPointerLock();
+  });
+}
+
 export async function loadGame(){
   const loadscreen = document.getElementById("loadscreen");
   const loader = document.createElement("span");
