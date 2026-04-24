@@ -333,17 +333,22 @@ let timers = {dash:0};
 let speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e",escape:"escape"};
 let vertVec = 0,onGround = true;
-let audioCtx, analyser, bin;
+let audioCtx, analyser, bin, lWidth;
 let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
 let paused = false;
 
 di("cfar").onchange = e=>{
   camera.far = +e.target.value;
+  camera.updateProjectionMatrix();
 }
 
 di("sensivity").onchange = e=>{
   sensivity = +e.target.value;
+}
+
+di("lWidth").onchange = e=>{
+  lWidth = +e.target.value;
 }
 
 function startGame(tId,lId){
@@ -496,7 +501,7 @@ function startGame(tId,lId){
     }
     const avg = sum/bin.length;
     const energy = avg / 255;
-    tMesh.material.uniforms.thickness.value = 1.0+energy * energy * 2.0;
+    tMesh.material.uniforms.thickness.value = 1.0+energy * energy * 2.0 * lWidth;
   }
   
   const vFor = new THREE.Vector3();
