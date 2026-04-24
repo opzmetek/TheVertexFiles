@@ -1,4 +1,4 @@
-import {Vector3} from "/three.module.js";
+import {Vector3} from "/TheVertexFiles/three.module.js";
 
 export function DDARaycast(mesh, ray, near=0, far=Infinity){
   if(!mesh.heightmap)return {hit:false,point:ray.origin,object:mesh,error:true,distance:0};
