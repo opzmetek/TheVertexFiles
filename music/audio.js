@@ -20,11 +20,11 @@ export async function initAudio(name){
   const res = await fetch("./music/"+name);
   const buff = await res.arrayBuffer();
   console.log(res, buff);
-  const buffer = await audioCtx.decodeAudioData(buff);
-  Audio.source = audioCtx.createBufferSource();
+  const buffer = await Audio.audioCtx.decodeAudioData(buff);
+  Audio.source = Audio.audioCtx.createBufferSource();
   Audio.source.buffer = buffer;
-  Audio.source.connect(analyser);
-  Audio.analyser.connect(audioCtx.destination);
-  Audio.bin = new Uint8Array(analyser.frequencyBinCount);
+  Audio.source.connect(Audio.analyser);
+  Audio.analyser.connect(Audio.audioCtx.destination);
+  Audio.bin = new Uint8Array(Audio.analyser.frequencyBinCount);
   Audio.source.start();
 }
