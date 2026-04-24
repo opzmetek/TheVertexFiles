@@ -1,4 +1,4 @@
-import {ShaderMaterial, Color, DoubleSide} from "/three.module.js";
+import {ShaderMaterial, Color, DoubleSide} from "/TheVertexFiles/three.module.js";
 
 export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
   uniforms: {
