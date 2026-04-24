@@ -1,6 +1,6 @@
 import {Vector3} from "/three.module.js";
 
-function DDARaycast(mesh, ray, near=0, far=Infinity){
+export function DDARaycast(mesh, ray, near=0, far=Infinity){
   if(!mesh.heightmap)return {hit:false,point:ray.origin,object:mesh,error:true,distance:0};
   const dx = ray.direction.x;
   const dy = ray.direction.y;
