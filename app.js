@@ -338,27 +338,6 @@ let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
 let paused = false, running = true;
 
-di("cfar").onchange = e=>{
-  camera.far = +e.target.value;
-  camera.updateProjectionMatrix();
-}
-
-di("sensivity").onchange = e=>{
-  sensivity = +e.target.value;
-}
-
-di("lWidth").onchange = e=>{
-  lWidth = +e.target.value;
-}
-
-di("exitBtn").onclick=e=>{
-  console.log("Exit click!");
-  running=false;
-  renderer.domElement.remove();
-  di("game").style.display="none";
-  di("homeMenu").style.display="block";
-}
-
 function startGame(tId,lId){
   const bullets = [];
   const enemies = [];
@@ -674,6 +653,27 @@ async function loadGame(){
 }
 
 function loadUI(){
+  di("cfar").onchange = e=>{
+    camera.far = +e.target.value;
+    camera.updateProjectionMatrix();
+  }
+
+  di("sensivity").onchange = e=>{
+    sensivity = +e.target.value;
+  }
+
+  di("lWidth").onchange = e=>{
+    lWidth = +e.target.value;
+  }
+
+  di("exitBtn").onclick=e=>{
+    console.log("Exit click!");
+    running=false;
+    renderer.domElement.remove();
+    di("game").style.display="none";
+    di("homeMenu").style.display="block";
+  }
+  
   di("start-game").onclick=createStartingPanel;
   window.addEventListener("resize",e=>{
    renderer.setSize(window.innerWidth,window.innerHeight);
