@@ -16,3 +16,9 @@ export function setupScene(){
   World.scene.add(World.yaw);
   World.pitch.position.y+=PLAYER_HEIGHT;
 }
+
+export function setupFlags(){
+  Game.urlParams = new URLSearchParams(window.location.search);
+  Game.sensivity = 0.02;
+  Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("Game.mobile")==="true";
+}
