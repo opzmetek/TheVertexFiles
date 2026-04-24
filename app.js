@@ -90,13 +90,13 @@ export function startGame(tId,lId){
     move(dTime);
     analyse();
     Game.renderer.render(World.scene,Game.camera);
-    enemies.forEach(e=>e.move(dTime,0));
+    World.enemies.forEach(e=>e.move(dTime,0));
     requestAnimationFrame(loop);
   }
 
   function reset(){
-    Game.enemies.forEach(e=>remove(e.m));
-    Game.enemies.length = 0;
+    World.enemies.forEach(e=>remove(e.m));
+    World.enemies.length = 0;
     bullets.length = 0;
     remove(World.mesh);
     clearInterval(spawner);
