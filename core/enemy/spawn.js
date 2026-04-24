@@ -1,9 +1,9 @@
-import {objects, rnd} from "/TheVertexFiles/core/utils.js";
+import {rnd} from "/TheVertexFiles/core/utils.js";
 import {Enemy} from "/TheVertexFiles/core/enemy/enemy.js";
-import {World} from "/TheVertexFiles/core/state.js";
+import {World, Game} from "/TheVertexFiles/core/state.js";
 
 function spawnEnemy(id){
-  const template = objects[id];
+  const template = Game.objects[id];
   const enemy = template.clone();
   const x = rnd(World.box.min.x,World.box.max.x);
   const z = rnd(World.box.min.z,World.box.max.z);
