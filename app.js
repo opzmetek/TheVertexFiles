@@ -14,7 +14,7 @@ import {DDARaycast} from "/TheVertexFiles/core/raycast.js";
 import {FastAStar} from "/TheVertexFiles/ai/astar.js";
 import {EnemyAI, StaticTargetAI, aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
 import {Enemy} from "/TheVertexFiles/core/enemy.js";
-import {di, remove, loadOne, loadAll, rnd, getByPath} from "/TheVertexFiles/core/utils.js";
+import {di, remove, loadOne, loadAll, rnd, getByPath, showDebug} from "/TheVertexFiles/core/utils.js";
 import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
 import {moveStep, move, dash, anchor} from "/TheVertexFiles/core/player/move.js";
 
@@ -90,35 +90,6 @@ export function startGame(tId,lId){
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
     di("loadscreen").style.display = "none";
-  }
-
-  function showDebug() {
-    const axesHelper = new THREE.AxesHelper(1);
-    axesHelper.position = World.yaw.position;
-    World.scene.add(axesHelper);
-    const skeletonHelper = new THREE.SkeletonHelper(World.mesh);
-    World.scene.add(skeletonHelper);
-    if(Game.mobile){
-      const origWarn = console.warn;
-      const origError = console.error;
-
-      console.warn = function (...args) {
-        alert("WARN:\n" + args.join(" "));
-        origWarn.apply(console, args);
-      };
-
-      console.error = function (...args) {
-        alert("ERROR:\n" + args.join(" "));
-        origError.apply(console, args);
-      };
-      window.onerror = function (message, source, lineno, colno, error) {
-        alert("EXCEPTION:\n" + message + "\n" + source + ":" + lineno + ":" + colno);
-      };
-      window.onunhandledrejection = function (event) {
-        alert("UNHANDLED PROMISE:\n" + event.reason);
-      };
-    }
-    return { axesHelper, skeletonHelper };
   }
   
   function spawn(){
