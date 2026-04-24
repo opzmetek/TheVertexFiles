@@ -668,7 +668,7 @@ function loadUI(){
 
   const exitBtn = di("exitBtn");
   console.log(exitBtn);
-  exitBtn.addEventListener(e=>{
+  exitBtn.addEventListener("click",e=>{
     console.log("Exit click!");
     running=false;
     renderer.domElement.remove();
