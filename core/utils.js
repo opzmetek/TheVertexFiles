@@ -2,7 +2,7 @@ import {World} from "/TheVertexFiles/core/state.js";
 import {importVRX} from "/TheVertexFiles/io.js";
 import {Group} from "/TheVertexFiles/three.module.js";
 
-function getByPath(obj,path,stepsUp=0){
+export function getByPath(obj,path,stepsUp=0){
   const p=path.split('.');
   return (stepsUp>0?p.slice(0,-stepsUp):p).reduce((acc, key) => acc?.[key], obj);
 }
