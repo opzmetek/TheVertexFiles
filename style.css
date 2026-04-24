@@ -182,8 +182,8 @@ body > div{
 #options{
     position:absolute;
     left: 50%;
-    right: 50%;
-    --translate: translate(-50%, -30%);
+    top: 10%;
+    --translate: translateX(-50%);
     width:40%;
     height:70%;
     overflow-y: scroll;
