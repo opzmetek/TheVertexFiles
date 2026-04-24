@@ -1,6 +1,6 @@
-import {Game} from "/core/state.js";
-import {pointerLock} from "/ui/ui.js";
-import {startGame} from "/app.js";
+import {Game} from "/TheVertexFiles/core/state.js";
+import {pointerLock} from "/TheVertexFiles/ui/ui.js";
+import {startGame} from "/TheVertexFiles/app.js";
 
 export function createStartingPanel() {
     let existing = document.getElementById('starting');
