@@ -8,7 +8,8 @@ export const Game{
   running: true,
   paused: false,
   sensivity: 0.01,
-  lWidth: 1
+  lWidth: 1,
+  manifest: {}
 }
 
 export const Audio{
