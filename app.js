@@ -200,7 +200,6 @@ export function startGame(tId,lId){
   }
   
   const vFor = new THREE.Vector3();
-  let hm = World.mesh.heightmap;
 
   function moveStep(dt){
     const stepSize = Player.speed * dt;
@@ -271,6 +270,7 @@ export function startGame(tId,lId){
   }
   
   function checkCollisionXZ(px, pz, py) {
+    const hm = World.mesh.heightmap;
     const x0 = Math.floor(px - PlayerConfig.halfSize);
     const x1 = Math.floor(px + PlayerConfig.halfSize);
     const z0 = Math.floor(pz - PlayerConfig.halfSize);
@@ -284,6 +284,7 @@ export function startGame(tId,lId){
   }
 
   function getMaxFloor(px, pz) {
+    const hm = World.mesh.heightmap;
     const x0 = Math.floor(px - PlayerConfig.halfSize);
     const x1 = Math.floor(px + PlayerConfig.halfSize);
     const z0 = Math.floor(pz - PlayerConfig.halfSize);
