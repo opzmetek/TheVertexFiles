@@ -6,7 +6,7 @@
 //imports
 import * as THREE from './three.module.js';
 import {importVRX,importHeightmap} from './io.js';
-import {Game, World, Audio, Player} from "/core/state.js";
+import {Game, World, Audio, Player.player} from "/core/state.js";
 import {gameUI, loadUI, escape, loadGame} from "/ui/ui.js";
 import {createStartingPanel} from "/ui/start.js";
 import {GridMaterial} from "/core/shader.js";
@@ -24,44 +24,37 @@ const gravity = 600,jumpStrength = 280;
 
 //variables
 
-let manifest;
 let objects = {};
 let sensivity = 0.02;
 const scene = new THREE.Scene();
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-const camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
-const pitch = new THREE.Object3D();
-const yaw = new THREE.Object3D();
-yaw.add(pitch);
-yaw.position.set(-2,0,-2);
-pitch.add(camera);
-let player = {size:0.5,halfSize:0.25,speed:20,dashLength: 30, dashDelay: 1000};
-scene.add(yaw);
-pitch.position.y+=2;
+Game.renderer = new THREE.WebGLRenderer();
+Game.renderer.setSize(window.innerWidth, window.innerHeight);
+Game.camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
+World.pitch = new THREE.Object3D();
+World.yaw = new THREE.Object3D();
+World.yaw.add(World.pitch);
+World.yaw.position.set(-2,0,-2);
+World.pitch.add(camera);
+scene.add(World.yaw);
+World.pitch.position.y+=2;
 let level = 0;
-let timers = {dash:0};
-Player.speed = player.speed;
-const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e",escape:"escape"};
-let vertVec = 0,onGround = true;
 let audioCtx, analyser, bin, lWidth = 1;
 let velocityX = 0, velocityY = 0;
-const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
-let paused = false, running = true;
+Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("Game.mobile")==="true";
 
 export function startGame(tId,lId){
   const bullets = [];
   const enemies = [];
-  let tMesh,tBox,lvl,meta,tColor1,tColor2,spawner,eMaterial;
+  let lvl,meta,tColor1,tColor2,spawner,eMaterial;
   
   function spawnEnemy(id){
     const template = objects[id];
     const enemy = template.clone();
-    const x = rnd(tBox.min.x,tBox.max.x);
-    const z = rnd(tBox.min.z,tBox.max.z);
-    const y = tMesh.heightmap.get(z,x)+1;
+    const x = rnd(World.box.min.x,World.box.max.x);
+    const z = rnd(World.box.min.z,World.box.max.z);
+    const y = World.mesh.heightmap.get(z,x)+1;
     enemy.position.set(x,y,z);
-    const e = new Enemy(id,tMesh,enemy.position,yaw.position);
+    const e = new Enemy(id,World.mesh,enemy.position,World.yaw.position);
     e.m = enemy;
     e.p = enemy.position;
     e.r = enemy.rotation;
@@ -71,7 +64,7 @@ export function startGame(tId,lId){
     }
     enemy.children.forEach(e=>e.material = eMaterial);
     enemies.push(e);
-    scene.add(enemy);
+    World.scene.add(enemy);
   }
   
   async function start(){
@@ -82,12 +75,12 @@ export function startGame(tId,lId){
     lvl = manifest.levels[tId][lId];
     meta = manifest.levels[tId]?.meta??{};
     const mmx = await importHeightmap("./towers/"+meta.obj+".vrx");
-    tMesh = mmx.mesh;
-    tMesh.heightmap = mmx.map;
-    tMesh.geometry.computeBoundingBox();
-    tMesh.geometry.computeBoundingSphere();
-    tMesh.geometry.computeVertexNormals();
-    tBox = new THREE.Box3().setFromObject(tMesh);
+    World.mesh = mmx.mesh;
+    World.mesh.heightmap = mmx.map;
+    World.mesh.geometry.computeBoundingBox();
+    World.mesh.geometry.computeBoundingSphere();
+    World.mesh.geometry.computeVertexNormals();
+    World.box = new THREE.Box3().setFromObject(World.mesh);
     objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./",".vrx"))};
     loader.textContent = "Loading audio...";
     await initAudio(meta.music||"music_01.mp3");
@@ -95,12 +88,12 @@ export function startGame(tId,lId){
     di("game").appendChild(renderer.domElement);
     tColor1 = meta.color;
     tColor2 = meta["alt-color"]||0x000000;
-    tMesh.material = GridMaterial(tColor2,tColor1);
+    World.mesh.material = GridMaterial(tColor2,tColor1);
     eMaterial = GridMaterial(tColor1,tColor2,0.5);
-    scene.add(tMesh);
+    scene.add(World.mesh);
     let x0 = 0;
-    while(tMesh.heightmap.get(0,x0)!=0)x0++;
-    yaw.position.set(x0,2,0);
+    while(World.mesh.heightmap.get(0,x0)!=0)x0++;
+    World.yaw.position.set(x0,2,0);
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
@@ -125,11 +118,11 @@ export function startGame(tId,lId){
 
   function showDebug() {
     const axesHelper = new THREE.AxesHelper(1);
-    axesHelper.position = yaw.position;
+    axesHelper.position = World.yaw.position;
     scene.add(axesHelper);
-    const skeletonHelper = new THREE.SkeletonHelper(tMesh);
+    const skeletonHelper = new THREE.SkeletonHelper(World.mesh);
     scene.add(skeletonHelper);
-    if(mobile){
+    if(Game.mobile){
       const origWarn = console.warn;
       const origError = console.error;
 
@@ -175,11 +168,11 @@ export function startGame(tId,lId){
   let last = 0;
   
   function loop(millis){
-    if(!running){
+    if(!Game.running){
       reset();
       return;
     }
-    if(paused){
+    if(Game.paused){
       last = millis;
       requestAnimationFrame(loop);
       analyse();
@@ -200,7 +193,7 @@ export function startGame(tId,lId){
     enemies.forEach(e=>remove(e.m));
     enemies.length = 0;
     bullets.length = 0;
-    remove(tMesh);
+    remove(World.mesh);
     clearInterval(spawner);
     console.log("CLEAR");
   }
@@ -213,14 +206,14 @@ export function startGame(tId,lId){
     }
     const avg = sum/bin.length;
     const energy = avg / 255;
-    tMesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * lWidth;
+    World.mesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * lWidth;
   }
   
   const vFor = new THREE.Vector3();
   let hm;
 
   function moveStep(dt){
-    const stepSize = speed * dt;
+    const stepSize = Player.speed * dt;
     const MAX_STEP = 0.3;
     const steps = Math.ceil(stepSize / MAX_STEP);
     const stepDt = dt / steps;
@@ -236,62 +229,62 @@ export function startGame(tId,lId){
     let len = Math.hypot(Game.input.mx, Game.input.my);
     let inputX = len > 1 ? Game.input.mx / len : Game.input.mx;
     let inputZ = len > 1 ? Game.input.my / len : Game.input.my;
-    const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * speed;
-    const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * speed;
+    const targetVX = (inputX * vFor.x + inputZ * -vFor.z) * Player.speed;
+    const targetVZ = (inputX * vFor.z + inputZ *  vFor.x) * Player.speed;
     const t = Math.min(dt * 4, 1);
-    velocityX = Math.min(speed, velocityX + (targetVX - velocityX) * t);
-    velocityY = Math.min(speed, velocityY + (targetVZ - velocityY) * t);
+    velocityX = Math.min(Player.speed, velocityX + (targetVX - velocityX) * t);
+    velocityY = Math.min(Player.speed, velocityY + (targetVZ - velocityY) * t);
     if (len === 0) {
       velocityX *= Math.pow(0.8, dt * 60);
       velocityY *= Math.pow(0.8, dt * 60);
     }
-    let x = yaw.position.x;
-    let z = yaw.position.z;
-    let y = yaw.position.y;
+    let x = World.yaw.position.x;
+    let z = World.yaw.position.z;
+    let y = World.yaw.position.y;
     let nx = x + velocityX * t;
     if (!checkCollisionXZ(nx, z, y)) nx = x;
     let nz = z + velocityY * t;
     if (!checkCollisionXZ(nx, nz, y)) nz = z;
     x = nx;
     z = nz;
-    vertVec -= gravity * dt;
-    y += vertVec * dt;
+    Player.vertVec -= gravity * dt;
+    y += Player.vertVec * dt;
     const floorH = getMaxFloor(x, z);
     if (y <= floorH) {
       y = floorH;
-      vertVec = 0;
-      onGround = true;
+      Player.vertVec = 0;
+      Player.onGround = true;
     } else {
-      onGround = false;
+      Player.onGround = false;
     }
-    yaw.position.set(x, y, z);
+    World.yaw.position.set(x, y, z);
   }
 
   function dash(){
-    if(performance.now()-timers.dash<player.dashDelay)return;
-    timers.dash = performance.now();
+    if(performance.now()-Game.timers.dash<Player.player.dashDelay)return;
+    Game.timers.dash = performance.now();
     camera.getWorldDirection(vFor);
-    const o = yaw.position.clone();
+    const o = World.yaw.position.clone();
     o.y+=0.5;
     const ray = new THREE.Ray(o,vFor);
-    const hit = DDARaycast(tMesh, ray, 0, player.dashLength);
-    yaw.position.x = Math.floor(hit.point.x)+0.5;
-    yaw.position.z = Math.floor(hit.point.z)+0.5;
-    yaw.position.y = hit.point.y;
+    const hit = DDARaycast(World.mesh, ray, 0, Player.player.dashLength);
+    World.yaw.position.x = Math.floor(hit.point.x)+0.5;
+    World.yaw.position.z = Math.floor(hit.point.z)+0.5;
+    World.yaw.position.y = hit.point.y;
   }
 
   function anchor(){
-    const floorH = getMaxFloor(yaw.position.x, yaw.position.z);
-    yaw.position.y = floorH;
-    vertVec = 0;
-    onGround = true;
+    const floorH = getMaxFloor(World.yaw.position.x, World.yaw.position.z);
+    World.yaw.position.y = floorH;
+    Player.vertVec = 0;
+    Player.onGround = true;
   }
   
   function checkCollisionXZ(px, pz, py) {
-    const x0 = Math.floor(px - player.halfSize);
-    const x1 = Math.floor(px + player.halfSize);
-    const z0 = Math.floor(pz - player.halfSize);
-    const z1 = Math.floor(pz + player.halfSize);
+    const x0 = Math.floor(px - Player.player.halfSize);
+    const x1 = Math.floor(px + Player.player.halfSize);
+    const z0 = Math.floor(pz - Player.player.halfSize);
+    const z1 = Math.floor(pz + Player.player.halfSize);
     const h00 = hm.get(z0, x0);
     const h01 = hm.get(z1, x0);
     const h10 = hm.get(z0, x1);
@@ -301,15 +294,15 @@ export function startGame(tId,lId){
   }
 
   function getMaxFloor(px, pz) {
-    const x0 = Math.floor(px - player.halfSize);
-    const x1 = Math.floor(px + player.halfSize);
-    const z0 = Math.floor(pz - player.halfSize);
-    const z1 = Math.floor(pz + player.halfSize);
+    const x0 = Math.floor(px - Player.player.halfSize);
+    const x1 = Math.floor(px + Player.player.halfSize);
+    const z0 = Math.floor(pz - Player.player.halfSize);
+    const z1 = Math.floor(pz + Player.player.halfSize);
     return Math.max(hm.get(z0, x0), hm.get(z1, x0), hm.get(z0, x1), hm.get(z1, x1));
   }
   
   start().then(()=>{
-    hm = tMesh.heightmap;
+    hm = World.mesh.heightmap;
     requestAnimationFrame(loop);
   });
 }
