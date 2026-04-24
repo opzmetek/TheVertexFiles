@@ -1,11 +1,13 @@
-import {ShaderMaterial, Color} from "/three.module.js";
+import {ShaderMaterial, Color, DoubleSide} from "/three.module.js";
 
 export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
   uniforms: {
     lineColor: { value: new Color(lineColor) },
     squareSize: { value: squareSize },
+    thickness: { value: 1.0 },
     baseColor: { value: new Color(bc) },
   },
+  side: DoubleSide,
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
@@ -16,10 +18,10 @@ export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5
   fragmentShader: `
 precision highp float;
 uniform float squareSize;
+uniform float thickness;
 uniform vec3 lineColor;
 uniform vec3 baseColor;
 varying vec3 vWorldPos;
-varying vec3 vBary;
 
 void main() 
 {
@@ -34,9 +36,9 @@ void main()
     float dXz = abs(dFdx(pos.z));
     float dYz = abs(dFdy(pos.z));
 
-    float widthX = max(dXx, dYx) * 2.5;
-    float widthY = max(dXy, dYy) * 2.5;
-    float widthZ = max(dXz, dYz) * 2.5;
+    float widthX = max(dXx, dYx) * 2.5 * thickness;
+    float widthY = max(dXy, dYy) * 2.5 * thickness;
+    float widthZ = max(dXz, dYz) * 2.5 * thickness;
 
     float alpha = 0.0;
 
@@ -61,3 +63,4 @@ void main()
 }
   `,
 });
+
