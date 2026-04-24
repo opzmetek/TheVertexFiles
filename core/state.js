@@ -1,4 +1,4 @@
-export const Game{
+export const Game = {
   camera: null,
   renderer: null,
   input: {
@@ -10,17 +10,18 @@ export const Game{
   sensivity: 0.01,
   lWidth: 1,
   manifest: {},
-  timers:{dash:0}
+  timers:{dash:0},
+  gravity: 600
 }
 
-export const Audio{
+export const Audio = {
   analyser: null,
   bin: null,
   audioCtx: null,
   source: null
 }
 
-export const World{
+export const World = {
   scene: null,
   mesh: null,
   box: null,
@@ -30,10 +31,17 @@ export const World{
   yaw: null
 }
 
-export const Player{
-  player = {size:0.5,halfSize:0.25,speed:20,dashLength: 30, dashDelay: 1000},
-  jumpStrength: 240,
-  speed: 30,
+export const Player = {
+  jumpStrength: 280,
+  speed: 20,
   vertVec: 0,
   onGround: true
+}
+
+export const PlayerConfig = {
+  size:0.5,
+  halfSize:0.25,
+  speed:20,
+  dashLength: 30,
+  dashDelay: 1000
 }
