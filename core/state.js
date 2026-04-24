@@ -25,3 +25,13 @@ export const World{
   pitch: null,
   yaw: null
 }
+
+export const Player{
+  player:{
+    speed: 30
+  },
+  jumpStrength: 240,
+  speed: 30,
+  vertVec: 0,
+  onGround: true
+}
