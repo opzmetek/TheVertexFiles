@@ -253,13 +253,13 @@ export function startGame(tId,lId){
   }
 
   function dash(){
-    if(performance.now()-Game.timers.dash<Player.player.dashDelay)return;
+    if(performance.now()-Game.timers.dash<PlayerConfig.dashDelay)return;
     Game.timers.dash = performance.now();
     Game.camera.getWorldDirection(vFor);
     const o = World.yaw.position.clone();
     o.y+=0.5;
     const ray = new THREE.Ray(o,vFor);
-    const hit = DDARaycast(World.mesh, ray, 0, Player.player.dashLength);
+    const hit = DDARaycast(World.mesh, ray, 0, PlayerConfig.dashLength);
     World.yaw.position.x = Math.floor(hit.point.x)+0.5;
     World.yaw.position.z = Math.floor(hit.point.z)+0.5;
     World.yaw.position.y = hit.point.y;
@@ -273,10 +273,10 @@ export function startGame(tId,lId){
   }
   
   function checkCollisionXZ(px, pz, py) {
-    const x0 = Math.floor(px - Player.player.halfSize);
-    const x1 = Math.floor(px + Player.player.halfSize);
-    const z0 = Math.floor(pz - Player.player.halfSize);
-    const z1 = Math.floor(pz + Player.player.halfSize);
+    const x0 = Math.floor(px - PlayerConfig.halfSize);
+    const x1 = Math.floor(px + PlayerConfig.halfSize);
+    const z0 = Math.floor(pz - PlayerConfig.halfSize);
+    const z1 = Math.floor(pz + PlayerConfig.halfSize);
     const h00 = hm.get(z0, x0);
     const h01 = hm.get(z1, x0);
     const h10 = hm.get(z0, x1);
@@ -286,10 +286,10 @@ export function startGame(tId,lId){
   }
 
   function getMaxFloor(px, pz) {
-    const x0 = Math.floor(px - Player.player.halfSize);
-    const x1 = Math.floor(px + Player.player.halfSize);
-    const z0 = Math.floor(pz - Player.player.halfSize);
-    const z1 = Math.floor(pz + Player.player.halfSize);
+    const x0 = Math.floor(px - PlayerConfig.halfSize);
+    const x1 = Math.floor(px + PlayerConfig.halfSize);
+    const z0 = Math.floor(pz - PlayerConfig.halfSize);
+    const z1 = Math.floor(pz + PlayerConfig.halfSize);
     return Math.max(hm.get(z0, x0), hm.get(z1, x0), hm.get(z0, x1), hm.get(z1, x1));
   }
   
