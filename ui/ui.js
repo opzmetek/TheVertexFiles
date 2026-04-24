@@ -1,5 +1,6 @@
 import {Game, World, Player} from "/TheVertexFiles/core/state.js";
 import {keyCodes} from "/TheVertexFiles/ui/control.js";
+import {di} from "/TheVertexFiles/core/utils.js";
 
 export function loadUI(){
   di("cfar").onchange = e=>{
@@ -158,7 +159,7 @@ export async function loadGame(){
   try{
     loader.textContent = "Loading game...";
     const mRes = await fetch("./game-descriptor.json");
-    manifest = await mRes.json();
+    Game.manifest = await mRes.json();
     loader.textContent = "Starting game...";
     setTimeout(function() {
       loadscreen.style.display="none";
