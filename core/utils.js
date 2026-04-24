@@ -1,6 +1,6 @@
-import {World} from "/core/state.js";
-import {importVrx} from "/io.js";
-import {Group} from "/three.module.js";
+import {World} from "/TheVertexFiles/core/state.js";
+import {importVrx} from "/TheVertexFiles/io.js";
+import {Group} from "/TheVertexFiles/three.module.js";
 
 function getByPath(obj,path,stepsUp=0){
   const p=path.split('.');
