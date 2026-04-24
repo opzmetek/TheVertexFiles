@@ -475,7 +475,7 @@ function startGame(tId,lId){
       last = millis;
       requestAnimationFrame(loop);
       analyse();
-      renderer.render(scene, camera);
+      renderer.render(scene,camera);
       return;
     }
     const d = millis - last;
@@ -727,21 +727,29 @@ function gameUI(color,dash,anchor){
     di("game").appendChild(ctrls);
     const jumpBtn = document.createElement("button");
     ctrls.appendChild(jumpBtn);
+    jumpBtn.textContent="⬆️";
     jumpBtn.onpointerdown = e=>{
       if(onGround&&!paused)vertVec = jumpStrength;
     }
     const dashBtn = document.createElement("button");
     ctrls.appendChild(dashBtn);
+    dashBtn.textContent="💨";
     dashBtn.onpointerdown = dash;
     const anchorBtn = document.createElement("button");
     ctrls.appendChild(anchorBtn);
+    anchorBtn.textContent="⏬";
     anchorBtn.onpointerdown = anchor;
     const sprintBtn = document.createElement("button");
     ctrls.appendChild(sprintBtn);
+    sprintBtn.textContent="⏩";
     sprintBtn.onpointerdown = e=>{
       if(speed>player.speed)speed = player.speed;
       else if(speed===player.speed)speed = player.speed*2;
     }
+    const escBtn=document.createElement("button");
+    ctrls.appendChild(escBtn);
+    escBtn.textContent="⏸️";
+    escBtn.onclick=escape;
     joystick.on("move",(e,data)=>{
       my=data.vector.x * data.force;
       mx=data.vector.y * data.force;
