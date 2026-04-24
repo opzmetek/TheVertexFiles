@@ -6,7 +6,7 @@
 //imports
 import * as THREE from './three.module.js';
 import {importVRX,importHeightmap} from './io.js';
-import {Game, World, Audio, Player.player} from "/core/state.js";
+import {Game, World, Audio, Player, PlayerConfig} from "/core/state.js";
 import {gameUI, loadUI, escape, loadGame} from "/ui/ui.js";
 import {createStartingPanel} from "/ui/start.js";
 import {GridMaterial} from "/core/shader.js";
@@ -14,15 +14,12 @@ import {DDARaycast} from "/core/raycast.js";
 import {FastAStar} from "/ai/astar.js";
 import {EnemyAI, StaticTargetAI, aiTypes} from "/ai/enemy_ai.js";
 import {Enemy} from "/core/enemy.js";
+import {di, remove, loadOne, loadAll, rnd, getByPath} from "/core/utils.js";
 
-//custom raycast
 const raycaster = new THREE.Raycaster();
 raycaster.firstHitOnly = true;
 const UP = new THREE.Vector3(0, 1, 0);
 const urlParams = new URLSearchParams(window.location.search);
-const gravity = 600,jumpStrength = 280;
-
-//variables
 
 let objects = {};
 Game.sensivity = 0.02;
@@ -171,7 +168,7 @@ export function startGame(tId,lId){
       last = millis;
       requestAnimationFrame(loop);
       analyse();
-      renderer.render(World.scene,camera);
+      Game.renderer.render(World.scene,Game.camera);
       return;
     }
     const d = millis - last;
@@ -179,7 +176,7 @@ export function startGame(tId,lId){
     const dTime = d*0.001;
     move(dTime);
     analyse();
-    renderer.render(World.scene,camera);
+    Game.renderer.render(World.scene,Game.camera);
     enemies.forEach(e=>e.move(dTime,0));
     requestAnimationFrame(loop);
   }
@@ -194,18 +191,18 @@ export function startGame(tId,lId){
   }
 
   function analyse() {
-    analyser.getByteTimeDomainData(bin);
+    Audio.analyser.getByteTimeDomainData(Audio.bin);
     let sum = 0;
-    for(let i=0;i<bin.length;i++){
+    for(let i=0;i<Audio.bin.length;i++){
         sum+=bin[i];
     }
-    const avg = sum/bin.length;
+    const avg = sum/Audio.bin.length;
     const energy = avg / 255;
     World.mesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * Game.lWidth;
   }
   
   const vFor = new THREE.Vector3();
-  let hm;
+  let hm = World.mesh.heightmap;
 
   function moveStep(dt){
     const stepSize = Player.speed * dt;
@@ -218,7 +215,7 @@ export function startGame(tId,lId){
   }
 
   function move(dt) {
-    camera.getWorldDirection(vFor);
+    Game.camera.getWorldDirection(vFor);
     vFor.y = 0;
     vFor.normalize();
     let len = Math.hypot(Game.input.mx, Game.input.my);
@@ -242,7 +239,7 @@ export function startGame(tId,lId){
     if (!checkCollisionXZ(nx, nz, y)) nz = z;
     x = nx;
     z = nz;
-    Player.vertVec -= gravity * dt;
+    Player.vertVec -= Game.gravity * dt;
     y += Player.vertVec * dt;
     const floorH = getMaxFloor(x, z);
     if (y <= floorH) {
@@ -258,7 +255,7 @@ export function startGame(tId,lId){
   function dash(){
     if(performance.now()-Game.timers.dash<Player.player.dashDelay)return;
     Game.timers.dash = performance.now();
-    camera.getWorldDirection(vFor);
+    Game.camera.getWorldDirection(vFor);
     const o = World.yaw.position.clone();
     o.y+=0.5;
     const ray = new THREE.Ray(o,vFor);
@@ -301,43 +298,6 @@ export function startGame(tId,lId){
     requestAnimationFrame(loop);
   });
 }
-
-function getByPath(obj,path,stepsUp=0){
-  const p=path.split('.');
-  return (stepsUp>0?p.slice(0,-stepsUp):p).reduce((acc, key) => acc?.[key], obj);
-}
-
-function rnd(min,max){
-  return min+Math.floor(Math.random()*(max-min));
-}
-
-function di(n){
-  return document.getElementById(n);
-}
-
-async function loadAll(arr,loader,prefix = "",suffix = ""){
-  const objects = [];
-  for(const o of arr){
-    const array = (await loadOne(prefix+o+suffix, loader));
-    const group = new THREE.Group();
-    array.forEach(m=>group.add(m));
-    objects[o] = group;
-  }
-  return objects;
-}
-
-async function loadOne(o,loader){
-  if(loader)loader.textContent=("From "+o);
-  return await importVRX(o);
-}
-
-function remove(m){
-  World.scene.remove(m);
-  if(m.material)m.material.dispatch();
-  if(m.geometry)m.geometry.dispatch();
-  if(m.childern)m.childern.forEach(c=>remove(c));
-}
-
 
 loadGame();
 window.onload=loadUI;
