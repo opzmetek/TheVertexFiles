@@ -13,7 +13,8 @@ import {GridMaterial} from "/TheVertexFiles/core/shader.js";
 import {DDARaycast} from "/TheVertexFiles/core/raycast.js";
 import {FastAStar} from "/TheVertexFiles/ai/astar.js";
 import {EnemyAI, StaticTargetAI, aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
-import {Enemy} from "/TheVertexFiles/core/enemy.js";
+import {Enemy} from "/TheVertexFiles/core/enemy/enemy.js";
+import {spawn, spawnEnemy} from "/TheVertexFiles/core/enemy/spawn.js";
 import {di, remove, loadOne, loadAll, rnd, getByPath, showDebug} from "/TheVertexFiles/core/utils.js";
 import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
 import {moveStep, move, dash, anchor} from "/TheVertexFiles/core/player/move.js";
@@ -41,26 +42,6 @@ export function startGame(tId,lId){
   const bullets = [];
   const enemies = [];
   let lvl,meta,tColor1,tColor2,spawner,eMaterial;
-  
-  function spawnEnemy(id){
-    const template = objects[id];
-    const enemy = template.clone();
-    const x = rnd(World.box.min.x,World.box.max.x);
-    const z = rnd(World.box.min.z,World.box.max.z);
-    const y = World.mesh.heightmap.get(z,x)+1;
-    enemy.position.set(x,y,z);
-    const e = new Enemy(id,World.mesh,enemy.position,World.yaw.position);
-    e.m = enemy;
-    e.p = enemy.position;
-    e.r = enemy.rotation;
-    if(e.meta.scale){
-      const s = e.meta.scale;
-      enemy.scale.set(s,s,s);
-    }
-    enemy.children.forEach(e=>e.material = World.eMaterial);
-    enemies.push(e);
-    World.scene.add(enemy);
-  }
   
   async function start(){
     di("loadscreen").style.display = "flex";
@@ -90,26 +71,6 @@ export function startGame(tId,lId){
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
     di("loadscreen").style.display = "none";
-  }
-  
-  function spawn(){
-    let result = -1;
-    let acc = 0;
-    const keys = Object.keys(lvl.enemies);
-    const weights = keys.map(Number);
-    let sum = weights.reduce((acc,val)=>acc+val,0);
-    let idx = rnd(0,sum);
-
-    for(let i=0; i<weights.length; i++){
-      if(acc <= idx && idx < acc + weights[i]){
-        result = i;
-        break;
-      }
-      acc += weights[i];
-    }
-    const chosenEnemyKey = keys[result];
-    const template = lvl.enemies[chosenEnemyKey];
-    spawnEnemy(template);
   }
   
   let last = 0;
