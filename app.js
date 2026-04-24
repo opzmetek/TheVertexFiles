@@ -393,6 +393,7 @@ function startGame(tId,lId){
     if(urlParams.get("debug")==="true")showDebug();
     gameUI(tColor1,dash,anchor);
     spawner = setInterval(spawn,5000);
+    di("loadscreen").style.display = "none";
   }
 
   async function initAudio(name){
