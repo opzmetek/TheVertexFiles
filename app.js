@@ -8,6 +8,7 @@ import * as THREE from './three.module.js';
 import {importVRX,importHeightmap} from './io.js';
 import {Game, World, Audio, Player} from "/core/state.js";
 import {gameUI, loadUI, escape, loadGame} from "/ui/ui.js";
+import {createStartingPanel} from "/ui/start.js";
 
 //custom raycast
 const raycaster = new THREE.Raycaster();
@@ -339,7 +340,7 @@ let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
 let paused = false, running = true;
 
-function startGame(tId,lId){
+export function startGame(tId,lId){
   const bullets = [];
   const enemies = [];
   let tMesh,tBox,lvl,meta,tColor1,tColor2,spawner,eMaterial;
@@ -707,13 +708,6 @@ void main()
 }
   `,
 });
-
-function pointerLock(){
-  const gcanvas = di("game");
-  gcanvas.requestFullscreen().then(()=>{
-    renderer.domElement.requestPointerLock();
-  });
-}
 
 
 
