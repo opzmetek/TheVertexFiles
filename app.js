@@ -16,8 +16,6 @@ import {EnemyAI, StaticTargetAI, aiTypes} from "/ai/enemy_ai.js";
 import {Enemy} from "/core/enemy.js";
 import {di, remove, loadOne, loadAll, rnd, getByPath} from "/core/utils.js";
 
-const raycaster = new THREE.Raycaster();
-raycaster.firstHitOnly = true;
 const UP = new THREE.Vector3(0, 1, 0);
 const urlParams = new URLSearchParams(window.location.search);
 
