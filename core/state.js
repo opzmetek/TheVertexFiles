@@ -16,7 +16,8 @@ export const Game{
 export const Audio{
   analyser: null,
   bin: null,
-  audioCtx: null
+  audioCtx: null,
+  source: null
 }
 
 export const World{
