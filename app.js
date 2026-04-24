@@ -22,7 +22,6 @@ import {moveStep, move, dash, anchor} from "/TheVertexFiles/core/player/move.js"
 const UP = new THREE.Vector3(0, 1, 0);
 Game.urlParams = new URLSearchParams(window.location.search);
 
-let objects = {};
 Game.sensivity = 0.02;
 World.scene = new THREE.Scene();
 Game.renderer = new THREE.WebGLRenderer();
@@ -35,12 +34,10 @@ World.yaw.position.set(-2,0,-2);
 World.pitch.add(Game.camera);
 World.scene.add(World.yaw);
 World.pitch.position.y+=2;
-let level = 0;
 Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("Game.mobile")==="true";
 
 export function startGame(tId,lId){
   const bullets = [];
-  const enemies = [];
   let lvl,meta,tColor1,tColor2,spawner,eMaterial;
   
   async function start(){
@@ -48,7 +45,7 @@ export function startGame(tId,lId){
     const loader = di("loader");
     loader.textContent="Loading level...";
     di("homeMenu").style.display = "none";
-    lvl = Game.manifest.levels[tId][lId];
+    Game.lvl = Game.manifest.levels[tId][lId];
     meta = Game.manifest.levels[tId]?.meta??{};
     const mmx = await importHeightmap("./towers/"+meta.obj+".vrx");
     World.mesh = mmx.mesh;
@@ -57,7 +54,7 @@ export function startGame(tId,lId){
     World.mesh.geometry.computeBoundingSphere();
     World.mesh.geometry.computeVertexNormals();
     World.box = new THREE.Box3().setFromObject(World.mesh);
-    objects = {...objects,...(await loadAll(Object.values(lvl.enemies),loader,"./",".vrx"))};
+    await loadAll(Object.values(lvl.enemies), loader, "./",".vrx", Game.objects);
     loader.textContent = "Loading audio...";
     await initAudio(meta.music||"music_01.mp3");
     di("game").style.display="block";
@@ -98,8 +95,8 @@ export function startGame(tId,lId){
   }
 
   function reset(){
-    enemies.forEach(e=>remove(e.m));
-    enemies.length = 0;
+    Game.enemies.forEach(e=>remove(e.m));
+    Game.enemies.length = 0;
     bullets.length = 0;
     remove(World.mesh);
     clearInterval(spawner);
