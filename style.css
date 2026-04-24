@@ -192,8 +192,8 @@ body > div{
     z-index: 999;
 }
 
-#options label *{
-    display: inline;
+#options label{
+    display: inline-block;
 }
 
 /* === Glow efekt === */
