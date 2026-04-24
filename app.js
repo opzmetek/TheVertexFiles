@@ -671,7 +671,7 @@ function loadUI(){
     renderer.domElement.remove();
     di("game").style.display="none";
     di("homeMenu").style.display="block";
-  });
+  }
   
   di("start-game").onclick=createStartingPanel;
   window.addEventListener("resize",e=>{
