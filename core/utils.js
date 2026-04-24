@@ -15,8 +15,7 @@ export function di(n){
   return document.getElementById(n);
 }
 
-export async function loadAll(arr,loader,prefix = "",suffix = ""){
-  const objects = [];
+export async function loadAll(arr,loader,prefix = "",suffix = "", objects){
   for(const o of arr){
     const array = (await loadOne(prefix+o+suffix, loader));
     const group = new Group();
