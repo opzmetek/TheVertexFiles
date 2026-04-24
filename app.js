@@ -16,9 +16,7 @@ import {moveStep, dash, anchor} from "/TheVertexFiles/core/player/move.js";
 import {setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/core/boot.js";
 
 setupScene();
-Game.urlParams = new URLSearchParams(window.location.search);
-Game.sensivity = 0.02;
-Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("Game.mobile")==="true";
+setupFlags();
 
 export function startGame(tId,lId){
   let lvl,meta,tColor1,tColor2,spawner;
