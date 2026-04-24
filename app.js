@@ -6,6 +6,7 @@
 //imports
 import * as THREE from './three.module.js';
 import {importVRX,importHeightmap} from './io.js';
+import {Game, World, Auidio} from "/core/state.js";
 
 //custom raycast
 const raycaster = new THREE.Raycaster();
