@@ -333,7 +333,7 @@ let timers = {dash:0};
 let speed = player.speed;
 const keyCodes = {moveLeft:"a",moveRight:"d",moveFront:"w",moveBack:"s",jump:" ",sprint:"c",dash:"x",anchor:"e",escape:"escape"};
 let vertVec = 0,onGround = true;
-let audioCtx, analyser, bin, lWidth;
+let audioCtx, analyser, bin, lWidth = 1;
 let velocityX = 0, velocityY = 0;
 const mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||urlParams.get("mobile")==="true";
 let paused = false, running = true;
