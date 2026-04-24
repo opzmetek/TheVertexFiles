@@ -666,13 +666,15 @@ function loadUI(){
     lWidth = +e.target.value;
   }
 
-  di("exitBtn").onclick=e=>{
+  const exitBtn = di("exitBtn");
+  console.log(exitBtn);
+  exitBtn.addEventListener(e=>{
     console.log("Exit click!");
     running=false;
     renderer.domElement.remove();
     di("game").style.display="none";
     di("homeMenu").style.display="block";
-  }
+  });
   
   di("start-game").onclick=createStartingPanel;
   window.addEventListener("resize",e=>{
