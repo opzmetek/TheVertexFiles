@@ -1,5 +1,5 @@
 export const Game{
-  scene: null,
+  camera: null,
   renderer: null,
   input: {
     mx: 0,
@@ -9,7 +9,8 @@ export const Game{
   paused: false,
   sensivity: 0.01,
   lWidth: 1,
-  manifest: {}
+  manifest: {},
+  timers:{dash:0}
 }
 
 export const Audio{
@@ -19,6 +20,7 @@ export const Audio{
 }
 
 export const World{
+  scene: null,
   mesh: null,
   box: null,
   material: null,
@@ -28,9 +30,7 @@ export const World{
 }
 
 export const Player{
-  player:{
-    speed: 30
-  },
+  player = {size:0.5,halfSize:0.25,speed:20,dashLength: 30, dashDelay: 1000},
   jumpStrength: 240,
   speed: 30,
   vertVec: 0,
