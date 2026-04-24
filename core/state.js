@@ -11,7 +11,8 @@ export const Game = {
   lWidth: 1,
   manifest: {},
   timers:{dash:0},
-  gravity: 600
+  gravity: 600,
+  objects: []
 }
 
 export const Audio = {
@@ -28,7 +29,8 @@ export const World = {
   material: null,
   eMaterial: null,
   pitch: null,
-  yaw: null
+  yaw: null,
+  enemies: []
 }
 
 export const Player = {
