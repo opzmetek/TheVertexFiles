@@ -352,7 +352,9 @@ di("lWidth").onchange = e=>{
 }
 
 di("exitBtn").onclick=e=>{
+  console.log("Exit click!");
   running=false;
+  renderer.domElement.remove();
   di("game").style.display="none";
   di("homeMenu").style.display="block";
 }
@@ -360,7 +362,7 @@ di("exitBtn").onclick=e=>{
 function startGame(tId,lId){
   const bullets = [];
   const enemies = [];
-  let tMesh,tBox,lvl,meta,tColor1,tColor2,updater,spawner,eMaterial;
+  let tMesh,tBox,lvl,meta,tColor1,tColor2,spawner,eMaterial;
   
   function spawnEnemy(id){
     const template = objects[id];
@@ -482,7 +484,10 @@ function startGame(tId,lId){
   let last = 0;
   
   function loop(millis){
-    if(!running) return;
+    if(!running){
+      reset();
+      return;
+    }
     if(paused){
       last = millis;
       requestAnimationFrame(loop);
@@ -498,6 +503,15 @@ function startGame(tId,lId){
     renderer.render(scene,camera);
     enemies.forEach(e=>e.move(dTime,0));
     requestAnimationFrame(loop);
+  }
+
+  function reset(){
+    enemies.forEach(e=>remove(e.m));
+    enemies.length = 0;
+    bullets.length = 0;
+    remove(tMesh);
+    clearInterval(spawner);
+    console.log("CLEAR");
   }
 
   function analyse() {
