@@ -13,6 +13,7 @@ import {spawn} from "/TheVertexFiles/core/enemy/spawn.js";
 import {di, remove, loadAll, showDebug} from "/TheVertexFiles/core/utils.js";
 import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
 import {moveStep, dash, anchor} from "/TheVertexFiles/core/player/move.js";
+import {setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/core/boot.js";
 
 Game.urlParams = new URLSearchParams(window.location.search);
 
