@@ -13,6 +13,7 @@ import {GridMaterial} from "/core/shader.js";
 import {DDARaycast} from "/core/raycast.js";
 import {FastAStar} from "/ai/astar.js";
 import {EnemyAI, StaticTargetAI, aiTypes} from "/ai/enemy_ai.js";
+import {Enemy} from "/core/enemy.js";
 
 //custom raycast
 const raycaster = new THREE.Raycaster();
@@ -20,32 +21,6 @@ raycaster.firstHitOnly = true;
 const UP = new THREE.Vector3(0, 1, 0);
 const urlParams = new URLSearchParams(window.location.search);
 const gravity = 600,jumpStrength = 280;
-
-class Enemy{
-  constructor(name,tMesh,pos,target){
-    this.name = name;
-    this.p = pos;
-    const meta = manifest.enemies[name];
-    if(!meta)console.error("No enemy found:",name);
-    this.maxHp = this.hp = meta.maxHP??100;
-    this.maxJump = meta.maxJump??30;
-    this.speed = meta.speed??20;
-    this.size = meta.size??1;
-    this.halfSize = this.size/2;
-    const aiConst = aiTypes[meta.aiType]||"base";
-    if(!aiConst)console.error("No ai found:",meta.aiType);
-    this.ai = new aiConst(tMesh,this,target);
-    if(meta.ai&&typeof meta.ai==="object"){
-      Object.assign(this.ai,meta.ai);
-    }
-    this.r=null;
-    this.m=null;
-    this.meta = meta;
-  }
-  move(dt){
-    this.ai.move(dt);
-  }
-}
 
 //variables
 
