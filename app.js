@@ -501,7 +501,7 @@ function startGame(tId,lId){
     }
     const avg = sum/bin.length;
     const energy = avg / 255;
-    tMesh.material.uniforms.thickness.value = 1.0+energy * energy * 2.0 * lWidth;
+    tMesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * lWidth;
   }
   
   const vFor = new THREE.Vector3();
@@ -731,7 +731,7 @@ function gameUI(color,dash,anchor){
       zone:di("joystick"),
       mode:"static",
       position:{left:"50px",bottom:"50px"},
-      size:100,
+      size:150,
       color:color
     });
     const ctrls = document.createElement("div");
