@@ -1,6 +1,6 @@
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3} from "/TheVertexFiles/three.module.js";
 import {World, Game} from "/TheVertexFiles/core/state.js";
-import {loadAll} from "/TheVertexFiles/core/utils.js";
+import {loadAll, di} from "/TheVertexFiles/core/utils.js";
 import {importHeightmap} from "/TheVertexFiles/io.js";
 import {initAudio} from "/TheVertexFiles/music/audio.js";
 import {GridMaterial} from "/TheVertexFiles/core/shader.js";
@@ -58,5 +58,5 @@ export function setupScene(){
 export function setupFlags(){
   Game.urlParams = new URLSearchParams(window.location.search);
   Game.sensivity = 0.02;
-  Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("Game.mobile")==="true";
+  Game.mobile = "ontouchstart" in window||navigator.maxTouchPoints>0||Game.urlParams.get("mobile")==="true";
 }
