@@ -42,12 +42,12 @@ export async function initUtil(meta, loader) {
 }
 
 export function setupScene(){ 
-  World.scene = new THREE.Scene();
-  Game.renderer = new THREE.WebGLRenderer();
+  World.scene = new Scene();
+  Game.renderer = new WebGLRenderer();
   Game.renderer.setSize(window.innerWidth, window.innerHeight);
-  Game.camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
-  World.pitch = new THREE.Object3D();
-  World.yaw = new THREE.Object3D();
+  Game.camera = new PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
+  World.pitch = new Object3D();
+  World.yaw = new Object3D();
   World.yaw.add(World.pitch);
   World.yaw.position.set(-2,0,-2);
   World.pitch.add(Game.camera);
