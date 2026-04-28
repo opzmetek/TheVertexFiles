@@ -37,7 +37,7 @@ export function remove(m){
   if(m.childern)m.childern.forEach(c=>remove(c));
 }
 
-function showDebug() {
+export function showDebug() {
   const axesHelper = new AxesHelper(1);
   axesHelper.position = World.yaw.position;
   World.scene.add(axesHelper);
