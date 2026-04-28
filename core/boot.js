@@ -6,6 +6,7 @@ import {initAudio} from "/TheVertexFiles/music/audio.js";
 import {GridMaterial} from "/TheVertexFiles/core/shader.js";
 import {gameUI} from "/TheVertexFiles/ui/ui.js";
 import {dash, anchor} from "/TheVertexFiles/core/player/move.js";
+import {spawn} from "/TheVertexFiles/core/enemy/spawn.js";
 
 const PLAYER_HEIGHT = 2;
 
