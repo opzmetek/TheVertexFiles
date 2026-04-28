@@ -31,7 +31,7 @@ export async function initUtil(meta, loader) {
   const tColor1 = meta.color;
   const tColor2 = meta["alt-color"] || 0x000000;
   World.mesh.material = GridMaterial(tColor2, tColor1);
-  Game.eMaterial = GridMaterial(tColor1, tColor2, 0.5);
+  World.eMaterial = GridMaterial(tColor1, tColor2, 0.5);
   di("game").style.display = "block";
   di("game").appendChild(Game.renderer.domElement);
   gameUI(tColor1, dash, anchor);
