@@ -2,7 +2,7 @@ import {rnd} from "/TheVertexFiles/core/utils.js";
 import {Enemy} from "/TheVertexFiles/core/enemy/enemy.js";
 import {World, Game} from "/TheVertexFiles/core/state.js";
 
-function spawnEnemy(id){
+export function spawnEnemy(id){
   const template = Game.objects[id];
   const enemy = template.clone();
   const x = rnd(World.box.min.x,World.box.max.x);
@@ -22,7 +22,7 @@ function spawnEnemy(id){
   World.scene.add(enemy);
 }
 
-function spawn(){
+export function spawn(){
   let result = -1;
   let acc = 0;
   const keys = Object.keys(Game.lvl.enemies);
