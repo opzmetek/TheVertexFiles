@@ -6,6 +6,7 @@ const vFor = new Vector3();
 
 export function moveStep(dt){
   move(dt);
+  console.log("MOVE FRAME> dt, x, z, mx, my: ", dt, World.yaw.position.x, World.yaw.position.z, Game.input.mx, Game.input.my);
 }
 
 export function move(dt) {
