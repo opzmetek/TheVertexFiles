@@ -5,12 +5,7 @@ const MAX_STEP = 0.3;
 const vFor = new Vector3();
 
 export function moveStep(dt){
-  const stepSize = Player.speed * dt;
-  const steps = Math.ceil(stepSize / MAX_STEP);
-  const stepDt = dt / steps;
-  for (let i = 0; i < steps; i++) {
-    move(stepDt);
-  }
+  move(dt);
 }
 
 export function move(dt) {
