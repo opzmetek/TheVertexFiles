@@ -1,4 +1,4 @@
-import {Game, World, Player} from "/TheVertexFiles/core/state.js";
+import {Game, World, Player, PlayerConfig} from "/TheVertexFiles/core/state.js";
 import {keyCodes} from "/TheVertexFiles/ui/control.js";
 import {di} from "/TheVertexFiles/core/utils.js";
 import {createStartingPanel} from "/TheVertexFiles/ui/start.js";
@@ -69,8 +69,8 @@ export function gameUI(color,dash,anchor){
     if(keys[keyCodes.moveLeft])Game.input.my=-1;
     else if(keys[keyCodes.moveRight])Game.input.my=1;
     else Game.input.my=0;
-    if(keys[keyCodes.sprint])Player.speed = Player.player.speed*2;
-    else Player.speed = Player.player.speed;
+    if(keys[keyCodes.sprint])Player.speed = PlayerConfig.speed*2;
+    else Player.speed = PlayerConfig.speed;
   }
   if(Game.mobile){
     let ly,lx;
@@ -118,8 +118,8 @@ export function gameUI(color,dash,anchor){
     ctrls.appendChild(sprintBtn);
     sprintBtn.textContent="⏩";
     sprintBtn.onpointerdown = e=>{
-      if(Player.speed>Player.player.speed)Player.speed = Player.player.speed;
-      else if(Player.speed===Player.player.speed)Player.speed = Player.player.speed*2;
+      if(Player.speed>PlayerConfig.speed)Player.speed = PlayerConfig.speed;
+      else if(Player.speed===PlayerConfig.speed)Player.speed = PlayerConfig.speed*2;
     }
     const escBtn=document.createElement("button");
     ctrls.appendChild(escBtn);
