@@ -4,7 +4,7 @@ export function analyse() {
   Audio.analyser.getByteTimeDomainData(Audio.bin);
   let sum = 0;
   for(let i=0;i<Audio.bin.length;i++){
-    sum+=bin[i];
+    sum+=Audio.bin[i];
   }
   const avg = sum/Audio.bin.length;
   const energy = avg / 255;
