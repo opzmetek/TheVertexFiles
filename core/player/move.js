@@ -1,4 +1,4 @@
-import {Game, Player, World} from "/TheVertexFiles/core/state.js";
+import {Game, Player, World, PlayerConfig} from "/TheVertexFiles/core/state.js";
 import {Vector3} from "/TheVertexFiles/three.module.js";
 
 const MAX_STEP = 0.3;
