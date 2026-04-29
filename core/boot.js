@@ -1,7 +1,5 @@
-
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, THREE} from "/TheVertexFiles/barrel.js";
-
-const {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3} = THREE;
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn} from "barrel";
+import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3} from "three";
 
 const PLAYER_HEIGHT = 2;
 
