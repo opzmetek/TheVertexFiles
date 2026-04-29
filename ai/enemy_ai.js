@@ -1,6 +1,5 @@
-import {Vector3} from "/TheVertexFiles/three.module.js";
-import {Game} from "/TheVertexFiles/core/state.js";
-import {FastAStar} from "/TheVertexFiles/ai/astar.js";
+import {Vector3} from "three";
+import {Game, FastAStar} from "barrel";
 
 export class EnemyAI{
   constructor(mesh,enemy,target){
