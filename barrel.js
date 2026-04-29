@@ -12,6 +12,6 @@ export * from "./ui/start.js";
 export * from "./ui/ui.js";
 export * from "./music/audio.js";
 export * from "./ai/enemy_ai.js";
-export * as IO from "./io.js";
-export * as Heightmap from "./heightmap.js";
+export * from "./io.js";
+export * from "./heightmap.js";
 export * as THREE from "./three.module.js";
