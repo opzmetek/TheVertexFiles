@@ -1,4 +1,4 @@
-import {Game, World, Audio} from "/TheVertexFiles/core/state.js";
+import {Game, World, Audio} from "barrel";
 
 export function analyse() {
   Audio.analyser.getByteTimeDomainData(Audio.bin);
