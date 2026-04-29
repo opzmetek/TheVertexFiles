@@ -11,7 +11,7 @@ export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
-      vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+      vWorldPos = position;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
