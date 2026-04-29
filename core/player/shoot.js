@@ -29,5 +29,9 @@ export function shoot(pos, dir, speed){
   bullet.maxT = len/speed;
   bullet.m = createBullet();
   World.bullets.push(bullet);
-  scene.add(bullet.m);
+  World.scene.add(bullet.m);
+}
+
+export function updateBullets(dt){
+  
 }
