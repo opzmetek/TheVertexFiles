@@ -31,6 +31,7 @@ export const World = {
   pitch: null,
   yaw: null,
   enemies: [],
+  bullets: [],
   colors: [0, 0]
 }
 
