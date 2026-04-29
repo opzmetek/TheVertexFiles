@@ -28,6 +28,7 @@ export function shoot(pos, dir, speed){
   const len = pos.clone().sub(gHit).length();
   bullet.maxT = len/speed;
   bullet.m = createBullet();
+  bullet.m.position = bullet.p;
   World.bullets.push(bullet);
   World.scene.add(bullet.m);
 }
