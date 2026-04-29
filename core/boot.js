@@ -23,7 +23,7 @@ export async function initUtil(meta, loader) {
   await initAudio(meta.music || "music_01.mp3");
   const tColor1 = meta.color;
   const tColor2 = meta["alt-color"] || 0x000000;
-  World.colors = [+tColor1, +tColor2];
+  World.colors = [tColor1, tColor2];
   World.mesh.material = GridMaterial(tColor2, tColor1);
   World.eMaterial = GridMaterial(tColor1, tColor2, 0.5);
   di("game").style.display = "block";
