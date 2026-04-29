@@ -1,5 +1,4 @@
-import {Game} from "/TheVertexFiles/core/state.js";
-import {aiTypes} from "/TheVertexFiles/ai/enemy_ai.js";
+import {Game, aiTypes} from "/TheVertexFiles/barrel.js";
 
 export class Enemy{
   constructor(name,tMesh,pos,target){
