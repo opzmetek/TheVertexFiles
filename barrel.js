@@ -15,3 +15,4 @@ export * from "./ai/enemy_ai.js";
 export * from "./io.js";
 export * from "./heightmap.js";
 export * from "./app.js";
+export * from "./core/player/shoot.js";
