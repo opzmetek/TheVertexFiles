@@ -1,4 +1,4 @@
-import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel} from "barrel";
+import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot} from "barrel";
 
 export function loadUI(){
   di("cfar").onchange = e=>{
@@ -137,6 +137,7 @@ export function gameUI(color,dash,anchor){
     });
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
+      else playerShoot();
     })
   }
 }
