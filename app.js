@@ -4,7 +4,7 @@
 //license: none
 
 //imports
-import {Game, World, gameUI, loadUI, escape, loadGame, GridMaterial, spawn, di, remove, loadAll, showDebug, initAudio, analyse, moveStep, dash, anchor, setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/barrel.js";
+import {Game, World, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
