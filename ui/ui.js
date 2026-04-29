@@ -1,7 +1,4 @@
-import {Game, World, Player, PlayerConfig} from "/TheVertexFiles/core/state.js";
-import {keyCodes} from "/TheVertexFiles/ui/control.js";
-import {di} from "/TheVertexFiles/core/utils.js";
-import {createStartingPanel} from "/TheVertexFiles/ui/start.js";
+import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel} from "barrel";
 
 export function loadUI(){
   di("cfar").onchange = e=>{
