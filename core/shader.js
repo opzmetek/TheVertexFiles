@@ -1,4 +1,5 @@
-import {ShaderMaterial, Color, DoubleSide} from "/TheVertexFiles/three.module.js";
+import THREE from "/TheVertexFiles/barrel.js";
+const {ShaderMaterial, Color, DoubleSide} = THREE;
 
 export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
   uniforms: {
