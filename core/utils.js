@@ -1,5 +1,5 @@
 import {World, importVRX} from "barrel";
-improt {Group, AxesHelper, SkeletonHelper} from "three";
+import {Group, AxesHelper, SkeletonHelper} from "three";
 
 export function getByPath(obj,path,stepsUp=0){
   const p=path.split('.');
