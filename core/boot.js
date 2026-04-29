@@ -1,12 +1,7 @@
-import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3} from "/TheVertexFiles/three.module.js";
-import {World, Game} from "/TheVertexFiles/core/state.js";
-import {loadAll, di} from "/TheVertexFiles/core/utils.js";
-import {importHeightmap} from "/TheVertexFiles/io.js";
-import {initAudio} from "/TheVertexFiles/music/audio.js";
-import {GridMaterial} from "/TheVertexFiles/core/shader.js";
-import {gameUI} from "/TheVertexFiles/ui/ui.js";
-import {dash, anchor} from "/TheVertexFiles/core/player/move.js";
-import {spawn} from "/TheVertexFiles/core/enemy/spawn.js";
+
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, THREE} from "/TheVertexFiles/barrel.js";
+
+const {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3} = THREE;
 
 const PLAYER_HEIGHT = 2;
 
