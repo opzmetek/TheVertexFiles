@@ -1,6 +1,6 @@
-import {Game, Player, World, PlayerConfig} from "/TheVertexFiles/core/state.js";
-import {Vector3} from "/TheVertexFiles/three.module.js";
-import {DDARaycast} from "/TheVertexFiles/core/raycast.js";
+import {Game, Player, World, PlayerConfig, DDARaycast, THREE} from "/TheVertexFiles/barrel.js";
+
+const {Vector3} = THREE;
 
 const MAX_STEP = 0.3;
 const vFor = new Vector3();
