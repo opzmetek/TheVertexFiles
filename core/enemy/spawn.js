@@ -1,6 +1,4 @@
-import {rnd} from "/TheVertexFiles/core/utils.js";
-import {Enemy} from "/TheVertexFiles/core/enemy/enemy.js";
-import {World, Game} from "/TheVertexFiles/core/state.js";
+import {rnd, Enemy, World, Game} from "barrel";
 
 export function spawnEnemy(id){
   const template = Game.objects[id];
