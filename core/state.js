@@ -30,7 +30,8 @@ export const World = {
   eMaterial: null,
   pitch: null,
   yaw: null,
-  enemies: []
+  enemies: [],
+  colors: [0, 0]
 }
 
 export const Player = {
