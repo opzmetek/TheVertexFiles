@@ -37,7 +37,9 @@ export const Player = {
   jumpStrength: 280,
   speed: 20,
   vertVec: 0,
-  onGround: true
+  onGround: true,
+  velocityX: 0,
+  velocityY: 0
 }
 
 export const PlayerConfig = {
