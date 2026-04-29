@@ -1,5 +1,5 @@
 import {World, Game, Player, PlayerConfig, DDARaycast} from "barrel";
-import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3} from "three";
+import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Ray} from "three";
 
 let bulletTemplate;
 const direction = new Vector3();
@@ -24,7 +24,7 @@ export function playerShoot(){
 
 export function shoot(pos, dir, speed){
   const bullet = {p: pos.clone(), dir: dir.clone().multiplyScalar(speed), t: 0};
-  const gHit = DDARaycast();
+  const gHit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000).hit;
   const len = pos.clone().sub(gHit).length();
   bullet.maxT = len/speed;
   bullet.m = createBullet();
