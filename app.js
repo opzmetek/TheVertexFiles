@@ -4,16 +4,7 @@
 //license: none
 
 //imports
-import * as THREE from '/TheVertexFiles/three.module.js';
-import {importHeightmap} from '/TheVertexFiles/io.js';
-import {Game, World} from "/TheVertexFiles/core/state.js";
-import {gameUI, loadUI, escape, loadGame} from "/TheVertexFiles/ui/ui.js";
-import {GridMaterial} from "/TheVertexFiles/core/shader.js";
-import {spawn} from "/TheVertexFiles/core/enemy/spawn.js";
-import {di, remove, loadAll, showDebug} from "/TheVertexFiles/core/utils.js";
-import {initAudio, analyse} from "/TheVertexFiles/music/audio.js";
-import {moveStep, dash, anchor} from "/TheVertexFiles/core/player/move.js";
-import {setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/core/boot.js";
+import {Game, World, gameUI, loadUI, escape, loadGame, GridMaterial, spawn, di, remove, loadAll, showDebug, initAudio, analyse, moveStep, dash, anchor, setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
