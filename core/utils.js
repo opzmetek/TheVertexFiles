@@ -1,6 +1,5 @@
-import {World} from "/TheVertexFiles/core/state.js";
-import {importVRX} from "/TheVertexFiles/io.js";
-import {Group, AxesHelper, SkeletonHelper} from "/TheVertexFiles/three.module.js";
+import {World, importVRX, THREE} from "/TheVertexFiles/barrel.js";
+const {Group, AxesHelper, SkeletonHelper} = THREE;
 
 export function getByPath(obj,path,stepsUp=0){
   const p=path.split('.');
