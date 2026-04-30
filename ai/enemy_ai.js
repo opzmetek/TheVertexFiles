@@ -8,36 +8,32 @@ export class EnemyAI{
     this.enemy = enemy;
     this.target = target;
     this.temp = new Vector3();
-    this.rotate = new Vector3();
+    this.desired = new Vector3();
     this.vel = new Vector3();
-    this.stuck = 0;
     this.easing = 2;
   }
-  computeSteering(dt){
-    return this.temp.subVectors(this.target, this.enemy.p).addScaledVector(this.rotate,this.stuck).normalize().multiplyScalar(this.enemy.speed);
+  computeSteering(dt, exp){
+    return this.temp.copy(this.desired.lerp(this.temp.subVectors(this.target, this.enemy.p).normalize(), exp)).multiplyScalar(this.enemy.speed);
   }
-  updateSteering(dt){
-    this.rotate.x += (Math.random()-0.5)*0.05;
-    this.rotate.z += (Math.random()-0.5)*0.05;
+  updateSteering(dt, exp){
+    this.desired.x += (Math.random()-0.5)*0.05;
+    this.desired.z += (Math.random()-0.5)*0.05;
   }
-  move(dt){
+  move(dt, exp){
     if(dt>0.4)dt=0.4;//spike
     const p = this.enemy.p;
-    this.updateSteering(dt);
-    const dir = this.computeSteering(dt);
+    this.updateSteering(dt, exp);
+    const dir = this.computeSteering(dt, exp);
     this.vel.lerp(dir,dt*this.easing);
-    this.stuck*=Math.pow(0.98,dt);
     const y = p.y;
     let nx = p.x+this.vel.x*dt, nz = p.z+this.vel.z*dt;
-    this.rotate.multiplyScalar(0.95);
     if(this.tryMove(nx, y, nz))return;
     else if(this.tryMove(nx, y, p.z))return;//only x
     else if(this.tryMove(p.x, y, nz))return;//only z
     this.onStuck();
   }
   onStuck(){
-    this.rotate.set(Math.random()-0.5, 0, Math.random()-0.5);
-    this.stuck = 1;
+    this.desired.set(Math.random()-0.5, 0, Math.random()-0.5);
   }
   tryMove(x,y,z){
     const f = this.getMaxFloor(x, z);
