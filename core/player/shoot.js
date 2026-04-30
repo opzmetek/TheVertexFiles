@@ -8,7 +8,7 @@ function createBullet(){
   if(bulletTemplate) return bulletTemplate.clone();
   const geometry = new BoxGeometry(0.05, 0.05, 1);
   const material = new MeshBasicMaterial({
-    color: World.colors[2],
+    color: World.colors[1],
     transparent: true,
     depthWrite: false,
     blending: AdditiveBlending
