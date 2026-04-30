@@ -29,6 +29,7 @@ export function shoot(pos, dir, speed){
   bullet.p = bullet.m.position.copy(pos);
   World.bullets.push(bullet);
   World.scene.add(bullet.m);
+  console.log(bullet);
 }
 
 export function updateBullets(dt){
