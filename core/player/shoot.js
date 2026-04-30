@@ -35,7 +35,7 @@ export function shoot(pos, dir, speed){
 
 export function updateBullets(dt){
   World.bullets.forEach(b=>{
-    b.p.add(b.dir.multiplyScalar(dt));
+    b.p.addScaledVector(b.dir,dt);
     b.t += dt;
     if(b.t>=b.maxT)b.m.material.visible = false;
   });
