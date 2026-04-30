@@ -24,7 +24,7 @@ export function shoot(pos, dir, speed){
   const hit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000);
   bullet.maxT = hit.distance/speed;
   bullet.m = createBullet();
-  bullet.m.quaternion.copy(Game.camera.quaternion);
+  bullet.m.lookAt(dir);
   bullet.p = bullet.m.position.copy(pos);
   World.bullets.push(bullet);
   World.scene.add(bullet.m);
