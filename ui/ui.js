@@ -85,6 +85,7 @@ export function gameUI(color,dash,anchor){
     });
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
+      else playerShoot();
       lx=e.clientX;ly=e.clientY;
     });
     const joystick = window.nipplejs.create({
