@@ -9,12 +9,9 @@ function createBullet(){
   const geometry = new BoxGeometry(0.05, 0.05, 1);
   const material = new MeshBasicMaterial({
     color: World.colors[1],
-    transparent: true,
-    depthWrite: false,
-    blending: AdditiveBlending
   });
   bulletTemplate = new Mesh(geometry, material);
-  return bulletTemplate;
+  return bulletTemplate.clone();
 }
 
 export function playerShoot(){
@@ -27,15 +24,20 @@ export function shoot(pos, dir, speed){
   const hit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000);
   bullet.maxT = hit.distance/speed;
   bullet.m = createBullet();
+  bullet.m.quaternion.copy(Game.camera.quaternion);
   bullet.p = bullet.m.position.copy(pos);
   World.bullets.push(bullet);
   World.scene.add(bullet.m);
 }
 
 export function updateBullets(dt){
-  World.bullets.forEach(b=>{
+  for(let i = World.bullets.length-1;i>=0;i--){
+    const b = World.bullets[i];
     b.p.addScaledVector(b.dir,dt);
     b.t += dt;
-    if(b.t>=b.maxT)b.m.material.visible = false;
-  });
+    if(b.t>=b.maxT){
+      World.bullets[i] = World.bullets.pop();
+      World.scene.remove(b.m);
+    }
+  }
 }
