@@ -6,7 +6,7 @@ const direction = new Vector3();
 
 function createBullet(){
   if(bulletTemplate) return bulletTemplate.clone();
-  const geometry = new BoxGeometry(0.05, 0.05, 1);
+  const geometry = new BoxGeometry(0.5, 0.5, 1);
   const material = new MeshBasicMaterial({
     color: World.colors[1],
   });
@@ -16,7 +16,8 @@ function createBullet(){
 
 export function playerShoot(){
   Game.camera.getWorldDirection(direction);
-  shoot(World.pitch.position, direction, 70);
+  console.log("SHOOT");
+  shoot(World.pitch.position, direction, 20);
 }
 
 export function shoot(pos, dir, speed){
