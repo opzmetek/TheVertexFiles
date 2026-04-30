@@ -24,9 +24,8 @@ export function playerShoot(){
 
 export function shoot(pos, dir, speed){
   const bullet = {dir: dir.clone().multiplyScalar(speed), t: 0};
-  const gHit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000).hit;
-  const len = pos.distanceTo(gHit);
-  bullet.maxT = len/speed;
+  const hit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000);
+  bullet.maxT = hit.distance/speed;
   bullet.m = createBullet();
   bullet.p = bullet.m.position.copy(pos);
   World.bullets.push(bullet);
