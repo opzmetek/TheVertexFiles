@@ -23,6 +23,7 @@ export function playerShoot(){
 export function shoot(pos, dir, speed){
   const bullet = {dir: dir.clone().multiplyScalar(speed), t: 0};
   const hit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000);
+  console.log(hit, World.mesh);
   bullet.maxT = hit.distance/speed;
   bullet.m = createBullet();
   bullet.m.lookAt(dir);
