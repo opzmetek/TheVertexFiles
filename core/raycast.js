@@ -2,6 +2,7 @@ import {Vector3} from "three";
 
 export function DDARaycast(mesh, ray, near=0, far=Infinity){
   if(!mesh.heightmap)return {hit:false,point:ray.origin,object:mesh,error:true,distance:0};
+  ray.direction.normalize();
   const dx = ray.direction.x;
   const dy = ray.direction.y;
   const dz = ray.direction.z;
