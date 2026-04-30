@@ -23,12 +23,12 @@ export function playerShoot(){
 }
 
 export function shoot(pos, dir, speed){
-  const bullet = {p: pos.clone(), dir: dir.clone().multiplyScalar(speed), t: 0};
+  const bullet = {dir: dir.clone().multiplyScalar(speed), t: 0};
   const gHit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000).hit;
-  const len = pos.clone().sub(gHit).length();
+  const len = pos.distanceTo(gHit);
   bullet.maxT = len/speed;
   bullet.m = createBullet();
-  bullet.m.position = bullet.p;
+  bullet.p = bullet.m.position.copy(pos);
   World.bullets.push(bullet);
   World.scene.add(bullet.m);
 }
