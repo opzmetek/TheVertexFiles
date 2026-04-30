@@ -23,7 +23,7 @@ export function DDARaycast(mesh, ray, near=0, far=Infinity){
     const h = mesh.heightmap.get(cx,cz);
     if (h !== undefined) {
       const yHit = oy + dy * t;
-      if (yHit <= h && t >= near) {
+      if (yHit <= h && t > near) {
         const point = ray.at(t, new Vector3());
         return {
           hit: true,
