@@ -4,7 +4,7 @@
 //license: none
 
 //imports
-import {Game, World, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil} from "/TheVertexFiles/barrel.js";
+import {Game, World, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, updateBullets} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
@@ -37,9 +37,10 @@ export function startGame(tId,lId){
     const dTime = (millis-last)*0.001;
     last = millis;
     moveStep(dTime);
+    updateBullets(dTime);
     analyse();
-    Game.renderer.render(World.scene,Game.camera);
     World.enemies.forEach(e=>e.move(dTime,0));
+    Game.renderer.render(World.scene,Game.camera);
     requestAnimationFrame(loop);
   }
 
