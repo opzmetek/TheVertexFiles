@@ -7,7 +7,7 @@ const temp = new Vector3();
 
 function createBullet(){
   if(bulletTemplate) return bulletTemplate.clone();
-  const geometry = new BoxGeometry(0.5, 0.5, 1);
+  const geometry = new BoxGeometry(0.05, 0.05, 1);
   const material = new MeshBasicMaterial({
     color: World.colors[0],
   });
@@ -19,8 +19,8 @@ export function playerShoot(){
   Game.camera.getWorldDirection(direction);
   console.log("SHOOT");
   temp.copy(World.yaw.position);
-  temp.y+=PlayerConfig.height;//head
-  shoot(temp, direction, 20);
+  temp.y+=PlayerConfig.height-0.5;//gun
+  shoot(temp, direction, 70);
 }
 
 export function shoot(pos, dir, speed){
