@@ -3,6 +3,7 @@ import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Ray} fr
 
 let bulletTemplate;
 const direction = new Vector3();
+const temp = new Vector3();
 
 function createBullet(){
   if(bulletTemplate) return bulletTemplate.clone();
@@ -17,7 +18,9 @@ function createBullet(){
 export function playerShoot(){
   Game.camera.getWorldDirection(direction);
   console.log("SHOOT");
-  shoot(World.pitch.position, direction, 20);
+  temp.copy(World.yaw.position);
+  temp.y+=PlayerConfig.height;//head
+  shoot(temp, direction, 20);
 }
 
 export function shoot(pos, dir, speed){
