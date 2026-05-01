@@ -1,5 +1,7 @@
 import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot} from "barrel";
 
+const MAX_PITCH = 1.55;
+
 export function loadUI(){
   di("cfar").onchange = e=>{
     Game.camera.far = +e.target.value;
@@ -79,7 +81,7 @@ export function gameUI(color,dash,anchor){
       }
       const dx = lx-x,dy=ly-y;
       World.yaw.rotation.y+=dx*Game.sensivity;
-      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x+dy*Game.sensivity,Math.PI*0.5),-Math.PI*0.5);
+      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x+dy*Game.sensivity, MAX_PITCH), -MAX_PITCH);
       lx=x;
       ly=y;
     });
@@ -134,7 +136,7 @@ export function gameUI(color,dash,anchor){
   }else{
     Game.renderer.domElement.addEventListener("pointermove",e=>{
       World.yaw.rotation.y-=e.movementX*Game.sensivity;
-      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x-e.movementY*Game.sensivity,Math.PI*0.5),-Math.PI*0.5);
+      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x-e.movementY*Game.sensivity, MAX_PITCH), -MAX_PITCH);
     });
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
