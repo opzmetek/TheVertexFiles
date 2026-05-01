@@ -64,3 +64,58 @@ void main()
   `,
 });
 
+export function BillboardMaterial(color = 0xffffff) {
+    return new THREE.ShaderMaterial({
+
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+
+        uniforms: {
+            uColor: { value: new THREE.Color(color) },
+            uSize: { value: 1.0 },
+        },
+
+        vertexShader: `
+            attribute vec3 position;
+            attribute vec2 uv;
+
+            uniform mat4 modelMatrix;
+            uniform mat4 viewMatrix;
+            uniform mat4 projectionMatrix;
+
+            uniform float uSize;
+
+            varying vec2 vUv;
+
+            void main() {
+
+                vUv = uv;
+                vec3 pos = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+
+                vec3 camRight = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+                vec3 camUp    = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+
+                vec2 quad = position.xy * uSize;
+
+                vec3 worldPos = pos + camRight * quad.x + camUp * quad.y;
+
+                gl_Position = projectionMatrix * viewMatrix * vec4(worldPos, 1.0);
+            }
+        `,
+
+        fragmentShader: `
+            precision mediump float;
+
+            uniform vec3 uColor;
+            varying vec2 vUv;
+
+            void main() {
+                float dist = length(vUv - 0.5);
+                float alpha = 1.0 - smoothstep(0.4, 0.5, dist);
+                gl_FragColor = vec4(uColor, alpha);
+            }
+        `
+    });
+}
+
