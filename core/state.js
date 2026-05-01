@@ -49,5 +49,6 @@ export const PlayerConfig = {
   halfSize:0.25,
   speed:20,
   dashLength: 30,
-  dashDelay: 1000
+  dashDelay: 1000,
+  height: 2
 }
