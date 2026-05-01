@@ -1,5 +1,5 @@
 import {Game, Player, World, PlayerConfig, DDARaycast} from "barrel";
-import {Vector3} from "three";
+import {Vector3, Ray} from "three";
 
 const MAX_STEP = 0.3;
 const vFor = new Vector3();
@@ -52,7 +52,7 @@ export function dash(){
   Game.camera.getWorldDirection(vFor);
   const o = World.yaw.position.clone();
   o.y+=0.5;
-  const ray = new THREE.Ray(o,vFor);
+  const ray = new Ray(o,vFor);
   const hit = DDARaycast(World.mesh, ray, 0, PlayerConfig.dashLength);
   World.yaw.position.x = Math.floor(hit.point.x)+0.5;
   World.yaw.position.z = Math.floor(hit.point.z)+0.5;
