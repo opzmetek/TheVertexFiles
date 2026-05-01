@@ -1,7 +1,5 @@
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn} from "barrel";
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, PlayerConfig} from "barrel";
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3} from "three";
-
-const PLAYER_HEIGHT = 2;
 
 export async function initLevel(tId, lId, loader) {
   Game.lvl = Game.manifest.levels[tId][lId];
@@ -47,7 +45,7 @@ export function setupScene(){
   World.yaw.position.set(-2,0,-2);
   World.pitch.add(Game.camera);
   World.scene.add(World.yaw);
-  World.pitch.position.y+=PLAYER_HEIGHT;
+  World.pitch.position.y+=PlayerConfig.height;
 }
 
 export function setupFlags(){
