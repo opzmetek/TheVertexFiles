@@ -19,7 +19,7 @@ function createBullet(){
 
 export function playerShoot(){
   Game.camera.getWorldDirection(direction);
-  temp.copy(World.yaw.position).setY(PlayerConfig.height-0.5);//gun
+  temp.copy(World.yaw.position).addY(PlayerConfig.height-0.5);//gun
   const ray = new Ray(temp, direction);
   const hit = DDARaycast(World.mesh, ray, 0, 1000);
   const out = [];
