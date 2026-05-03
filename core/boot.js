@@ -35,7 +35,9 @@ export async function initUtil(meta, loader) {
 }
 
 function customFn(){
+  Vector3.prototype.addX = function(x){this.x+=x;}
   Vector3.prototype.addY = function(y){this.y+=y;}
+  Vector3.prototype.addZ = function(z){this.z+=z;}
 }
 
 export function setupScene(){
