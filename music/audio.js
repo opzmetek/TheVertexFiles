@@ -23,6 +23,7 @@ export async function initAudio(name){
   const buffer = await Audio.audioCtx.decodeAudioData(buff);
   Audio.source = Audio.audioCtx.createBufferSource();
   Audio.source.buffer = buffer;
+  Audio.source.loop = true;
   Audio.source.connect(Audio.analyser);
   Audio.analyser.connect(Audio.audioCtx.destination);
   Audio.bin = new Uint8Array(Audio.analyser.frequencyBinCount);
