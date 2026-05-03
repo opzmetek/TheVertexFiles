@@ -1,9 +1,11 @@
-import {World, Game, Player, PlayerConfig, DDARaycast} from "barrel";
+import {World, Game, Player, PlayerConfig, DDARaycast, raycaster} from "barrel";
 import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Ray} from "three";
 
+const Z_AXIS = new Vector3(0, 0, 1);
 let bulletTemplate;
 const direction = new Vector3();
 const temp = new Vector3();
+const hits = [];
 
 function createBullet(){
   if(bulletTemplate) return bulletTemplate.clone();
@@ -17,29 +19,74 @@ function createBullet(){
 
 export function playerShoot(){
   Game.camera.getWorldDirection(direction);
-  console.log("SHOOT");
-  temp.copy(World.yaw.position);
-  temp.y+=PlayerConfig.height-0.5;//gun
-  shoot(temp, direction, 70);
+  temp.copy(World.yaw.position).setY(PlayerConfig.height-0.5);//gun
+  const ray = new Ray(temp, direction);
+  const hit = DDARaycast(World.mesh, ray, 0, 1000);
+  const out = [];
+  testEnemies(ray, hit.distance, out);
+  const dist = penetrateEnemies(out, 100);
+  initBullet(dist, 70, direction, temp);
 }
 
-export function shoot(pos, dir, speed){
-  const bullet = {dir: dir.clone().multiplyScalar(speed), t: 0};
-  const hit = DDARaycast(World.mesh, new Ray(pos, dir), 0, 1000);
-  console.log(hit, World.mesh);
-  bullet.maxT = hit.distance/speed;
+export function shoot(pos, speed){
+  const dir = temp.subVectors(World.yaw.position, pos).normalize();
+  const ray = new Ray(pos, dir);
+  const hit = DDARaycast(World.mesh, ray, 0, 1000);
+  const dist = enemyHit(ray, hit.distance);
+  initBullet(dist, speed, dir, pos);
+}
+
+function initBullet(dist, speed, dir, pos){
+  const bullet = {vel: dir.clone().multiplyScalar(speed), t: 0};
+  bullet.maxT = dist/speed;
   bullet.m = createBullet();
-  bullet.m.lookAt(dir);
+  bullet.m.quaternion.setFromUnitVectors(Z_AXIS, dir);
   bullet.p = bullet.m.position.copy(pos);
   World.bullets.push(bullet);
   World.scene.add(bullet.m);
-  console.log(bullet);
+}
+
+const tempVec = new Vector3();
+
+function enemyHit(ray, len){
+  tempVec.subVectors(World.yaw.position, ray.origin);
+  const t = tempVec.dot(ray.direction);
+  if(t<0||t>len)return len;
+  const w = PlayerConfig.size, h = PlayerConfig.height;
+  if(tempVec.lengthSq()-t*t<w*w+w*w+h*h){
+    return t;
+  }
+  return len;
+}
+
+function testEnemies(ray, len, out){
+  const sql = len*len;
+  for(const enemy of World.enemies){
+    tempVec.subVectors(enemy.p, ray.origin);
+    const t = tempVec.dot(ray.direction);
+    if(t<0||t>len||tempVec.sqLength()-t*t>sql) continue;
+    hits.length = 0;
+    raycaster.intersectObject(enemy.m, true, hits);
+    if(hits[0]){
+      enemy.shoot_testEnemies_dist = hits[0].distance;
+      out.push(enemy);
+    }
+  }
+}
+
+function penetrateEnemies(enemies, penetration){
+  enemies.sort((a,b)=>a.shoot_testEnemies_dist-b.shoot_testEnemies_dist);
+  for(const e of enemies){
+    penetration -= e.maxHp;
+    if(penetration<=0)return e.shoot_testEnemies_dist;
+  }
+  return enemies[enemies.length - 1]?.shoot_testEnemies_dist;
 }
 
 export function updateBullets(dt){
   for(let i = World.bullets.length-1;i>=0;i--){
     const b = World.bullets[i];
-    b.p.addScaledVector(b.dir,dt);
+    b.p.addScaledVector(b.vel,dt);
     b.t += dt;
     if(b.t>=b.maxT){
       World.bullets[i] = World.bullets.pop();
