@@ -34,7 +34,12 @@ export async function initUtil(meta, loader) {
   return { tColor1, tColor2 };
 }
 
-export function setupScene(){ 
+function customFn(){
+  Vector3.prototype.addY = function(y){this.y+=y;}
+}
+
+export function setupScene(){
+  customFn();
   World.scene = new Scene();
   Game.renderer = new WebGLRenderer();
   Game.renderer.setSize(window.innerWidth, window.innerHeight);
