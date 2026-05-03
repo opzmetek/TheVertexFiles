@@ -10,7 +10,7 @@ export default class Heightmap {
   get(x, y) {
     const xx = (this.xCenter + x)|0;
     const yy = (this.yCenter + y)|0;
-    if (xx < 0 || xx >= this.xLen || yy < 0 || yy >= this.yLen) return 0;
+    if (xx < 0 || xx >= this.xLen || yy < 0 || yy >= this.yLen) return Infinity;
     return this.map[yy * this.xLen + xx];
   }
 
