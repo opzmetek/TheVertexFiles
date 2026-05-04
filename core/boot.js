@@ -44,6 +44,7 @@ export function setupScene(){
   customFn();
   World.scene = new Scene();
   Game.renderer = new WebGLRenderer();
+  Game.renderer.setPixelRatio(window.devicePixelRatio);
   Game.renderer.setSize(window.innerWidth, window.innerHeight);
   Game.camera = new PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
   World.pitch = new Object3D();
