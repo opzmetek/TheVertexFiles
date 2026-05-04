@@ -29,6 +29,7 @@ export function loadUI(){
     Game.camera.aspect = window.innerWidth/window.innerHeight;
     Game.camera.updateProjectionMatrix();
   });
+  if(Game.mobile) screen.orientation.lock("landscape");
 }
 
 export function escape(){
