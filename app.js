@@ -51,7 +51,9 @@ export function startGame(tId,lId){
     remove(World.mesh);
     Audio.source.stop();
     Audio.audioCtx.close();
-    clearInterval(spawner);
+    Game.setup?.joystick?.destroy();
+    di("mobile-controls").remove();
+    clearInterval(Game.spawner);
     console.log("CLEAR");
   }
   
