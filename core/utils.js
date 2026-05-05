@@ -31,8 +31,6 @@ export async function loadOne(o,loader){
 
 export function remove(m){
   World.scene.remove(m);
-  if(m.material)m.material.dispatch();
-  if(m.geometry)m.geometry.dispatch();
   if(m.childern)m.childern.forEach(c=>remove(c));
 }
 
