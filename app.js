@@ -47,8 +47,10 @@ export function startGame(tId,lId){
   function reset(){
     World.enemies.forEach(e=>remove(e.m));
     World.enemies.length = 0;
-    bullets.length = 0;
+    World.bullets.length = 0;
     remove(World.mesh);
+    Audio.source.stop();
+    Audio.audioCtx.close();
     clearInterval(spawner);
     console.log("CLEAR");
   }
