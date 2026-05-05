@@ -2,6 +2,10 @@ import {rnd, Enemy, World, Game} from "barrel";
 
 export function spawnEnemy(id){
   const template = Game.objects[id];
+  if(!template){
+    console.warn(Game.objects, id);
+    return;
+  }
   const enemy = template.clone();
   const x = rnd(World.box.min.x,World.box.max.x);
   const z = rnd(World.box.min.z,World.box.max.z);
