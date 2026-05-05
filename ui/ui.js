@@ -29,7 +29,6 @@ export function loadUI(){
     Game.camera.aspect = window.innerWidth/window.innerHeight;
     Game.camera.updateProjectionMatrix();
   });
-  if(Game.mobile) screen.orientation.lock("landscape");
 }
 
 export function escape(){
@@ -42,6 +41,7 @@ export function escape(){
 }
 
 export function gameUI(color,dash,anchor){
+  if(Game.mobile) screen.orientation.lock("landscape");
   const keys = {};
   document.addEventListener("keydown",e=>{
     e.preventDefault();
@@ -134,6 +134,7 @@ export function gameUI(color,dash,anchor){
       Game.input.mx = 0;
       Game.input.my = 0;
     });
+    Game.setup.joystick = joystick;
   }else{
     Game.renderer.domElement.addEventListener("pointermove",e=>{
       World.yaw.rotation.y-=e.movementX*Game.sensivity;
