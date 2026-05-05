@@ -4,14 +4,14 @@ import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3, Vector3} from "
 export async function initLevel(tId, lId, loader) {
   Game.lvl = Game.manifest.levels[tId][lId];
   const meta = Game.manifest.levels[tId]?.meta ?? {};
-  const mmx = await importHeightmap("./towers/" + meta.obj + ".vrx");
+  const mmx = await importHeightmap("/TheVertexFiles/towers/" + meta.obj + ".vrx");
   World.mesh = mmx.mesh;
   World.mesh.heightmap = mmx.map;
   World.mesh.geometry.computeBoundingBox();
   World.mesh.geometry.computeBoundingSphere();
   World.mesh.geometry.computeVertexNormals();
   World.box = new Box3().setFromObject(World.mesh);
-  await loadAll(Object.values(Game.lvl.enemies),loader,"./",".vrx",Game.objects);
+  await loadAll(Object.values(Game.lvl.enemies),loader,"/TheVertexFiles/enemies/",".vrx",Game.objects);
   World.scene.add(World.mesh);
   return meta;
 }
