@@ -1,38 +1,22 @@
 const CACHE_NAME = 'the-vertex-cache-v1';
-const FILES_TO_CACHE = [
-  '/',
-  '/app.js',
-  '/style.css',
-  '/manifest.json',
-  '/game-descriptor.json',
-  '/dyt-sans.ttf',
-  '/three.module.js',
-  '/nipplejs.min.js',
-  '/io.js',
-  '/heightmap.js'
-  
-];
 
-// Instalace SW + cache základních souborů
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async cache => {
-      console.log('[SW] Instalace – ukládám základní soubory...');
-      await cache.addAll(FILES_TO_CACHE);
+      console.log('[SW] Install - downloading files...');
 
-      // Načtení game-descriptor.json
       try {
-        const response = await fetch('game-descriptor.json');
-        const data = await response.json();
+        const response = await fetch('./files.txt');
+        const data = await response.text().trim().split("/\s+/");
 
-        if (data && Array.isArray(data.all_files)) {
-          console.log('[SW] Nalezeno ' + data.all_files.length + ' herních souborů.');
-          await cache.addAll(data.all_files);
+        if (data && Array.isArray(data)) {
+          console.log('[SW] Finded ' + data.length + ' game files.');
+          await cache.addAll(data);
         } else {
-          console.warn('[SW] game-descriptor.json neobsahuje pole all_files.');
+          console.warn('[SW] Error: cannot fetch game files.');
         }
       } catch (err) {
-        console.error('[SW] Nelze načíst game-descriptor.json:', err);
+        console.error('[SW] Cannot fetch files.txt:', err);
       }
 
       return self.skipWaiting();
@@ -40,13 +24,12 @@ self.addEventListener('install', event => {
   );
 });
 
-// Aktivace – vyčištění starých verzí cache
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => 
       Promise.all(keys.map(key => {
         if (key !== CACHE_NAME) {
-          console.log('[SW] Mažu starou cache:', key);
+          console.log('[SW] Deleting old cache:', key);
           return caches.delete(key);
         }
       }))
@@ -54,14 +37,11 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch handler – offline režim
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
-      // Pokud je v cache, vrať ho
       if (cachedResponse) return cachedResponse;
 
-      // Jinak zkus síť a uložit nově stažené soubory
       return fetch(event.request).then(networkResponse => {
         if (!networkResponse || networkResponse.status !== 200 ) {
           return networkResponse;
@@ -73,7 +53,7 @@ self.addEventListener('fetch', event => {
         });
         return networkResponse;
       }).catch(() => {
-        console.warn('[SW] Offline – nelze načíst:', event.request.url);
+        console.warn('[SW] Offline – cannot fetch:', event.request.url);
         return caches.match('/');
       });
     })
