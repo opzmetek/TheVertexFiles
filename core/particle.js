@@ -24,6 +24,9 @@ export function explode(pos, dir, count){
     const rx = Math.random() * 2 - 1;
     const ry = Math.random() * 2 - 1;
     const rz = Math.random();
-    
+    arr[idx] = pos.x;
+    arr[idx+1] = pos.y;
+    arr[idx+2] = pos.z;
+    arr[idx+3] = rx * right.x + ry * up.x + rz * forward.x;
   }
 }
