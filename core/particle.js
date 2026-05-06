@@ -6,7 +6,7 @@ const UP = new Vector3(0, 1, 0);
 let tmp;
 
 export function initParticles(){
-  const count = 40;
+  const count = 80;
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   const positions = new Float32Array(count * 3);
   for(let i = 0; i<count; i++){
@@ -17,15 +17,15 @@ export function initParticles(){
     const theta = goldenAngle * i;
     const x = Math.cos(theta) * r;
     const z = Math.sin(theta) * r;
-    positions[d] = x + (Math.random()-0.5)*0.05;
-    positions[d+1] = y + (Math.random()-0.5)*0.05;
-    positions[d+2] = z + (Math.random()-0.5)*0.05;
+    positions[d] = x + (Math.random()-0.5)*0.1;
+    positions[d+1] = y + (Math.random()-0.5)*0.1;
+    positions[d+2] = z + (Math.random()-0.5)*0.1;
   }
   const geo = new BufferGeometry();
   geo.setAttribute("position", new Float32BufferAttribute(positions, 3));
   const mat = new PointsMaterial({
     color: World.colors[0],
-    size: 0.5
+    size: 0.1
   });
   tmp = new Points(geo, mat);
 }
