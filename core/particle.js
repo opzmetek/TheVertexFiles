@@ -39,7 +39,7 @@ export function explode(pos, dir, size, life){
   emitter.maxLife = life;
   emitter.size = size;
   particles.push(emitter);
-  Game.scene.add(emitter);
+  World.scene.add(emitter);
 }
 
 export function updateParticles(dt){
