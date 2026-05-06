@@ -24,7 +24,7 @@ export function playerShoot(){
   const hit = DDARaycast(World.mesh, ray, 0, 1000);
   const out = [];
   testEnemies(ray, hit.distance, out);
-  const dist = penetrateEnemies(out, 100);
+  const dist = penetrateEnemies(out, 100) ?? hit.distance;
   initBullet(dist, 70, direction, temp);
 }
 
