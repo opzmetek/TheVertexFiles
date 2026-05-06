@@ -1,32 +1,34 @@
-import {PlaneGeometry, InstancedMesh, Vector3} from "three";
-import {Game, World, BillboardMaterial} from "barrel";
+import {BufferGeometry, Float32BufferAttribute, PointsMaterial, Points, Vector3, AdditiveBlending} from "three";
+import {Game, World} from "barrel";
 
-const MAX = 1000;
-const UP = new Vector3(0, 1, 0);
-const arr = new Float32Array(MAX * 7);//pos(xyz), vel(xyz), life
-let particles;
-let start = 0, end = 0;
+conat particles = [];
+let tmp;
 
 export function initParticles(){
-  const geo = new PlaneGeometry(0.05,0.05);
-  const mat = new BillboardMaterial(World.colors[0]);
-  particles = new InstancedMesh(geo, mat, MAX);
-  World.scene.add(particles);
+  const count = 40;
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const verts = new Float32Array(count);
+  for(let i = 0; i<count; i++){
+    const d = i * 3;
+    const t = i/(count-1);
+    const y = t;
+    const r = Math.sqrt(1 - y * y);
+    const theta = goldenAngle * i;
+    const x = Math.cos(theta)*radius;
+    const z = Math.sin(theta)*radius;
+    positions[d] = x + (Math.random()-0.5)*0.05;
+    positions[d+1] = y + (Math.random()-0.5)*0.05;
+    positions[d+2] = z + (Math.random()-0.5)*0.05;
+  }
+  geo = new BufferGeometry(new Float32BufferAttribute(positions, 3));
+  mat = new PointsMaterial({
+    color: World.colors[0],
+    transparent: true,
+    blending: AdditiveBlending
+    size: 0.1
+  }); 
 }
 
 export function explode(pos, dir, count){
-  const forward = dir.clone();
-  const right = new Vector3().crossVectors(forward, UP);
-  const up = new Vector3().crossVectors(forward, right);
-  const dummy = new Vector3();
-  for(let i = 0; i < count; i++){
-    const idx = (end + i) % MAX;
-    const rx = Math.random() * 2 - 1;
-    const ry = Math.random() * 2 - 1;
-    const rz = Math.random();
-    arr[idx] = pos.x;
-    arr[idx+1] = pos.y;
-    arr[idx+2] = pos.z;
-    arr[idx+3] = rx * right.x + ry * up.x + rz * forward.x;
-  }
+  const emmiter = 
 }
