@@ -1,4 +1,4 @@
-import {World, Game, Player, PlayerConfig, DDARaycast, raycaster} from "barrel";
+import {World, Game, Player, PlayerConfig, DDARaycast, raycaster, explode} from "barrel";
 import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Ray} from "three";
 
 const Z_AXIS = new Vector3(0, 0, 1);
@@ -89,6 +89,7 @@ export function updateBullets(dt){
     b.p.addScaledVector(b.vel,dt);
     b.t += dt;
     if(b.t>=b.maxT){
+      explode(b.p, b.vel.normalize(), 20, 3, 1);
       World.bullets[i] = World.bullets.pop();
       World.scene.remove(b.m);
     }
