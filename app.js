@@ -4,7 +4,7 @@
 //license: none
 
 //imports
-import {Game, World, Audio, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, updateBullets} from "/TheVertexFiles/barrel.js";
+import {Game, World, Audio, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
@@ -17,6 +17,7 @@ export function startGame(tId,lId){
     di("homeMenu").style.display = "none";
     const meta = await initLevel(tId, lId, loader);
     await initUtil(meta, loader);
+    initParticles();
     di("loadscreen").style.display = "none";
   }
   
@@ -38,6 +39,7 @@ export function startGame(tId,lId){
     last = millis;
     moveStep(dTime);
     updateBullets(dTime);
+    updateParticles(dTime);
     analyse();
     World.enemies.forEach(e=>e.move(dTime,0));
     Game.renderer.render(World.scene,Game.camera);
