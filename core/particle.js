@@ -35,11 +35,30 @@ export function explode(pos, dir, size, life){
   const emitter = tmp.clone();
   emitter.life = life;
   emitter.position.copy(pos);
-  emitter.quaternion.setFromUnitVectors(UP, dir);
+  setExplodeQuat(emitter.quaternion, UP, dir);
   emitter.maxLife = life;
   emitter.size = size;
   particles.push(emitter);
   World.scene.add(emitter);
+}
+
+function setExplodeQuat(quat, up, dir) {
+  const target = dir.clone();
+  const dot = up.dot(target);
+  if (dot > 0.999999) {
+    quat.identity();
+    return;
+  }
+  if (dot < -0.999999) {
+    const axis = new THREE.Vector3(1, 0, 0).cross(up);
+    if (axis.lengthSq() < 1e-6) {
+      axis.set(0, 1, 0).cross(up);
+    }
+    axis.normalize();
+    quat.setFromAxisAngle(axis, Math.PI);
+    return;
+  }
+  quat.setFromUnitVectors(up, target);
 }
 
 export function updateParticles(dt){
