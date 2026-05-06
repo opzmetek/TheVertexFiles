@@ -49,6 +49,7 @@ export function updateParticles(dt){
     if(p.life<=0){
       particles[i] = particles[particles.length - 1];
       particles.pop();
+      World.scene.remove(p);
     }
     p.scale.setScalar((1-(p.life/p.maxLife)) * p.size);
   }
