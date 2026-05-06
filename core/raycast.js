@@ -47,7 +47,6 @@ export function DDARaycast(mesh, ray, near=0, far=Infinity){
       t = tMaxZ;
       tMaxZ += tDeltaZ;
     }
-    if (cx < hm.xCenter || cz < hm.yCenter || cx >= hm.xCenter || cz >= hm.yCenter) break;
   }
   return {hit: false, distance: far, point: ray.at(far, new Vector3()), object:mesh};
 }
