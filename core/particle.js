@@ -30,13 +30,12 @@ export function initParticles(){
   tmp = new Points(geo, mat);
 }
 
-export function explode(pos, dir, size, speed, life){
+export function explode(pos, dir, size, life){
   if(!tmp) initParticles();
   const emitter = tmp.clone();
   emitter.life = life;
   emitter.position.copy(pos);
   emitter.quaternion.setFromUnitVectors(UP, dir);
-  emitter.speed = speed;
   emitter.maxLife = life;
   emitter.size = size;
   particles.push(emitter);
