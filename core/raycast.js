@@ -4,6 +4,7 @@ export const raycaster = new Raycaster();
 
 export function DDARaycast(mesh, ray, near=0, far=Infinity){
   if(!mesh.heightmap)return {hit:false,point:ray.origin,object:mesh,error:true,distance:0};
+  const hm = mesh.heightmap;
   ray.direction.normalize();
   const dx = ray.direction.x;
   const dy = ray.direction.y;
@@ -23,7 +24,7 @@ export function DDARaycast(mesh, ray, near=0, far=Infinity){
   let tMaxZ = dz > 0 ? ((cz + 1) * cellSize - oz) / dz : dz < 0 ? (cz * cellSize - oz) / dz : Infinity;
   let t = 0;
   while (t < far) {
-    const h = mesh.heightmap.get(cz,cx);
+    const h = hm.get(cz,cx);
     console.log("cx, cz, h: ", cx, cz, h);
     if (h !== undefined) {
       const yHit = oy + dy * t;
@@ -46,7 +47,7 @@ export function DDARaycast(mesh, ray, near=0, far=Infinity){
       t = tMaxZ;
       tMaxZ += tDeltaZ;
     }
-    if (cx < 0 || cz < 0 || cx >= mesh.heightmap.xLen || cz >= mesh.heightmap.yLen) break;
+    if (cx < hm.xCenter || cz < hm.yCenter || cx >= hm.xCenter || cz >= hm.yCenter) break;
   }
   return {hit: false, distance: far, point: ray.at(far, new Vector3()), object:mesh};
 }
