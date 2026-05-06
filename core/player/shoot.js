@@ -25,6 +25,7 @@ export function playerShoot(){
   const out = [];
   testEnemies(ray, hit.distance, out);
   const dist = penetrateEnemies(out, 100) ?? hit.distance;
+  console.log(hit, dist);
   initBullet(dist, 70, direction, temp);
 }
 
@@ -39,6 +40,7 @@ export function shoot(pos, speed){
 function initBullet(dist, speed, dir, pos){
   const bullet = {vel: dir.clone().multiplyScalar(speed), t: 0};
   bullet.maxT = dist/speed;
+  console.log(dist, bullet);
   bullet.m = createBullet();
   bullet.m.quaternion.setFromUnitVectors(Z_AXIS, dir);
   bullet.p = bullet.m.position.copy(pos);
