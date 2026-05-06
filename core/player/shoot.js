@@ -91,7 +91,7 @@ export function updateBullets(dt){
     b.p.addScaledVector(b.vel,dt);
     b.t += dt;
     if(b.t>=b.maxT){
-      explode(b.p, b.vel.normalize().negate(), 20, 1);
+      explode(b.p, b.vel.normalize().negate(), 2, 0.5);
       World.bullets[i] = World.bullets[World.bullets.length-1];
       World.bullets.pop();
       World.scene.remove(b.m);
