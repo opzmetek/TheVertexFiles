@@ -7,7 +7,7 @@ self.addEventListener('install', event => {
 
       try {
         const response = await fetch('./files.txt');
-        const data = await response.text().trim().split("/\s+/");
+        const data = (await response.text()).trim().split(/\s+/);
 
         if (data && Array.isArray(data)) {
           console.log('[SW] Finded ' + data.length + ' game files.');
