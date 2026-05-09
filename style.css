@@ -81,6 +81,8 @@ button:hover, label:hover, a:hover, span:hover {
   transform:var(--translate) var(--scale) var(--rotate);
   font-family: 'DytSans';
   letter-spacing: -1px;
+  scrollbar-width: 10px;
+  scrollbar-color: #e3f4ff #63c6ff;
 }
 
 /* === Velikosti === */
