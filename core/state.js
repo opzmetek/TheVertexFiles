@@ -42,7 +42,8 @@ export const Player = {
   vertVec: 0,
   onGround: true,
   velocityX: 0,
-  velocityY: 0
+  velocityY: 0,
+  gunType: {sniper: true}
 }
 
 export const PlayerConfig = {
