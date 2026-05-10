@@ -10,11 +10,21 @@ class SliderSwitch extends HTMLElement {
           --width: 64px;
           --height: 36px;
 
+          --cut: calc(var(--height)*0.5);
+
           --bg-off: #2b2b2b;
           --bg-on: #00bfff;
 
           --thumb: #fff;
 
+          --hex: polygon(
+            var(--cut) 0,
+            calc(100% - var(--cut)) 0,
+            100% 50%,
+            calc(100% - var(--cut)) 100%,
+            var(--cut) 100%,
+            0 50%
+          );
           display: inline-block;
         }
 
@@ -38,7 +48,7 @@ class SliderSwitch extends HTMLElement {
 
           background: var(--bg-off);
 
-          border-radius: 999px;
+          clip-path: var(--hex);
 
           transition:
             background .25s ease,
@@ -50,13 +60,10 @@ class SliderSwitch extends HTMLElement {
 
           position: absolute;
 
-          width: calc(var(--height) - 8px);
-          height: calc(var(--height) - 8px);
-
-          left: 4px;
-          top: 4px;
-
-          border-radius: 50%;
+          width: var(--width);
+          height: var(--height);
+          clip-path: var(--hex);
+          
           background: var(--thumb);
 
           transition: transform .25s ease;
