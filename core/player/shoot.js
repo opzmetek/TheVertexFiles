@@ -1,11 +1,66 @@
-import {World, Game, Player, PlayerConfig, DDARaycast, raycaster, explode} from "barrel";
-import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Ray} from "three";
+import {World, Game, Player, PlayerConfig, DDARaycast, raycaster, explode, on} from "barrel";
+import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Vector2, Ray} from "three";
 
 const Z_AXIS = new Vector3(0, 0, 1);
 let bulletTemplate;
 const direction = new Vector3();
 const temp = new Vector3();
 const hits = [];
+let playerShooting = false;
+const mouse = new Vector2();
+
+on("shootstart",screen=>{
+  if(screen){
+    updateDirection(screen);
+  }else{
+    Game.camera.getWorldDirection(direction);
+  }
+  if(Player.gunType.machine)playerShooting = true;
+  else if(Player.gunType.pistol)playerShoot();
+  else if(Player.gunType.sniper){
+    Animation.register("player_sniper_zoom", {
+      duration: 1000,
+      easing: Animation.Quad,
+      easeType: Animation.Ease_out,
+      setter: t=>{
+        Game.camera.fov = 60 - t * 40;
+        Game.camera.updateProjectionMatrix();
+      }
+    });
+  }
+});
+
+on("shootmove", screen=>{
+  if(screen){
+    updateDirection(screen);
+  }else{
+    Game.camera.getWorldDirection(direction);
+  }
+});
+
+on("shootend", ()=>{
+  if(Player.gunType.machine)playerShooting = false;
+  else if(Player.gunType.sniper){
+    Animation.delete("player_sniper_zoom");
+    Animation.register("player_sniper_reset", {
+      duration: 300,
+      easing: Animation.Quad,
+      easeType: Animation.Out,
+      setter: t=>{
+        Game.camera.fov = 20 + t * 40;
+        Game.camera.updateProjectionMatrix();
+      }
+    });
+    playerShoot();
+  }
+}
+
+function updateDirection(screen){
+  mouse.x = (screen.x / window.innerWidth) * 2 - 1;
+  mouse.y = -(screen.y / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  direction.copy(raycaster.ray.direction);
+}
 
 function createBullet(){
   if(bulletTemplate) return bulletTemplate.clone();
@@ -18,7 +73,6 @@ function createBullet(){
 }
 
 export function playerShoot(){
-  Game.camera.getWorldDirection(direction);
   temp.copy(World.yaw.position).addY(PlayerConfig.height-0.5);//gun
   const ray = new Ray(temp, direction);
   const hit = DDARaycast(World.mesh, ray, 0, 1000);
