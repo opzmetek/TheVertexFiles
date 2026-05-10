@@ -1,3 +1,5 @@
+export * from "./core/ecosystem.js";
+export * from "./core/animation.js";
 export * from "./core/state.js";
 export * from "./core/raycast.js";
 export * from "./ai/astar.js";
@@ -17,5 +19,3 @@ export * from "./heightmap.js";
 export * from "./app.js";
 export * from "./core/player/shoot.js";
 export * from "./core/particle.js";
-export * from "./core/ecosystem.js";
-export * from "./core/animation.js";
