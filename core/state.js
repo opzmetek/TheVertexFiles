@@ -12,7 +12,8 @@ export const Game = {
   manifest: {},
   timers:{dash:0},
   gravity: 600,
-  objects: {}
+  objects: {},
+  setup: {}
 }
 
 export const Audio = {
