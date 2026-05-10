@@ -1,4 +1,4 @@
-import {World, Game, Player, PlayerConfig, DDARaycast, raycaster, explode, on} from "barrel";
+import {World, Game, Player, PlayerConfig, DDARaycast, Animation, raycaster, explode, on} from "barrel";
 import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Vector2, Ray} from "three";
 
 const Z_AXIS = new Vector3(0, 0, 1);
