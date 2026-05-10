@@ -53,7 +53,7 @@ on("shootend", ()=>{
     });
     playerShoot();
   }
-}
+});
 
 function updateDirection(screen){
   mouse.x = (screen.x / window.innerWidth) * 2 - 1;
