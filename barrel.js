@@ -18,3 +18,4 @@ export * from "./app.js";
 export * from "./core/player/shoot.js";
 export * from "./core/particle.js";
 export * from "./core/ecosystem.js";
+export * from "./core/animation.js";
