@@ -12,7 +12,7 @@ export class Animation {
       onEnd: anim.onEnd??(()=>{}),
       loop: anim.loop || false,
       loopInvert: anim.loopInvert || false,
-      invert: false;
+      invert: false
     };
   }
 
