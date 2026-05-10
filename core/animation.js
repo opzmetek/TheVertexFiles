@@ -8,8 +8,8 @@ export class Animation {
       duration: anim.duration??1000,
       ease: anim.easing??this.Linear,
       mode: anim.easeType??this.In,
-      onUpdate: anim.setter??()=>{},
-      onEnd: anim.onEnd??()=>{},
+      onUpdate: anim.setter??(()=>{}),
+      onEnd: anim.onEnd??(()=>{}),
       loop: anim.loop || false,
       loopInvert: anim.loopInvert || false,
       invert: false;
