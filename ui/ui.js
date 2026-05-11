@@ -1,4 +1,4 @@
-import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot} from "barrel";
+import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit} from "barrel";
 
 const MAX_PITCH = 1.55;
 
@@ -85,11 +85,15 @@ export function gameUI(color,dash,anchor){
       World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x+dy*Game.sensivity, MAX_PITCH), -MAX_PITCH);
       lx=x;
       ly=y;
+      emit("shootmove", {x: lx, y: ly});
     });
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
-      if(!document.pointerLockElement)pointerLock();
-      else playerShoot();
       lx=e.clientX;ly=e.clientY;
+      if(!document.pointerLockElement)pointerLock();
+      else emit("shootstart", {x: lx, y: ly});
+    });
+    Game.renderer.domElement.addEventListener("pointerup", e=>{
+      emit("shootend");
     });
     const joystick = window.nipplejs.create({
       zone:di("joystick"),
@@ -139,11 +143,15 @@ export function gameUI(color,dash,anchor){
     Game.renderer.domElement.addEventListener("pointermove",e=>{
       World.yaw.rotation.y-=e.movementX*Game.sensivity;
       World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x-e.movementY*Game.sensivity, MAX_PITCH), -MAX_PITCH);
+      emit("shootmove");
     });
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
-      else playerShoot();
-    })
+      else emit("shootstart");
+    });
+    Game.renderer.domElement.addEventListener("pointerup", e=>{
+      emit("shootend");
+    });
   }
 }
 
