@@ -18,12 +18,15 @@ on("shootstart",screen=>{
   if(Player.gunType.machine)playerShooting = true;
   else if(Player.gunType.pistol)playerShoot();
   else if(Player.gunType.sniper){
+    Animation.delete("player_sniper_zoom");
+    Animation.delete("player_sniper_reset");
+    const startFov = Game.camera.fov;
     Animation.register("player_sniper_zoom", {
       duration: 1000,
       easing: Animation.Quad,
-      easeType: Animation.Ease_out,
+      easeType: Animation.Out,
       setter: t=>{
-        Game.camera.fov = 60 - t * 40;
+        Game.camera.fov = 20 + (startFov - 20) * (1 - t);
         Game.camera.updateProjectionMatrix();
       }
     });
@@ -42,12 +45,14 @@ on("shootend", ()=>{
   if(Player.gunType.machine)playerShooting = false;
   else if(Player.gunType.sniper){
     Animation.delete("player_sniper_zoom");
+    Animation.delete("player_sniper_reset");
+    const startFov = Game.camera.fov;
     Animation.register("player_sniper_reset", {
       duration: 300,
       easing: Animation.Quad,
       easeType: Animation.Out,
       setter: t=>{
-        Game.camera.fov = 20 + t * 40;
+        Game.camera.fov = startFov + (60 - startFov) * t;
         Game.camera.updateProjectionMatrix();
       }
     });
