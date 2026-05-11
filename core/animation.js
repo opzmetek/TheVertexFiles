@@ -16,7 +16,7 @@ export class Animation {
     };
   }
 
-  static unregister(name){
+  static delete(name){
     delete this.processes[name];
   }
 
@@ -35,7 +35,7 @@ export class Animation {
           process.start = now;
         } else{
           process.onEnd();
-          this.unregister(pName);
+          this.delete(pName);
         }
         continue;
       }
