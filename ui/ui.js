@@ -81,8 +81,8 @@ export function gameUI(color,dash,anchor){
         lx=x;
       }
       const dx = lx-x,dy=ly-y;
-      World.yaw.rotation.y+=dx*Game.sensivity;
-      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x+dy*Game.sensivity, MAX_PITCH), -MAX_PITCH);
+      World.yaw.rotation.y+=dx*Game.sensivity * Game.otherState.sensivityMultiplier;
+      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x+dy*Game.sensivity * Game.otherState.sensivityMultiplier, MAX_PITCH), -MAX_PITCH);
       lx=x;
       ly=y;
       emit("shootmove", {x: lx, y: ly});
@@ -141,8 +141,8 @@ export function gameUI(color,dash,anchor){
     Game.setup.joystick = joystick;
   }else{
     Game.renderer.domElement.addEventListener("pointermove",e=>{
-      World.yaw.rotation.y-=e.movementX*Game.sensivity;
-      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x-e.movementY*Game.sensivity, MAX_PITCH), -MAX_PITCH);
+      World.yaw.rotation.y-=e.movementX*Game.sensivity * Game.otherState.sensivityMultiplier;
+      World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x-e.movementY*Game.sensivity * Game.otherState.sensivityMultiplier, MAX_PITCH), -MAX_PITCH);
       emit("shootmove");
     });
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
