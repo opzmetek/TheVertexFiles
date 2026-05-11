@@ -13,7 +13,9 @@ export const Game = {
   timers:{dash:0},
   gravity: 600,
   objects: {},
-  setup: {}
+  setup: {
+    fov: 60
+  }
 }
 
 export const Audio = {
