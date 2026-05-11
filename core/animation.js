@@ -27,13 +27,13 @@ export class Animation {
       const elapsed = now - process.start;
       let t = elapsed / process.duration;
       if(t >= 1){
-        process.onUpdate(process.invert?0 : 1);
-        if(process.loop){
-          process.start = now;
-        }else if(process.loopInvert){
+        process.onUpdate(process.invert ? 0 : 1);
+        if(process.loopInvert){
           process.start = now;
           process.invert = !process.invert;
-        }else{
+        } else if(process.loop){
+          process.start = now;
+        } else{
           process.onEnd();
           this.unregister(pName);
         }
@@ -54,7 +54,7 @@ export class Animation {
   }
 
   static InOut(t, call){
-    return t > 0.5 ? call(t*2) * 0.5 : 1 - call(1-t*2) * 0.5;
+    return t < 0.5 ? call(t*2) * 0.5 : 1 - call(1-t*2) * 0.5;
   }
 
   static Linear(t){
