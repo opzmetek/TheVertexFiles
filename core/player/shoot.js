@@ -28,6 +28,7 @@ on("shootstart",screen=>{
       easeType: Animation.Out,
       setter: t=>{
         Game.camera.fov = MIN_FOV + (startFov - MIN_FOV) * (1 - t);
+        Game.otherState.sensivityMultiplier = Game.camera.fov * (MIN_FOV / Game.setup.fov);
         Game.camera.updateProjectionMatrix();
       }
     });
@@ -54,6 +55,7 @@ on("shootend", ()=>{
       easeType: Animation.Out,
       setter: t=>{
         Game.camera.fov = startFov + (Game.setup.fov - startFov) * t;
+        Game.otherState.sensivityMultiplier = Game.camera.fov * (MIN_FOV / Game.setup.fov);
         Game.camera.updateProjectionMatrix();
       }
     });
