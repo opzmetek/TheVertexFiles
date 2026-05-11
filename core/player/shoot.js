@@ -2,6 +2,7 @@ import {World, Game, Player, PlayerConfig, DDARaycast, Animation, raycaster, exp
 import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Vector2, Ray} from "three";
 
 const Z_AXIS = new Vector3(0, 0, 1);
+const MIN_FOV = 10;
 let bulletTemplate;
 const direction = new Vector3();
 const temp = new Vector3();
@@ -26,7 +27,7 @@ on("shootstart",screen=>{
       easing: Animation.Quad,
       easeType: Animation.Out,
       setter: t=>{
-        Game.camera.fov = 20 + (startFov - 20) * (1 - t);
+        Game.camera.fov = MIN_FOV + (startFov - MIN_FOV) * (1 - t);
         Game.camera.updateProjectionMatrix();
       }
     });
@@ -52,7 +53,7 @@ on("shootend", ()=>{
       easing: Animation.Quad,
       easeType: Animation.Out,
       setter: t=>{
-        Game.camera.fov = startFov + (60 - startFov) * t;
+        Game.camera.fov = startFov + (Game.setup.fov - startFov) * t;
         Game.camera.updateProjectionMatrix();
       }
     });
