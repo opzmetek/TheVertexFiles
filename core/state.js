@@ -15,6 +15,9 @@ export const Game = {
   objects: {},
   setup: {
     fov: 60
+  },
+  otherState: {
+    sensivityMultiplier: 1
   }
 }
 
