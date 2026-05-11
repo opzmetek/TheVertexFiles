@@ -15,7 +15,6 @@ export function DDARaycast(mesh, ray, near=0, far=Infinity){
   const cellSize = 1;
   let cx = Math.floor(ox / cellSize);
   let cz = Math.floor(oz / cellSize);
-  console.log("ox, oy, oz, cx, cz, h: ",ox, oy, oz, cx, cz, mesh.heightmap.get(cz, cx));
   const stepX = dx > 0 ? 1 : -1;
   const stepZ = dz > 0 ? 1 : -1;
   const tDeltaX = dx !== 0 ? cellSize / Math.abs(dx) : Infinity;
@@ -25,7 +24,6 @@ export function DDARaycast(mesh, ray, near=0, far=Infinity){
   let t = 0;
   while (t < far) {
     const h = hm.get(cz,cx);
-    console.log("cx, cz, h: ", cx, cz, h);
     if (h !== undefined) {
       const yHit = oy + dy * t;
       if (yHit <= h && t > near) {
