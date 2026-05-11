@@ -4,7 +4,7 @@
 //license: none
 
 //imports
-import {Game, World, Audio, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
+import {Game, World, Audio, Animation, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
@@ -40,6 +40,7 @@ export function startGame(tId,lId){
     moveStep(dTime);
     updateBullets(dTime);
     updateParticles(dTime);
+    Animation.update();
     analyse();
     World.enemies.forEach(e=>e.move(dTime,0));
     Game.renderer.render(World.scene,Game.camera);
