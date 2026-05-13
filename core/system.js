@@ -41,7 +41,7 @@ export class System {
       (Math.random() - 0.5) * m,
       (Math.random() - 0.5) * m
     );
-    Game.shake *= state.exp98;
+    Game.shake *= (state.exp98 * state.exp98);
   }
 
   static renderOnly(state){
