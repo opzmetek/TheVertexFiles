@@ -4,7 +4,7 @@
 //license: none
 
 //imports
-import {Game, World, Audio, Animation, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
+import {Game, World, Audio, Animation, System, loadUI, loadGame, di, remove, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
@@ -24,27 +24,36 @@ export function startGame(tId,lId){
   let last = 0;
   
   function loop(millis){
-    if(!Game.running){
-      reset();
-      return;
-    }
-    if(Game.paused){
-      last = millis;
-      requestAnimationFrame(loop);
-      analyse();
-      Game.renderer.render(World.scene,Game.camera);
-      return;
-    }
+    if(!checkRun(millis))return;
     const dTime = (millis-last)*0.001;
+    const exp_98 = Math.pow(0.98, dTime);
     last = millis;
     moveStep(dTime);
     updateBullets(dTime);
     updateParticles(dTime);
     Animation.update();
     analyse();
-    World.enemies.forEach(e=>e.move(dTime,0));
-    Game.renderer.render(World.scene,Game.camera);
+    World.enemies.forEach(e=>e.move(dTime, exp_98));
+    Game.renderer.render(World.scene, Game.camera);
     requestAnimationFrame(loop);
+  }
+
+  function pausedFrame(millis){
+    last = millis;
+    requestAnimationFrame(loop);
+    analyse();
+    Game.renderer.render(World.scene,Game.camera);
+  }
+
+  function checkRun(t){
+    if(!Game.running){
+      reset();
+      return false;
+    }else if(Game.paused){
+      pausedFrame(t);
+      return false;
+    }
+    return true;
   }
 
   function reset(){
