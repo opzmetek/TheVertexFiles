@@ -13,6 +13,7 @@ export const Game = {
   timers:{dash:0},
   gravity: 600,
   objects: {},
+  shake: 0,
   setup: {
     fov: 60
   },
