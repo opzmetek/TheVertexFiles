@@ -31,4 +31,16 @@ export class System {
     updateParticles(state.dt);
     Game.renderer.render(World.scene, Game.camera);
   }
+
+  static renderOnly(state){
+    Game.renderer.render(World.scene, Game.camera);
+  }
+
+  static updateAndRender(state){
+    this.updateAudio(state);
+    this.updateEnemies(state);
+    this.updatePlayer(state);
+    this.updateBullets(state);
+    this.render(state);
+  }
 }
