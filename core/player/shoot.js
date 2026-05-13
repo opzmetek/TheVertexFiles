@@ -9,15 +9,21 @@ const temp = new Vector3();
 const hits = [];
 let playerShooting = false;
 const mouse = new Vector2();
+let lastShootTime = 0;
 
 on("shootstart",screen=>{
+  const max = 1/Player.gunType.fireRate;
   if(screen){
     updateDirection(screen);
   }else{
     Game.camera.getWorldDirection(direction);
   }
   if(Player.gunType.machine)playerShooting = true;
-  else if(Player.gunType.pistol)playerShoot();
+  else if(Player.gunType.pistol&&lastShootTime >= max){
+    playerShoot();
+    lastShootTime = 0;
+    Game.shake += 0.06;
+  }
   else if(Player.gunType.sniper){
     Animation.delete("player_sniper_zoom");
     Animation.delete("player_sniper_reset");
@@ -59,7 +65,7 @@ on("shootend", ()=>{
         Game.camera.updateProjectionMatrix();
       }
     });
-    Game.shake += 0.3;
+    Game.shake += 0.1;
     playerShoot();
   }
 });
@@ -79,6 +85,16 @@ function createBullet(){
   });
   bulletTemplate = new Mesh(geometry, material);
   return bulletTemplate.clone();
+}
+
+function checkPlayerShoot(dt){
+  const max = 1/Player.gunType.fireRate;
+  lastShootTime += dt;
+  if(lastShootTime >= max&&playerShooting){
+    lastShootTime = 0;
+    playerShoot();
+    Game.shake += 0.038 * max;
+  }
 }
 
 export function playerShoot(){
@@ -149,6 +165,7 @@ function penetrateEnemies(enemies, penetration){
 }
 
 export function updateBullets(dt){
+  checkPlayerShoot(dt);
   for(let i = World.bullets.length-1;i>=0;i--){
     const b = World.bullets[i];
     b.p.addScaledVector(b.vel,dt);
