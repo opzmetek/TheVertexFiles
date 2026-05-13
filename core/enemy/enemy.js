@@ -21,7 +21,7 @@ export class Enemy{
     this.m=null;
     this.meta = meta;
   }
-  move(dt){
-    this.ai.move(dt);
+  move(dt, exp98){
+    this.ai.move(dt, exp98);
   }
 }
