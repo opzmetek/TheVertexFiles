@@ -5,7 +5,7 @@ export class System {
   
   static updateState(state, time){
     state.dt = (time - this.last) * 0.001;
-    state.exp98 = Math.pow(0.98, dt * 60);
+    state.exp98 = Math.pow(0.98, state.dt * 60);
     this.last = time;
   }
 
