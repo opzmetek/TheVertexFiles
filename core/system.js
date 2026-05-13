@@ -30,7 +30,7 @@ export class System {
   static render(state){
     Animation.update();
     updateParticles(state.dt);
-    applyShake(state);
+    this.applyShake(state);
     Game.renderer.render(World.scene, Game.camera);
   }
 
