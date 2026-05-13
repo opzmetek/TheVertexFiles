@@ -30,7 +30,18 @@ export class System {
   static render(state){
     Animation.update();
     updateParticles(state.dt);
+    applyShake(state);
     Game.renderer.render(World.scene, Game.camera);
+  }
+
+  static applyShake(state){
+    const m = 1.2 * Game.shake * state.dt * Game.otherState.sensivityMultiplier;
+    Game.camera.rotation.set(
+      Math.random() * m,
+      Math.random() * m,
+      Math.random() * m
+    );
+    Game.shake *= state.exp98;
   }
 
   static renderOnly(state){
