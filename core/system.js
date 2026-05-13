@@ -4,8 +4,9 @@ export class System {
   static last = 0;
   
   static updateState(time, state){
-    state.dt = (time - last) * 0.001;
+    state.dt = (time - this.last) * 0.001;
     state.exp98 = Math.pow(0.98, dt * 60);
+    this.last = time;
   }
 
   static updateAudio(state){
