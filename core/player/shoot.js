@@ -59,6 +59,7 @@ on("shootend", ()=>{
         Game.camera.updateProjectionMatrix();
       }
     });
+    Game.shake += 5;
     playerShoot();
   }
 });
