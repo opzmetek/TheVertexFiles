@@ -22,7 +22,7 @@ on("shootstart",screen=>{
   else if(Player.gunType.pistol&&lastShootTime >= max){
     playerShoot();
     lastShootTime = 0;
-    Game.shake += 0.06;
+    Game.shake += 0.07;
   }
   else if(Player.gunType.sniper){
     Animation.delete("player_sniper_zoom");
@@ -93,7 +93,7 @@ function checkPlayerShoot(dt){
   if(lastShootTime >= max&&playerShooting){
     lastShootTime = 0;
     playerShoot();
-    Game.shake += 0.07 * max;
+    Game.shake += 0.3 * max;
   }
 }
 
