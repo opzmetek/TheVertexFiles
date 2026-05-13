@@ -3,7 +3,7 @@ import {World, Game, Animation, analyse, moveStep, updateBullets, updateParticle
 export class System {
   static last = 0;
   
-  static updateState(time, state){
+  static updateState(state, time){
     state.dt = (time - this.last) * 0.001;
     state.exp98 = Math.pow(0.98, dt * 60);
     this.last = time;
