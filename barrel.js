@@ -19,3 +19,4 @@ export * from "./heightmap.js";
 export * from "./app.js";
 export * from "./core/player/shoot.js";
 export * from "./core/particle.js";
+export * from "./core/system.js";
