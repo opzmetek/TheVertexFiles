@@ -35,11 +35,11 @@ export class System {
   }
 
   static applyShake(state){
-    const m = 1.2 * Game.shake * state.dt * Game.otherState.sensivityMultiplier;
+    const m = 2.4 * Game.shake * state.dt * Game.otherState.sensivityMultiplier;
     Game.camera.rotation.set(
-      Math.random() * m,
-      Math.random() * m,
-      Math.random() * m
+      (Math.random() - 0.5) * m,
+      (Math.random() - 0.5) * m,
+      (Math.random() - 0.5) * m
     );
     Game.shake *= state.exp98;
   }
