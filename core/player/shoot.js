@@ -93,7 +93,7 @@ function checkPlayerShoot(dt){
   if(lastShootTime >= max&&playerShooting){
     lastShootTime = 0;
     playerShoot();
-    Game.shake += 0.038 * max;
+    Game.shake += 0.07 * max;
   }
 }
 
