@@ -20,29 +20,21 @@ export function startGame(tId,lId){
     initParticles();
     di("loadscreen").style.display = "none";
   }
-  
-  let last = 0;
+
+  const state = {};
   
   function loop(millis){
     if(!checkRun(millis))return;
-    const dTime = (millis-last)*0.001;
-    const exp_98 = Math.pow(0.98, dTime);
-    last = millis;
-    moveStep(dTime);
-    updateBullets(dTime);
-    updateParticles(dTime);
-    Animation.update();
-    analyse();
-    World.enemies.forEach(e=>e.move(dTime, exp_98));
-    Game.renderer.render(World.scene, Game.camera);
+    System.updateState(state, millis);
+    System.updateAndRender(state);
     requestAnimationFrame(loop);
   }
 
   function pausedFrame(millis){
-    last = millis;
+    System.updateState(state, millis);
+    System.updateAudio();
+    System.renderOnly(state);
     requestAnimationFrame(loop);
-    analyse();
-    Game.renderer.render(World.scene,Game.camera);
   }
 
   function checkRun(t){
