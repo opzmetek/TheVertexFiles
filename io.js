@@ -2,35 +2,50 @@
 import * as THREE from './three.module.js';
 import Heightmap from './heightmap.js';
 
-// Uložit scénu do .vrx a stáhnout
-export function exportVRX(objects) {
-  let totalBytes = 4;
-  
-  objects.forEach(o=>{
-    totalBytes+=4;
-    totalBytes+=o.length*36;
+export function exportVRX(objects, animations) {
+  const allVertices = new Map();
+  const verts = [];
+  let indiceCount = 0;
+  objects.forEach(object=>{
+    object.forEach(face=>{
+      face.forEach(v=>{
+        const key = `${v.x} ${v.y} ${v.z}`;
+        if(!allVertices.has(key)){
+          allVertices.set(key, Math.floor(verts.length / 3));
+          verts.push(v.x, v.y, v.z);
+        }
+      });
+      indiceCount += face.length;
+    });
   });
 
-  const buffer = new ArrayBuffer(totalBytes);
-  const dv = new DataView(buffer);
-  let off = 0;
+  const vertices = new Float32Array(verts);
+  const indices = new Uint16Array(indiceCount + objects.length);
+  let iOff = 0;
 
-  const u32 = v => { dv.setUint32(off, v, true); off += 4; };
-  const f32 = v => { dv.setFloat32(off, v, true); off += 4; };
-
-  u32(objects.length);
-  
-  for(const faces of objects){
-    u32(faces.length);
-    for (const face of faces){
+  objects.forEach(obj=>{
+    const start = iOff;
+    let length = 0;
+    iOff++;
+    obj.forEach(face=>{
       face.forEach(v=>{
-        f32(v.x);
-        f32(v.y);
-        f32(v.z);
+        const key = `${v.x} ${v.y} ${v.z}`;
+        indices[iOff++] = allVertices.get(key);
       });
-    }
-  }
-  const blob = new Blob([buffer], { type: "application/octet-stream" });
+      length += face.length;
+    });
+    indices[start] = length;
+  });
+
+  let animCount = 0;
+
+  animations.forEach(anim=>{
+    animCount += Object.keys(anim).length;
+  });
+
+  
+  
+  const blob = new Blob([], { type: "application/octet-stream" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "scene.bin";
