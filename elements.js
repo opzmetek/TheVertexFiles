@@ -1,3 +1,6 @@
+import {WebGLRenderer, Scene, PerspectiveCamera} from "three";
+import {loadOne, GridMaterial} from "barrel";
+
 class SliderSwitch extends HTMLElement {
   constructor() {
     super();
@@ -209,6 +212,65 @@ class HorizontalScrollable extends HTMLElement {
       e.stopPropagation();
       this.childRoot.scrollBy({left: -200, behavior: "smooth"});
     };
+  }
+}
+
+class ObjectViewElement extends HTMLElement {
+  constructor() {
+    super();
+
+    this.attachShadow({mode: "open"});
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          left-top-border-radius: 10px;
+          right-bottom-border-radius: 10px;
+        }
+
+        canvas {
+          width: 100%;
+          height: 100%;
+          left-top-border-radius: 10px;
+          right-bottom-border-radius: 10px;
+        }
+      </style>
+    `;
+
+    ObjectViewElement.elements ??= [];
+    ObjectViewElement.elements.push(this);
+  }
+
+  connectedCallback() {
+    this.renderer = new WebGLRenderer();
+    this.appendChild(this.renderer.domElement);
+    this.camera = new PerspectiveCamera(0.01, 100, 60);
+    this.camera.position.set(0, 1, -5);
+    this.scene = new Scene();
+    loadOne(this.getAttribute("obj")).then(o=>{
+      this.obj = o;
+      this.scene.add(this.obj);
+      if(this.hasAttribute("scale"))this.obj.scale.setScalar(+this.getAttribute("scale"));
+    });
+    this.speed = +this.getAttribute("speed") ?? 1;
+  }
+
+  update(dt) {
+    if(!this.obj) return;
+    this.obj.rotation.y += dt * this.speed;
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  static last = performance.now();
+
+  static loop(time) {
+    const dt = time - this.last;
+    this.last = time;
+    this.elements.forEach(e=>e.update(dt));
+    requestAnimationFrame((t)=>this.loop(t));
+  }
+
+  static {
+    requestAnimationFrame((t)=>this.loop(t));
   }
 }
 
