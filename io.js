@@ -6,17 +6,26 @@ export function exportVRX(objects, animations) {
   const allVertices = new Map();
   const verts = [];
   let indiceCount = 0;
+  const genKey = (x, y, z) => `${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)}`;
   objects.forEach(object=>{
-    object.forEach(face=>{
-      face.forEach(v=>{
-        const key = `${v.x} ${v.y} ${v.z}`;
-        if(!allVertices.has(key)){
-          allVertices.set(key, Math.floor(verts.length / 3));
-          verts.push(v.x, v.y, v.z);
-        }
-      });
-      indiceCount += face.length;
-    });
+    const g = object.geometry.toNonIndexed();
+    const p = object.position;
+    g.translate(p.x, p.y, p.z);
+    const pos = g.attributes.position;
+    const faces = [];
+    for(let i = 0; i < pos.count; i ++) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      const z = pos.getZ(i);
+      const key = genKey(x, y, z);
+      if(!allVertices.has(key)){
+        allVertices.set(key, verts.length);
+        verts.push(x, y, z);
+      }
+      if(i%3 === 0)faces.push([{x, y, z}]);
+      else faces[faces.length - 1].push({x, y, z});
+    }
+    object.faces = faces;
   });
 
   const vertices = new Float32Array(verts);
@@ -27,9 +36,9 @@ export function exportVRX(objects, animations) {
     const start = iOff;
     let length = 0;
     iOff++;
-    obj.forEach(face=>{
+    obj.faces.forEach(face=>{
       face.forEach(v=>{
-        const key = `${v.x} ${v.y} ${v.z}`;
+        const key = genKey(v.x, v.y, v.z);
         indices[iOff++] = allVertices.get(key);
       });
       length += face.length;
@@ -37,15 +46,27 @@ export function exportVRX(objects, animations) {
     indices[start] = length;
   });
 
-  let animCount = 0;
+  let anims = [];
 
-  animations.forEach(anim=>{
-    animCount += Object.keys(anim).length;
+  animations.forEach(anim => {
+    for(const obj of objects) {
+      const bone = anim.bones[obj.name];
+      if(!bone) anims.push(0, anim.duration, 0      , 0      , 0      , 0            , 0          , 0           , 0            , 0          , 0);
+      anims.push(bone.offset, bone.duration, bone.ox, bone.oy, bone.oz, bone.minPitch, bone.minYaw, bone.minRoll, bone.maxPitch, bone.maxYaw, bone.maxRoll);
+    }
   });
 
+  const animsFinal = new Float32Array(anims);
+
+  const sizes = new Uint16Array([
+    vertices.byteLength,
+    indices.byteLength,
+    animsFinal.byteLength,
+    animations.length,
+    objects.length
+  ]);
   
-  
-  const blob = new Blob([], { type: "application/octet-stream" });
+  const blob = new Blob([sizes, vertices, indices, animsFinal], { type: "application/octet-stream" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "scene.bin";
