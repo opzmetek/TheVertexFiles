@@ -26,6 +26,7 @@ export async function loadAll(arr,loader,prefix = "",suffix = "", objects){
 
 export async function loadOne(o,loader){
   if(loader)loader.textContent=("From "+o);
+  console.log(o);
   return await importVRX(o);
 }
 
