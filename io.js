@@ -8,7 +8,7 @@ export function exportVRX(objects, animations) {
   let indiceCount = 0;
   const genKey = (x, y, z) => `${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)}`;
   objects.forEach(object=>{
-    const g = object.geometry.toNonIndexed();
+    const g = object.geometry.clone().toNonIndexed();
     const p = object.position;
     g.translate(p.x, p.y, p.z);
     const pos = g.attributes.position;
@@ -25,11 +25,14 @@ export function exportVRX(objects, animations) {
       if(i%3 === 0)faces.push([{x, y, z}]);
       else faces[faces.length - 1].push({x, y, z});
     }
+    indiceCount += pos.count;
     object.faces = faces;
+    g.dispose();
   });
 
   const vertices = new Float32Array(verts);
-  const indices = new Uint16Array(indiceCount + objects.length);
+  const IndexArray = verts.length / 3 > 65535 ? Uint32Array : Uint16Array;
+  const indices = new IndexArray(indiceCount + objects.length);
   let iOff = 0;
 
   objects.forEach(obj=>{
@@ -51,14 +54,17 @@ export function exportVRX(objects, animations) {
   animations.forEach(anim => {
     for(const obj of objects) {
       const bone = anim.bones[obj.name];
-      if(!bone) anims.push(0, anim.duration, 0      , 0      , 0      , 0            , 0          , 0           , 0            , 0          , 0);
+      if(!bone){
+        anims.push(0, anim.duration, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        continue;
+      }
       anims.push(bone.offset, bone.duration, bone.ox, bone.oy, bone.oz, bone.minPitch, bone.minYaw, bone.minRoll, bone.maxPitch, bone.maxYaw, bone.maxRoll);
     }
   });
 
   const animsFinal = new Float32Array(anims);
 
-  const sizes = new Uint16Array([
+  const sizes = new Uint32Array([
     vertices.byteLength,
     indices.byteLength,
     animsFinal.byteLength,
@@ -69,65 +75,119 @@ export function exportVRX(objects, animations) {
   const blob = new Blob([sizes, vertices, indices, animsFinal], { type: "application/octet-stream" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "scene.bin";
+  a.download = "scene.vrx";
   a.click();
   URL.revokeObjectURL(a.href);
 }
 
 export async function importVRX(url) {
+
   const res = await fetch(url);
   const buffer = await res.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
-  console.log("first 64 bytes:", bytes.slice(0, 64));
-  console.log(buffer);
-  const dv = new DataView(buffer);
+
   let off = 0;
-  
-  const rU32 = () => {
-    const val = dv.getUint32(off, true);
-    off += 4;
-    return val;
-  };
-  const rF32 = () => {
-    const val = dv.getFloat32(off, true);
-    off += 4;
-    return val;
-  };
 
+  const [verticesByteLength, indicesByteLength, animsByteLength, animationCount, objectCount] = new Uint32Array(buffer, 0, 5);
+  off += 20;
 
-  const objectCount = rU32();
+  const vertexCount = verticesByteLength / 4;
+
+  const vertices = new Float32Array(buffer, off , vertexCount);
+  off += verticesByteLength;
+  const vertexTotal = vertexCount / 3;
+
+  const IndexArray = vertexTotal > 65535 ? Uint32Array : Uint16Array;
+
+  const indices = new IndexArray(buffer, off, indicesByteLength / IndexArray.BYTES_PER_ELEMENT);
+  off += indicesByteLength;
+
   const meshes = [];
 
-  for (let o = 0; o < objectCount; o++) {
-    const faceCount = rU32();
-    const positions = new Float32Array(faceCount * 9);
-    const bary = new Float32Array(faceCount * 9);
+  let iOff = 0;
 
-    for (let f = 0; f < faceCount * 9; f++) {
-      positions[f] = rF32();
+  for(let o = 0; o < objectCount; o++) {
+
+    const length = indices[iOff++];
+
+    const positions = new Float32Array(length * 3);
+
+    for(let i = 0; i < length; i++) {
+
+      const vi = indices[iOff++] * 3;
+
+      positions[i * 3 + 0] = vertices[vi + 0];
+      positions[i * 3 + 1] = vertices[vi + 1];
+      positions[i * 3 + 2] = vertices[vi + 2];
     }
-    
-    for(let f=0;f<faceCount;f++){
+
+    const faceCount = length / 3;
+
+    const bary = new Float32Array(length * 3);
+
+    for(let f = 0; f < faceCount; f++) {
       const idx = f * 9;
-      bary[idx + 0] = 1; bary[idx + 1] = 0; bary[idx + 2] = 0;
-      bary[idx + 3] = 0; bary[idx + 4] = 1; bary[idx + 5] = 0;
-      bary[idx + 6] = 0; bary[idx + 7] = 0; bary[idx + 8] = 1;
+      bary[idx + 0] = 1;
+      bary[idx + 1] = 0;
+      bary[idx + 2] = 0;
+      bary[idx + 3] = 0;
+      bary[idx + 4] = 1;
+      bary[idx + 5] = 0;
+      bary[idx + 6] = 0;
+      bary[idx + 7] = 0;
+      bary[idx + 8] = 1;
     }
 
     const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('barycentric',new THREE.BufferAttribute(bary,3));
-    geom.computeVertexNormals();
 
-    const mat = new THREE.MeshStandardMaterial({ color: Math.random() * 0xffffff });
+    geom.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3)
+    );
+
+    geom.setAttribute(
+      "barycentric",
+      new THREE.BufferAttribute(bary, 3)
+    );
+
+    geom.computeVertexNormals();
+    const mat = new THREE.MeshStandardMaterial({color: 0xffffff}); //Will be changed
     const mesh = new THREE.Mesh(geom, mat);
+    mesh.animations = [];
     meshes.push(mesh);
   }
-  
-  if(objectCount===0){
-    meshes.push(new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:0xff0000})));
-  }
 
+  const anims = new Float32Array(buffer, off, animsByteLength / 4);
+  off += animsByteLength;
+  let an = 0;
+
+  for(let a = 0; a < animationCount; a++) {
+    for(let o = 0; o < objectCount; o++) {
+      const anim = {
+        offset:    anims[an++],
+        duration:  anims[an++],
+        ox:        anims[an++],
+        oy:        anims[an++],
+        oz:        anims[an++],
+        minPitch:  anims[an++],
+        minYaw:    anims[an++],
+        minRoll:   anims[an++],
+        maxPitch:  anims[an++],
+        maxYaw:    anims[an++],
+        maxRoll:   anims[an++]
+      };
+      meshes[o].animations.push(anim);
+    }
+  }
+  if(meshes.length === 0) {
+    meshes.push(
+      new THREE.Mesh(
+        new THREE.BoxGeometry(1,1,1),
+        new THREE.MeshStandardMaterial({
+          color: 0xff0000
+        })
+      )
+    );
+  }
   return meshes;
 }
 
