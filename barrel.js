@@ -14,6 +14,7 @@ export * from "./ui/start.js";
 export * from "./ui/ui.js";
 export * from "./music/audio.js";
 export * from "./ai/enemy_ai.js";
+export * from "./ai/mixins.js";
 export * from "./io.js";
 export * from "./heightmap.js";
 export * from "./app.js";
