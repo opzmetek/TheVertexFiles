@@ -12,6 +12,7 @@ export class Enemy{
     this.size = meta.size??1;
     this.halfSize = this.size/2;
     this.ai = new ((meta.ai??[]).reduce((cls, m)=>mixins[m](cls), EnemyAI))(tMesh, this, target);
+    console.log("AI setup: ", meta.ai, this.ai);
     if(meta.inject&&typeof meta.inject==="object"){
       Object.assign(this.ai,meta.inject);
     }
