@@ -1,9 +1,67 @@
-export function MeeleeMixin(base){
-  return class extends base{
-    move(dt){
+import {Game} from "barrel";
+
+export function MeeleeMixin(base) {
+  return class extends base {
+    move(dt) {
       super.move(dt);
-      if(this.temp.subVectors(this.target, this.enemy.p).lengthSq()>this.attackDist*this.attackDist){
-        
+      if(this.temp.subVectors(this.target, this.enemy.p).lengthSq() < this.attackDist * this.attackDist){
+        this.attack();
+      }
+    }
+
+    attack() {
+      console.log("Attacking");
+    }
+  }
+}
+
+export function SpiderMixin(base) {
+  return class extends base {
+    constructor(mesh, enemy, target) {
+      super(mesh, enemy, target);
+      this.frameDt = 0;
+    }
+    move(dt) {
+      this.frameDt = Math.min(dt, 0.4);
+      super.move(this.frameDt);
+    }
+    tryMove(x, y, z){
+      const f = this.getMaxFloor(x, z);
+      if(f > y + 0.2) {
+        this.enemy.p.y += this.enemy.speed * this.frameDt;
+      }
+      return true;
+    }
+  }
+}
+
+export function FloatingMixin(base) {
+  return class extends base {
+    updateVertical(dt) {
+      let y = this.enemy.p.y + this.vel.y * dt;
+      const f = this.getMaxFloor(this.enemy.p.x, this.enemy.p.z);
+      if(f + 0.5 > y){
+        this.enemy.p.y = f + 0.5;
+      } else {
+        this.enemy.p.y = y;
+      }
+    }
+
+    onStuck(dt) {
+      this.enemy.p.y += this.enemy.speed * dt * 0.1;
+    }
+  }
+}
+
+export function JumperMixin(base) {
+  return class extends base {
+    constructor(mesh, enemy, target) {
+      super(mesh, enemy, target);
+      this.jumpForce = Math.sqrt(2 * this.maxJump * Game.gravity);
+    }
+    onStuck() {
+      if(this.onGround){
+        this.vertical = this.jumpForce;
       }
     }
   }
