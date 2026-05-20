@@ -1,6 +1,6 @@
 import {Game} from "barrel";
 
-export function MeeleeMixin(base) {
+function MeeleeMixin(base) {
   return class extends base {
     move(dt) {
       super.move(dt);
@@ -15,7 +15,7 @@ export function MeeleeMixin(base) {
   }
 }
 
-export function SpiderMixin(base) {
+function SpiderMixin(base) {
   return class extends base {
     constructor(mesh, enemy, target) {
       super(mesh, enemy, target);
@@ -35,7 +35,7 @@ export function SpiderMixin(base) {
   }
 }
 
-export function FloatingMixin(base) {
+function FloatingMixin(base) {
   return class extends base {
     updateVertical(dt) {
       let y = this.enemy.p.y + this.vel.y * dt;
@@ -52,12 +52,11 @@ export function FloatingMixin(base) {
     }
   }
 }
-
-export function JumperMixin(base) {
+function JumperMixin(base) {
   return class extends base {
     constructor(mesh, enemy, target) {
       super(mesh, enemy, target);
-      this.jumpForce = Math.sqrt(2 * this.maxJump * Game.gravity);
+      this.jumpForce = Math.sqrt(2 * this.enemy.maxJump * Game.gravity);
     }
     onStuck() {
       if(this.onGround){
@@ -66,3 +65,5 @@ export function JumperMixin(base) {
     }
   }
 }
+
+export const mixins = {meelee: MeeleeMixin, spider: SpiderMixin, floating: FloatingMixin, jumper: JumperMixin};
