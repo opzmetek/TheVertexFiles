@@ -68,7 +68,10 @@
       "maxHp":120,
       "speed":15,
       "maxJump":25,
-      "aiType":"base"
+      "ai":[
+        "jumper",
+        "meelee"
+      ]
     }
   }
 }
