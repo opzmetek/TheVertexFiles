@@ -71,7 +71,10 @@
       "ai":[
         "jumper",
         "meelee"
-      ]
+      ],
+      "inject":{
+        "attackDist": 3
+      }
     }
   }
 }
