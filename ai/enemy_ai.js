@@ -44,10 +44,10 @@ export class EnemyAI{
     if(this.tryMove(nx, y, nz));
     else if(this.tryMove(nx, y, p.z));//only x
     else if(this.tryMove(p.x, y, nz));//only z
-    else this.onStuck();
+    else this.onStuck(dt);
     this.updateVertical(dt);
   }
-  onStuck(){
+  onStuck(dt){
     this.desired.set(Math.random()-0.5, 0, Math.random()-0.5);
   }
   tryMove(x,y,z){
