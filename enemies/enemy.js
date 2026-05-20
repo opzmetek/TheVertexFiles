@@ -1,4 +1,4 @@
-import {Game, aiTypes} from "barrel";
+import {Game, EnemyAI, StaticTargetAI, mixins} from "barrel";
 
 export class Enemy{
   constructor(name,tMesh,pos,target){
@@ -11,11 +11,9 @@ export class Enemy{
     this.speed = meta.speed??20;
     this.size = meta.size??1;
     this.halfSize = this.size/2;
-    const aiConst = aiTypes[meta.aiType]||"base";
-    if(!aiConst)console.error("No ai found:",meta.aiType);
-    this.ai = new aiConst(tMesh,this,target);
-    if(meta.ai&&typeof meta.ai==="object"){
-      Object.assign(this.ai,meta.ai);
+    this.ai = new ((meta.ai??[]).reduce((cls, m)=>mixins[m](cls), EnemyAI))(tMesh, this, target);
+    if(meta.inject&&typeof meta.inject==="object"){
+      Object.assign(this.ai,meta.inject);
     }
     this.r=null;
     this.m=null;
