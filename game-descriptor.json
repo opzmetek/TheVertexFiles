@@ -67,7 +67,7 @@
     "enemy":{
       "maxHp":120,
       "speed":15,
-      "maxJump":25,
+      "maxJump":30,
       "ai":[
         "jumper",
         "meelee"
