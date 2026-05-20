@@ -3,50 +3,27 @@ import * as THREE from './three.module.js';
 import Heightmap from './heightmap.js';
 
 export function exportVRX(objects, animations) {
-  const allVertices = new Map();
-  const verts = [];
-  let indiceCount = 0;
-  const genKey = (x, y, z) => `${x.toFixed(4)} ${y.toFixed(4)} ${z.toFixed(4)}`;
-  objects.forEach(object=>{
+  const objectData = [];
+  let totalLength = 0;
+  objects.forEach((object, i)=>{
     const g = object.geometry.clone().toNonIndexed();
     const p = object.position;
     g.translate(p.x, p.y, p.z);
     const pos = g.attributes.position;
-    const faces = [];
-    for(let i = 0; i < pos.count; i ++) {
-      const x = pos.getX(i);
-      const y = pos.getY(i);
-      const z = pos.getZ(i);
-      const key = genKey(x, y, z);
-      if(!allVertices.has(key)){
-        allVertices.set(key, verts.length);
-        verts.push(x, y, z);
-      }
-      if(i%3 === 0)faces.push([{x, y, z}]);
-      else faces[faces.length - 1].push({x, y, z});
-    }
-    indiceCount += pos.count;
-    object.faces = faces;
+    const obj = {vertices: pos.array, length: pos.array.length};
+    objectData[i] = obj;
+    totalLength += obj.length;
     g.dispose();
   });
 
-  const vertices = new Float32Array(verts);
-  const IndexArray = verts.length / 3 > 65535 ? Uint32Array : Uint16Array;
-  const indices = new IndexArray(indiceCount + objects.length);
-  let iOff = 0;
+  const vertices = new Float32Array(totalLength);
+  const objSizes = new Uint32Array(objectData.length);
+  let vi = 0;
 
-  objects.forEach(obj=>{
-    const start = iOff;
-    let length = 0;
-    iOff++;
-    obj.faces.forEach(face=>{
-      face.forEach(v=>{
-        const key = genKey(v.x, v.y, v.z);
-        indices[iOff++] = allVertices.get(key);
-      });
-      length += face.length;
-    });
-    indices[start] = length;
+  objectData.forEach((obj, i)=>{
+    vertices.set(obj.vertices, vi);
+    vi += obj.length;
+    objSizes[i] = obj.length;
   });
 
   let anims = [];
@@ -66,13 +43,13 @@ export function exportVRX(objects, animations) {
 
   const sizes = new Uint32Array([
     vertices.byteLength,
-    indices.byteLength,
     animsFinal.byteLength,
-    animations.length,
-    objects.length
+    objSizes.byteLength,
+    objects.length,
+    animations.length
   ]);
   
-  const blob = new Blob([sizes, vertices, animsFinal, indices], { type: "application/octet-stream" });
+  const blob = new Blob([sizes, vertices, animsFinal, objSizes], { type: "application/octet-stream" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "scene.vrx";
@@ -87,47 +64,30 @@ export async function importVRX(url) {
 
   let off = 0;
 
-  const [verticesByteLength, indicesByteLength, animsByteLength, animationCount, objectCount] = new Uint32Array(buffer, 0, 5);
+  const [verticesByteLength, animsByteLength, objectSizesByteLength, objectCount, animationCount] = new Uint32Array(buffer, 0, 5);
   off += 20;
 
   const vertexCount = verticesByteLength / 4;
 
   const vertices = new Float32Array(buffer, off , vertexCount);
   off += verticesByteLength;
-  const vertexTotal = vertexCount / 3;
   
   const anims = new Float32Array(buffer, off, animsByteLength / 4);
   off += animsByteLength;
 
-  const IndexArray = vertexTotal > 65535 ? Uint32Array : Uint16Array;
-
-  const indices = new IndexArray(buffer, off, indicesByteLength / IndexArray.BYTES_PER_ELEMENT);
-  off += indicesByteLength;
+  const sizes = new Uint32Array(buffer, off, objectSizesByteLength / 4);
+  off += objectSizesByteLength;
 
   const meshes = [];
+  let vi = 0;
 
-  let iOff = 0;
+  for(let o = 0; o < sizes.length; o++) {
+    const length = sizes[o];
+    const positions = vertices.subarray(vi, vi += length);
 
-  for(let o = 0; o < objectCount; o++) {
+    const bary = new Float32Array(length);
 
-    const length = indices[iOff++];
-
-    const positions = new Float32Array(length * 3);
-
-    for(let i = 0; i < length; i++) {
-
-      const vi = indices[iOff++] * 3;
-
-      positions[i * 3 + 0] = vertices[vi + 0];
-      positions[i * 3 + 1] = vertices[vi + 1];
-      positions[i * 3 + 2] = vertices[vi + 2];
-    }
-
-    const faceCount = length / 3;
-
-    const bary = new Float32Array(length * 3);
-
-    for(let f = 0; f < faceCount; f++) {
+    for(let f = 0; f < length / 9 ; f++) {
       const idx = f * 9;
       bary[idx + 0] = 1;
       bary[idx + 1] = 0;
