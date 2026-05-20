@@ -4,6 +4,7 @@ function MeeleeMixin(base) {
   return class extends base {
     move(dt) {
       super.move(dt);
+      console.log("Meelee move", this.enemy.p);
       if(this.temp.subVectors(this.target, this.enemy.p).lengthSq() < this.attackDist * this.attackDist){
         this.attack();
       }
@@ -57,6 +58,7 @@ function JumperMixin(base) {
     constructor(mesh, enemy, target) {
       super(mesh, enemy, target);
       this.jumpForce = Math.sqrt(2 * this.enemy.maxJump * Game.gravity);
+      console.log("Jumper init ",this.jumpForce, this.maxJump);
     }
     onStuck() {
       if(this.onGround){
