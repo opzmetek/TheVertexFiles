@@ -2,8 +2,8 @@ import {Game} from "barrel";
 
 function MeeleeMixin(base) {
   return class extends base {
-    move(dt) {
-      super.move(dt);
+    move(dt, exp) {
+      super.move(dt, exp);
       console.log("Meelee move", this.enemy.p);
       if(this.temp.subVectors(this.target, this.enemy.p).lengthSq() < this.attackDist * this.attackDist){
         this.attack();
@@ -22,9 +22,9 @@ function SpiderMixin(base) {
       super(mesh, enemy, target);
       this.frameDt = 0;
     }
-    move(dt) {
+    move(dt, exp) {
       this.frameDt = Math.min(dt, 0.4);
-      super.move(this.frameDt);
+      super.move(this.frameDt, exp);
     }
     tryMove(x, y, z){
       const f = this.getMaxFloor(x, z);
@@ -58,7 +58,7 @@ function JumperMixin(base) {
     constructor(mesh, enemy, target) {
       super(mesh, enemy, target);
       this.jumpForce = Math.sqrt(2 * this.enemy.maxJump * Game.gravity);
-      console.log("Jumper init ",this.jumpForce, this.maxJump);
+      console.log("Jumper init ",this.jumpForce, this.enemy.maxJump);
     }
     onStuck() {
       if(this.onGround){
