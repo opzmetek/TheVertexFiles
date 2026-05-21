@@ -22,7 +22,7 @@ export class EnemyAI{
   }
   updateVertical(dt){
     let y = this.enemy.p.y;
-    y -= this.vertical * dt;
+    y += this.vertical * dt;
     const f = this.getMaxFloor(this.enemy.p.x, this.enemy.p.z);
     if(y<=f){
       this.onGround = true;
