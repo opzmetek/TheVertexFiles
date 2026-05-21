@@ -4,7 +4,6 @@ function MeeleeMixin(base) {
   return class extends base {
     move(dt, exp) {
       super.move(dt, exp);
-      console.log("Meelee move", this.enemy.p);
       if(this.temp.subVectors(this.target, this.enemy.p).lengthSq() < this.attackDist * this.attackDist){
         this.attack();
       }
