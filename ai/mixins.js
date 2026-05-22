@@ -50,6 +50,10 @@ function FloatingMixin(base) {
     onStuck(dt) {
       this.enemy.p.y += this.enemy.speed * dt * 0.1;
     }
+
+    computeSteering(dt, exp){
+      return this.temp.copy(this.desired.lerp(this.temp.subVectors(this.target, this.enemy.p).normalize(), exp)).multiplyScalar(this.enemy.speed);
+    }
   }
 }
 function JumperMixin(base) {
