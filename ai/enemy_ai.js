@@ -14,7 +14,7 @@ export class EnemyAI{
     this.vertical = 0;
   }
   computeSteering(dt, exp){
-    return this.temp.copy(this.desired.lerp(this.temp.subVectors(this.target, this.enemy.p).normalize(), exp)).multiplyScalar(this.enemy.speed);
+    return this.temp.copy(this.desired.lerp(this.temp.subVectors(this.target, this.enemy.p).setY(0).normalize(), exp)).multiplyScalar(this.enemy.speed);
   }
   updateSteering(dt, exp){
     this.desired.x += (Math.random()-0.5)*0.05;
