@@ -35,6 +35,34 @@ function SpiderMixin(base) {
   }
 }
 
+function RangedMixin(base) {
+  return class extends base {
+    constructor(a, b, c) {
+      super(a, b, c);
+      this.lastShoot = 0;
+      this.prefferedDistance ??= 20;
+      this.fireRate ??= 0.5;
+    }
+    
+    computeSteering(dt, exp) {
+      const diff = this.temp.subVectors(this.target, this.enemy.p);
+      if(diff.lengthSq() < this.prefferedDistance) diff.negate();
+      const des = diff.setY(0).normalize();
+      return this.temp.copy(this.desired.lerp(des, exp)).multiplyScalar(this.enemy.speed);
+    }
+
+    move(dt, exp) {
+      super.move(dt, exp);
+      this.lastShoot += dt;
+      if(this.lastShoot >= 1 / this.fireRate) this.shoot();
+    }
+
+    shoot() {
+      console.log("Enemy shooting");
+    }
+  }
+}
+
 function FloatingMixin(base) {
   return class extends base {
     updateVertical(dt) {
@@ -61,8 +89,13 @@ function JumperMixin(base) {
     constructor(mesh, enemy, target) {
       super(mesh, enemy, target);
       this.jumpForce = Math.sqrt(2 * this.enemy.maxJump * Game.gravity);
-      console.log("Jumper init ",this.jumpForce, this.enemy.maxJump);
     }
+
+    move(dt, exp) {
+      super.move(dt, exp);
+      if(this.velocity.lengthSq() < 0.1) this.onStuck();
+    }
+    
     onStuck() {
       if(this.onGround){
         this.vertical = this.jumpForce;
