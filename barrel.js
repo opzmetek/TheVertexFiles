@@ -21,3 +21,4 @@ export * from "./app.js";
 export * from "./core/player/shoot.js";
 export * from "./core/particle.js";
 export * from "./core/system.js";
+export * from "./core/bullet.js";
