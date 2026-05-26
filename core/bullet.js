@@ -1,10 +1,8 @@
-import {World, Game, Player, PlayerConfig, DDARaycast, Animation, raycaster, explode, on} from "barrel";
+import {World, Game, raycaster, checkPlayerShoot, explode} from "barrel";
 import {BoxGeometry, MeshBasicMaterial, AdditiveBlending, Mesh, Vector3, Vector2, Ray} from "three";
 
 const Z_AXIS = new Vector3(0, 0, 1);
 let bulletTemplate;
-const direction = new Vector3();
-const temp = new Vector3();
 const hits = [];
 
 function createBullet(){
