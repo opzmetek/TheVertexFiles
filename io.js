@@ -41,15 +41,22 @@ export function exportVRX(objects, animations) {
 
   const animsFinal = new Float32Array(anims);
 
+  const parents = new Int16Array(objectData.length);
+
+  objects.forEach((o,i)=>{
+    parents[i] = objects.findIndex(p=>p===o.parent);
+  });
+
   const sizes = new Uint32Array([
     vertices.byteLength,
     animsFinal.byteLength,
     objSizes.byteLength,
+    parents.byteLength,
     objects.length,
     animations.length
   ]);
   
-  const blob = new Blob([sizes, vertices, animsFinal, objSizes], { type: "application/octet-stream" });
+  const blob = new Blob([sizes, vertices, animsFinal, objSizes, parents], { type: "application/octet-stream" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "scene.vrx";
@@ -64,7 +71,7 @@ export async function importVRX(url) {
 
   let off = 0;
 
-  const [verticesByteLength, animsByteLength, objectSizesByteLength, objectCount, animationCount] = new Uint32Array(buffer, 0, 5);
+  const [verticesByteLength, animsByteLength, objectSizesByteLength, parentsByteLength, objectCount, animationCount] = new Uint32Array(buffer, 0, 5);
   off += 20;
 
   const vertexCount = verticesByteLength / 4;
