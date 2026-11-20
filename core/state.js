@@ -19,7 +19,8 @@ export const Game = {
   },
   otherState: {
     sensivityMultiplier: 1
-  }
+  },
+  events: new AbortController()
 }
 
 export const Audio = {
