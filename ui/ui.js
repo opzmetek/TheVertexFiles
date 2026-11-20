@@ -73,6 +73,7 @@ export function escape(){
 }
 
 export function gameUI(color,dash,anchor){
+  Game.events = new AbortController();
   if(Game.mobile) screen.orientation.lock("landscape");
   const keys = {};
   document.addEventListener("keydown",e=>{
