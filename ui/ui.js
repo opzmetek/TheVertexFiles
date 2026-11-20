@@ -1,4 +1,4 @@
-import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit, on, destroy} from "barrel";
+import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit, on} from "barrel";
 
 const MAX_PITCH = 1.55;
 
@@ -34,9 +34,7 @@ export function loadUI(){
   
   di("leaveBtn").onclick = e=>{
     Game.running = false;
-    if (Game.paused) escape();
-    Game.events.abort();
-    destroy();
+    di("options").style.display="none";
     di("game").style.display="none";
     di("homeMenu").style.display="block";
   }
