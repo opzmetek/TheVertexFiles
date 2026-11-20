@@ -50,7 +50,7 @@ export function loadUI(){
 on("sprintstart", () => {
   if (Player.sprinting) return;
   Player.speed = PlayerConfig.speed * 2;
-  Game.camera.fov -= 10;
+  Game.camera.fov += 20;
   Player.sprinting = true;
   Game.camera.updateProjectionMatrix();
 });
@@ -58,7 +58,7 @@ on("sprintstart", () => {
 on("sprintend", () => {
   if (!Player.sprinting) return;
   Player.speed = PlayerConfig.speed;
-  Game.camera.fov += 10;
+  Game.camera.fov -= 20;
   Player.sprinting = false;
   Game.camera.updateProjectionMatrix();
 });
