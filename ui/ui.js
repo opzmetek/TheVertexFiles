@@ -34,7 +34,7 @@ export function loadUI(){
   
   di("leaveBtn").onclick = e=>{
     Game.running = false;
-    Game.paused = false;
+    if (Game.paused) escape();
     Game.events.abort();
     destroy();
     di("game").style.display="none";
