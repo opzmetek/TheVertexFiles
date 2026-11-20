@@ -93,7 +93,7 @@ function JumperMixin(base) {
 
     move(dt, exp) {
       super.move(dt, exp);
-      if(this.velocity.lengthSq() < 0.1) this.onStuck();
+      if(this.vel.lengthSq() < 0.1) this.onStuck();
     }
     
     onStuck() {
