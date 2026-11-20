@@ -72,7 +72,7 @@ export function destroy() {
   destroyThree({ renderer: Game.renderer, scene: World.scene, camera: Game.camera });
   World.enemies.length = 0;
   World.bullets.length = 0;
-  Audio.audioCtx.stop();
+  Audio.audioCtx.close();
 }
 
 export function showDebug() {
