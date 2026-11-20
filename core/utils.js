@@ -1,4 +1,4 @@
-import {Game, Player, World, importVRX} from "barrel";
+import {Game, Player, World, Audio, importVRX} from "barrel";
 import {Group, AxesHelper, SkeletonHelper} from "three";
 
 export function getByPath(obj,path,stepsUp=0){
@@ -54,6 +54,10 @@ function destroyThree({ scene, renderer }) {
     materials.forEach(m => m.dispose());
     scene.clear();
   }
+  if (camera) {
+    camera.clear();
+    camera = null;
+  }
   if (renderer) {
     renderer.renderLists.dispose();
     renderer.dispose();
@@ -62,13 +66,13 @@ function destroyThree({ scene, renderer }) {
   }
   scene = null;
   renderer = null;
-  controls = null;
 }
 
 export function destroy() {
-  destroyThree({ renderer: Game.renderer, scene: World.scene });
+  destroyThree({ renderer: Game.renderer, scene: World.scene, camera: Game.camera });
   World.enemies.length = 0;
   World.bullets.length = 0;
+  Audio.audioCtx.stop();
 }
 
 export function showDebug() {
