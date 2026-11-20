@@ -1,4 +1,4 @@
-import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit, on} from "barrel";
+import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit, on, destroy} from "barrel";
 
 const MAX_PITCH = 1.55;
 
@@ -33,8 +33,10 @@ export function loadUI(){
   }
   
   di("leaveBtn").onclick = e=>{
-    Game.running=false;
-    Game.renderer.domElement.remove();
+    Game.running = false;
+    Game.paused = false;
+    Game.events.abort();
+    destroy();
     di("game").style.display="none";
     di("homeMenu").style.display="block";
   }
@@ -44,7 +46,7 @@ export function loadUI(){
    Game.renderer.setSize(window.innerWidth,window.innerHeight);
     Game.camera.aspect = window.innerWidth/window.innerHeight;
     Game.camera.updateProjectionMatrix();
-  });
+  }, {signal: Game.events.signal});
 }
 
 on("sprintstart", () => {
@@ -84,14 +86,14 @@ export function gameUI(color,dash,anchor){
     else if(k===keyCodes.anchor&&!Game.paused)anchor();
     else if(k===keyCodes.escape)escape();
     updateKeys();
-  });
+  }, {signal: Game.events.signal});
   document.addEventListener("keyup",e=>{
     e.preventDefault();
     const k = e.key.toLowerCase();
     delete keys[k];
     if(k===keyCodes.jump&&!Game.paused)Player.vertVec = 0;
     updateKeys();
-  });
+  }, {signal: Game.events.signal});
   
   function updateKeys(){
     if(Game.paused)return;
@@ -118,15 +120,15 @@ export function gameUI(color,dash,anchor){
       lx=x;
       ly=y;
       emit("shootmove", {x: lx, y: ly});
-    });
+    }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       lx=e.clientX;ly=e.clientY;
       if(!document.pointerLockElement)pointerLock();
       else emit("shootstart", {x: lx, y: ly});
-    });
+    }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerup", e=>{
       emit("shootend");
-    });
+    }, {signal: Game.events.signal});
     const joystick = window.nipplejs.create({
       zone:di("joystick"),
       mode:"static",
@@ -176,14 +178,14 @@ export function gameUI(color,dash,anchor){
       World.yaw.rotation.y-=e.movementX*Game.sensivity * Game.otherState.sensivityMultiplier;
       World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x-e.movementY*Game.sensivity * Game.otherState.sensivityMultiplier, MAX_PITCH), -MAX_PITCH);
       emit("shootmove");
-    });
+    }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       if(!document.pointerLockElement)pointerLock();
       else emit("shootstart");
-    });
+    }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerup", e=>{
       emit("shootend");
-    });
+    }, {signal: Game.events.signal});
   }
 }
 
