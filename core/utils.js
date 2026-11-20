@@ -56,13 +56,6 @@ function destroyThree({ scene, renderer, camera }) {
   }
 }
 
-export function destroy() {
-  destroyThree({ renderer: Game.renderer, scene: World.scene, camera: Game.camera });
-  World.enemies.length = 0;
-  World.bullets.length = 0;
-  Audio.audioCtx.close();
-}
-
 export function showDebug() {
   const axesHelper = new AxesHelper(1);
   axesHelper.position = World.yaw.position;
