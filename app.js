@@ -53,6 +53,8 @@ export function startGame(tId,lId){
     World.enemies.length = 0;
     World.bullets.length = 0;
     remove(World.mesh);
+    Game.events.abort();
+    World.scene.clear();
     Audio.audioCtx.close();
     Game.setup?.joystick?.destroy();
     di("mobile-controls")?.remove();
