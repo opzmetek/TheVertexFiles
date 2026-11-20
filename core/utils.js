@@ -35,7 +35,7 @@ export function remove(m){
   if(m.childern)m.childern.forEach(c=>remove(c));
 }
 
-function destroyThree({ scene, renderer }) {
+function destroyThree({ scene, renderer, camera }) {
   if (scene) {
     const geometries = new Set();
     const materials = new Set();
