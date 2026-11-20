@@ -19,6 +19,8 @@ export function startGame(tId,lId){
     await initUtil(meta, loader);
     initParticles();
     di("loadscreen").style.display = "none";
+    Game.running = true;
+    Game.paused = false;
   }
 
   const state = {};
