@@ -15,6 +15,22 @@ export function loadUI(){
   di("lWidth").onchange = e=>{
     Game.lWidth = +e.target.value;
   }
+
+  di("gunType").onchange = e=>{
+    Player.gunType.machine = false; Player.gunType.sniper = false; Player.gunType.pistol = false;
+    switch(e.target.value) {
+      case "machine":
+        Player.gunType.machine = true;
+        Player.gunType.fireRate = 5;
+        break;
+      case "sniper":
+        Player.gunType.sniper = true;
+        break;
+      case "pistol":
+        Player.gunType.pistol = true;
+        break;
+    }
+  }
   
   di("leaveBtn").onclick = e=>{
     Game.running=false;
