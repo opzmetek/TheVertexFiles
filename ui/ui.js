@@ -121,11 +121,13 @@ export function gameUI(color,dash,anchor){
       emit("shootmove", {x: lx, y: ly});
     }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
+      Game.renderer.domElement.setPointerCapture(e.pointerId);
       lx=e.clientX;ly=e.clientY;
       if(!document.pointerLockElement)pointerLock();
       else emit("shootstart", {x: lx, y: ly});
     }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerup", e=>{
+Game.renderer.domElement.releasePointerCapture(e.pointerId);
       emit("shootend");
     }, {signal: Game.events.signal});
     const joystick = window.nipplejs.create({
