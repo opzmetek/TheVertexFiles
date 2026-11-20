@@ -35,6 +35,42 @@ export function remove(m){
   if(m.childern)m.childern.forEach(c=>remove(c));
 }
 
+function destroyThree({ scene, renderer }) {
+  if (scene) {
+    const geometries = new Set();
+    const materials = new Set();
+    const textures = new Set();
+    scene.traverse(object => {
+      if (object.geometry) {
+        geometries.add(object.geometry);
+      }
+      if (object.material) {
+        const mats = Array.isArray(object.material) ? object.material : [object.material];
+        mats.forEach(material => { materials.add(material) });
+      }
+      object.skeleton?.dispose();
+    });
+    geometries.forEach(g => g.dispose());
+    materials.forEach(m => m.dispose());
+    scene.clear();
+  }
+  if (renderer) {
+    renderer.renderLists.dispose();
+    renderer.dispose();
+    renderer.forceContextLoss();
+    renderer.domElement.remove();
+  }
+  scene = null;
+  renderer = null;
+  controls = null;
+}
+
+export function destroy() {
+  destroyThree({ renderer: Game.renderer, scene: World.scene });
+  World.enemies.length = 0;
+  World.bullets.length = 0;
+}
+
 export function showDebug() {
   const axesHelper = new AxesHelper(1);
   axesHelper.position = World.yaw.position;
