@@ -1,4 +1,4 @@
-import {World, importVRX} from "barrel";
+import {Game, Player, World, importVRX} from "barrel";
 import {Group, AxesHelper, SkeletonHelper} from "three";
 
 export function getByPath(obj,path,stepsUp=0){
