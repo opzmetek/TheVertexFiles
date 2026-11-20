@@ -1,4 +1,4 @@
-import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit} from "barrel";
+import {Game, World, Player, PlayerConfig, keyCodes, di, createStartingPanel, playerShoot, emit, on} from "barrel";
 
 const MAX_PITCH = 1.55;
 
@@ -47,6 +47,22 @@ export function loadUI(){
   });
 }
 
+on("sprintstart", () => {
+  if (Player.sprinting) return;
+  Player.speed = PlayerConfig.speed * 2;
+  Game.camera.fov -= 10;
+  Player.sprinting = true;
+  Game.camera.updateProjectionMatrix();
+});
+
+on("sprintend", () => {
+  if (!Player.sprinting) return;
+  Player.speed = PlayerConfig.speed;
+  Game.camera.fov += 10;
+  Player.sprinting = false;
+  Game.camera.updateProjectionMatrix();
+});
+
 export function escape(){
   Game.paused = !Game.paused;
   if(Game.paused){
@@ -85,8 +101,8 @@ export function gameUI(color,dash,anchor){
     if(keys[keyCodes.moveLeft])Game.input.my=-1;
     else if(keys[keyCodes.moveRight])Game.input.my=1;
     else Game.input.my=0;
-    if(keys[keyCodes.sprint])Player.speed = PlayerConfig.speed*2;
-    else Player.speed = PlayerConfig.speed;
+    if(keys[keyCodes.sprint]) { if(!Player.sprinting) emit("sprintstart");}
+    else if (Player.sprinting) emit("sprintend");
   }
   if(Game.mobile){
     let ly,lx;
@@ -139,8 +155,8 @@ export function gameUI(color,dash,anchor){
     ctrls.appendChild(sprintBtn);
     sprintBtn.textContent="⏩";
     sprintBtn.onpointerdown = e=>{
-      if(Player.speed>PlayerConfig.speed)Player.speed = PlayerConfig.speed;
-      else if(Player.speed===PlayerConfig.speed)Player.speed = PlayerConfig.speed*2;
+      if(Player.sprinting) emit("sprintend");
+      else emit("sprintstart");
     }
     const escBtn=document.createElement("button");
     ctrls.appendChild(escBtn);
