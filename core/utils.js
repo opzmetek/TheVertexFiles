@@ -54,18 +54,6 @@ function destroyThree({ scene, renderer, camera }) {
     materials.forEach(m => m.dispose());
     scene.clear();
   }
-  if (camera) {
-    camera.clear();
-    camera = null;
-  }
-  if (renderer) {
-    renderer.renderLists.dispose();
-    renderer.dispose();
-    renderer.forceContextLoss();
-    renderer.domElement.remove();
-  }
-  scene = null;
-  renderer = null;
 }
 
 export function destroy() {
