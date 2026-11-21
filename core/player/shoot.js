@@ -87,7 +87,7 @@ export function checkPlayerShoot(dt){
 }
 
 export function playerShoot(){
-  temp.copy(Game.camera.position);//gun
+  Game.camera.getWorldPosition(temp);
   const ray = new Ray(temp, direction);
   const hit = DDARaycast(World.mesh, ray, 0, 1000);
   const out = [];
@@ -112,7 +112,7 @@ function testEnemies(ray, len, out){
   for(const enemy of World.enemies){
     tempVec.subVectors(enemy.p, ray.origin);
     const t = tempVec.dot(ray.direction);
-    if(t<0||t>len||tempVec.lengthSq()-t*t>sql) continue;
+    if(t<4||t>len+4||tempVec.lengthSq()-t*t>sql) continue;
     hits.length = 0;
     raycaster.ray = ray;
     raycaster.near = 0;
