@@ -23,7 +23,7 @@ on("shootstart",screen=>{
     lastShootTime = 0;
     Game.shake += 0.07;
   }
-  else if(Player.gun[0].type = "sniper" && lastShootTime >= max) {
+  else if(Player.gun[0].type === "sniper") {
     Animation.delete("player_sniper_zoom");
     Animation.delete("player_sniper_reset");
     const startFov = Game.camera.fov;
