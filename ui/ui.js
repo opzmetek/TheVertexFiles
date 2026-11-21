@@ -182,7 +182,7 @@ Game.renderer.domElement.releasePointerCapture(e.pointerId);
     if (!settings.querySelector("#shootto")) {
       const shootTOL=document.createElement("label");
       shootTOL.innerHTML = `Shoot minimal interval: 0 <input id="shootto" type="range" min="0" max="1" value="0.3" step="0.01"> 1`;
-      const shootTO = shootTOL.getElementById("shootto");
+      const shootTO = shootTOL.querySelector("#shootto");
       shootTO.addEventListener("change", e => {
         shootTimeout = (+e.target.value) * 1000;
       });
