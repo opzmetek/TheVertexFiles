@@ -24,6 +24,7 @@ export async function initUtil(meta, loader) {
   World.colors = [tColor1, tColor2];
   World.mesh.material = GridMaterial(tColor2, tColor1);
   World.eMaterial = GridMaterial(tColor1, tColor2, 0.5);
+  World.eHitMaterial = GridMaterial(tColor2, tColor1, 0.5);
   di("game").style.display = "block";
   di("game").appendChild(Game.renderer.domElement);
   gameUI(tColor1, dash, anchor);
