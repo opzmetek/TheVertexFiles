@@ -36,7 +36,7 @@ export class Enemy{
   damage(dmg) {
     this.hp -= dmg;
     if (this.hp <= 0) {
-      const idx = World.enemies.find(this);
+      const idx = World.enemies.indexOf(this);
       if (idx >= 0) {
         if (idx === World.enemies.length - 1) World.enemies.pop();
         else World.enemies[idx] = World.enemies.pop();
