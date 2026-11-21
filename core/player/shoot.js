@@ -114,6 +114,9 @@ function testEnemies(ray, len, out){
     const t = tempVec.dot(ray.direction);
     if(t<0||t>len||tempVec.lengthSq()-t*t>sql) continue;
     hits.length = 0;
+    raycaster.ray = ray;
+    raycaster.near = 0;
+    raycaster.far = len;
     raycaster.intersectObject(enemy.m, true, hits);
     if(hits[0]){
       enemy.shoot_testEnemies_dist = hits[0].distance;
