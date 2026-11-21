@@ -1,4 +1,4 @@
-import {Game, World, EnemyAI, StaticTargetAI, mixins} from "barrel";
+import {Game, World, EnemyAI, StaticTargetAI, mixins, explode} from "barrel";
 
 export class Enemy{
   constructor(name,tMesh,pos,target){
@@ -41,6 +41,9 @@ export class Enemy{
         if (idx === World.enemies.length - 1) World.enemies.pop();
         else World.enemies[idx] = World.enemies.pop();
       }
+      explode(this.m.p, new Vector3(0, 1, 0), 2, 2);
+      explode(this.m.p, new Vector3(0,-1, 0), 2, 2);
+      World.scene.remove(this.m);
     }
     else {
       this.setMaterial(World.eHitMaterial);
