@@ -41,8 +41,9 @@ export class Enemy{
         if (idx === World.enemies.length - 1) World.enemies.pop();
         else World.enemies[idx] = World.enemies.pop();
       }
-      explode(this.p, Game.UP, 2, 2);
-      explode(this.p, Game.DOWN, 2, 2);
+      this.p.addY(2);
+      explode(this.p, Game.UP, 5, 2);
+      explode(this.p, Game.DOWN, 5, 2);
       World.scene.remove(this.m);
     }
     else {
