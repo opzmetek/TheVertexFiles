@@ -83,6 +83,7 @@ button:hover, label:hover, a:hover, span:hover, option:checked {
   letter-spacing: -1px;
   scrollbar-width: 10px;
   scrollbar-color: #e3f4ff #63c6ff;
+  touch-action: none;
 }
 
 /* === Velikosti === */
