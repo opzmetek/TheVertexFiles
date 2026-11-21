@@ -25,6 +25,14 @@ export class Enemy{
     this.ai.move(dt, exp98);
   }
 
+  setMaterial(m) {
+    function setMat(c) {
+      c.material = m;
+      c.children.forEach(setMat);
+    }
+    setMat(this.m);
+  }
+
   damage(dmg) {
     this.hp -= dmg;
     if (this.hp <= 0) {
@@ -35,10 +43,10 @@ export class Enemy{
       }
     }
     else {
-      this.m.material = World.eHitMaterial;
+      this.setMaterial(World.eHitMaterial);
       const self = this;
       setTimeout(()=>{
-        self.m.material = World.eMaterial;
+        self.setMaterial(World.eMaterial);
       }, 300);
     }
   }
