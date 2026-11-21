@@ -94,7 +94,7 @@ export function playerShoot(){
   testEnemies(ray, hit.distance, out);
   const dist = penetrateEnemies(out, 100, 100) ?? hit.distance;
   console.log(hit, dist);
-  initBullet(dist, 70, direction, temp);
+  initBullet(dist, 300, direction, temp);
 }
 
 export function shoot(pos, speed){
