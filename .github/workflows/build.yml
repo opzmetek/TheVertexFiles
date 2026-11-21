@@ -33,7 +33,7 @@ jobs:
             --exclude=".git" \
             --exclude="site" \
             ./ site/
-
+          echo "${GITHUB_SHA}" > vertex.version
           find site -type f \
             | sed 's|^site/||' \
             | sort > site/files.txt
