@@ -1,4 +1,4 @@
-import {Game, EnemyAI, StaticTargetAI, mixins} from "barrel";
+import {Game, World, EnemyAI, StaticTargetAI, mixins} from "barrel";
 
 export class Enemy{
   constructor(name,tMesh,pos,target){
