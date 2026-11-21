@@ -38,13 +38,29 @@ export function loadUI(){
     di("game").style.display="none";
     di("homeMenu").style.display="block";
   }
+
+  let settings = di("keyset");
+  for (let action in keyCodes) {
+    let btn = document.createElement("button");
+    btn.textContent = action + ": " + keyCodes[action];
+    btn.onclick = () => {
+        btn.textContent = "Press key...";
+        document.onkeydown = (e) => {
+            keyCodes[action] = e.key.toLowerCase();
+            btn.textContent = action + ": " + e.key.toLowerCase();
+            document.onkeydown = null;
+        };
+    };
+    settings.appendChild(btn);
+    settings.appendChild(document.createElement("br"));
+  }
   
   di("start-game").onclick=createStartingPanel;
   window.addEventListener("resize",e=>{
    Game.renderer.setSize(window.innerWidth,window.innerHeight);
     Game.camera.aspect = window.innerWidth/window.innerHeight;
     Game.camera.updateProjectionMatrix();
-  }, {signal: Game.events.signal});
+  });
 }
 
 on("sprintstart", () => {
@@ -83,7 +99,7 @@ export function gameUI(color,dash,anchor){
     if(k===keyCodes.jump&&Player.onGround&&!Game.paused)Player.vertVec = Player.jumpStrength;
     else if(k===keyCodes.dash&&!Game.paused)dash();
     else if(k===keyCodes.anchor&&!Game.paused)anchor();
-    else if(k===keyCodes.escape)escape();
+    else if(k===keyCodes.escape || k === "delete")escape();
     updateKeys();
   }, {signal: Game.events.signal});
   document.addEventListener("keyup",e=>{
