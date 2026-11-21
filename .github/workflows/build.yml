@@ -30,7 +30,7 @@ jobs:
           mkdir site
 
           rsync -av \
-            --exclude=".git" \
+            --exclude=".*" \
             --exclude="site" \
             ./ site/
           sed -i "s/__VERSION__/${GITHUB_SHA}/g" site/sw.js
