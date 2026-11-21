@@ -108,7 +108,7 @@ export function shoot(pos, speed){
 const tempVec = new Vector3();
 
 function testEnemies(ray, len, out){
-  const sql = 4;
+  const sql = 16;
   for(const enemy of World.enemies){
     tempVec.subVectors(enemy.p, ray.origin);
     const t = tempVec.dot(ray.direction);
