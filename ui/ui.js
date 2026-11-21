@@ -106,8 +106,9 @@ export function gameUI(color,dash,anchor){
     else if (Player.sprinting) emit("sprintend");
   }
   if(Game.mobile){
-    let ly,lx;
+    let ly, lx, active;
     Game.renderer.domElement.addEventListener("pointermove",e=>{
+      if (e.poinerId != active) return;
       const x = e.clientX,y = e.clientY;
       if(ly===undefined||lx===undefined){
         ly=y;
@@ -121,15 +122,19 @@ export function gameUI(color,dash,anchor){
       emit("shootmove", {x: lx, y: ly});
     }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
-      Game.renderer.domElement.setPointerCapture(e.pointerId);
+      active = e.pointerId;
+      Game.renderer.domElement.setPointerCapture(active);
       lx=e.clientX;ly=e.clientY;
-      if(!document.pointerLockElement)pointerLock();
-      else emit("shootstart", {x: lx, y: ly});
+      if(!document.pointerLockElement) pointerLock();
+      emit("shootstart", {x: lx, y: ly});
     }, {signal: Game.events.signal});
-    Game.renderer.domElement.addEventListener("pointerup", e=>{
+    const onEnd = e=>{
+      active = null;
 Game.renderer.domElement.releasePointerCapture(e.pointerId);
       emit("shootend");
-    }, {signal: Game.events.signal});
+    }
+    Game.renderer.domElement.addEventListener("pointerup", onEnd, {signal: Game.events.signal});
+    Game.renderer.domElement.addEventListener("poinercancel", onEnd, {signal: Game.events.signal});
     const joystick = window.nipplejs.create({
       zone:di("joystick"),
       mode:"static",
