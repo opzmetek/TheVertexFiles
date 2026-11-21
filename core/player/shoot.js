@@ -92,7 +92,7 @@ export function playerShoot(){
   const hit = DDARaycast(World.mesh, ray, 0, 1000);
   const out = [];
   testEnemies(ray, hit.distance, out);
-  const dist = penetrateEnemies(out, 100) ?? hit.distance;
+  const dist = penetrateEnemies(out, 100, 100) ?? hit.distance;
   console.log(hit, dist);
   initBullet(dist, 70, direction, temp);
 }
@@ -122,11 +122,12 @@ function testEnemies(ray, len, out){
   }
 }
 
-function penetrateEnemies(enemies, penetration){
+function penetrateEnemies(enemies, penetration, dmg){
   enemies.sort((a,b)=>a.shoot_testEnemies_dist-b.shoot_testEnemies_dist);
   for(const e of enemies){
     penetration -= e.maxHp;
-    if(penetration<=0)return e.shoot_testEnemies_dist;
+    if(penetration<0)return e.shoot_testEnemies_dist;
+    else e.damage(dmg);
   }
   return enemies[enemies.length - 1]?.shoot_testEnemies_dist;
 }
