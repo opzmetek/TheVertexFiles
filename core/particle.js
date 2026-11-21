@@ -50,7 +50,7 @@ function setExplodeQuat(quat, up, dir) {
     return;
   }
   if (dot < -0.999999) {
-    const axis = new THREE.Vector3(1, 0, 0).cross(up);
+    const axis = new Vector3(1, 0, 0).cross(up);
     if (axis.lengthSq() < 1e-6) {
       axis.set(0, 1, 0).cross(up);
     }
