@@ -39,7 +39,7 @@ export class Enemy{
       const self = this;
       setTimeout(()=>{
         self.m.material = World.eMaterial;
-      });
+      }, 300);
     }
   }
 }
