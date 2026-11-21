@@ -18,7 +18,7 @@ export function loadUI(){
   
   di("leaveBtn").onclick = e=>{
     Game.running = false;
-    di("options").style.display="none";
+    document.querySelectorAll(".options").forEach(e=>e.style.display="none");
     di("game").style.display="none";
     di("homeMenu").style.display="block";
   }
