@@ -1,3 +1,5 @@
+import { Vector3 } from "three"
+
 export const Game = {
   camera: null,
   renderer: null,
@@ -20,7 +22,9 @@ export const Game = {
   otherState: {
     sensivityMultiplier: 1
   },
-  events: new AbortController()
+  events: new AbortController(),
+  UP: new Vector3(0, 1, 0),
+  DOWN: new Vector3(0,-1, 0)
 }
 
 export const Audio = {
