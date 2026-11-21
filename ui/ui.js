@@ -107,30 +107,38 @@ export function gameUI(color,dash,anchor){
   }
   if(Game.mobile){
     let ly, lx, active;
+    let shootTimeout = 300;
+    let shootAwait = null;
     Game.renderer.domElement.addEventListener("pointermove",e=>{
       if (e.pointerId != active) return;
-      const x = e.clientX,y = e.clientY;
+      const x = e.clientX, y = e.clientY;
       if(ly===undefined||lx===undefined){
         ly=y;
         lx=x;
       }
-      const dx = lx-x,dy=ly-y;
+      if (shootAwait) { clearTimeout(shootAwait); shootAwait = null; }
+      const dx = lx - x, dy = ly - y;
       World.yaw.rotation.y+=dx*Game.sensivity * Game.otherState.sensivityMultiplier;
       World.pitch.rotation.x = Math.max(Math.min(World.pitch.rotation.x+dy*Game.sensivity * Game.otherState.sensivityMultiplier, MAX_PITCH), -MAX_PITCH);
       lx=x;
       ly=y;
-      emit("shootmove", {x: lx, y: ly});
+      if (!shootAwait) emit("shootmove", {x: lx, y: ly});
     }, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("pointerdown",e=>{
       active = e.pointerId;
       Game.renderer.domElement.setPointerCapture(active);
       lx=e.clientX;ly=e.clientY;
       if(!document.pointerLockElement) pointerLock();
-      emit("shootstart", {x: lx, y: ly});
+      shootAwait = setTimeout(() => {
+        emit("shootstart", {x: lx, y: ly});
+        shootAwait = null;
+      }, shootTimeout);
     }, {signal: Game.events.signal});
     const onEnd = e=>{
       active = null;
 Game.renderer.domElement.releasePointerCapture(e.pointerId);
+      clearTimeout(shootAwait);
+      shootAwait = null;
       emit("shootend");
     }
     Game.renderer.domElement.addEventListener("pointerup", onEnd, {signal: Game.events.signal});
@@ -170,6 +178,16 @@ Game.renderer.domElement.releasePointerCapture(e.pointerId);
     ctrls.appendChild(escBtn);
     escBtn.textContent="⏸️";
     escBtn.onclick=escape;
+    const settings = di("options-center");
+    if (!settings.querySelector("#shootto")) {
+      const shootTOL=document.createElement("label");
+      shootTOL.innerHTML = `Shoot minimal interval: 0 <input id="shootto" type="range" min="0" max="1" value="0.3" step="0.01"> 1`;
+      const shootTO = shootTOL.getElementById("shootto");
+      shootTO.addEventListener("change", e => {
+        shootTimeout = (+e.target.value) * 1000;
+      });
+      settings.appendChild(shootTOL);
+    }
     joystick.on("move",(e,data)=>{
       Game.input.my=data.vector.x * data.force;
       Game.input.mx=data.vector.y * data.force;
