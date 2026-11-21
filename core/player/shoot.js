@@ -11,19 +11,19 @@ const mouse = new Vector2();
 let lastShootTime = 0;
 
 on("shootstart",screen=>{
-  const max = 1/Player.gunType.fireRate;
+  const max = 1/Player.gun[0].fireRate;
   if(screen){
     updateDirection(screen);
   }else{
     Game.camera.getWorldDirection(direction);
   }
-  if(Player.gunType.machine)playerShooting = true;
-  else if(Player.gunType.pistol&&lastShootTime >= max){
+  if(Player.gun[0].type === "machine") playerShooting = true;
+  else if(Player.gun[0].type === "pistol" && lastShootTime >= max) {
     playerShoot();
     lastShootTime = 0;
     Game.shake += 0.07;
   }
-  else if(Player.gunType.sniper){
+  else if(Player.gun[0].type = "sniper") {
     Animation.delete("player_sniper_zoom");
     Animation.delete("player_sniper_reset");
     const startFov = Game.camera.fov;
@@ -49,8 +49,8 @@ on("shootmove", screen=>{
 });
 
 on("shootend", ()=>{
-  if(Player.gunType.machine)playerShooting = false;
-  else if(Player.gunType.sniper){
+  if(Player.gun[0].type === "machine") playerShooting = false;
+  else if(Player.gun[0].type === "sniper") {
     Animation.delete("player_sniper_zoom");
     Animation.delete("player_sniper_reset");
     const startFov = Game.camera.fov;
@@ -64,7 +64,7 @@ on("shootend", ()=>{
         Game.camera.updateProjectionMatrix();
       }
     });
-    Game.shake += 0.1;
+    Game.shake += 0.3;
     playerShoot();
   }
 });
@@ -77,9 +77,9 @@ function updateDirection(screen){
 }
 
 export function checkPlayerShoot(dt){
-  const max = 1/Player.gunType.fireRate;
+  const max = 1 / Player.gun[0].fireRate;
   lastShootTime += dt;
-  if(lastShootTime >= max&&playerShooting){
+  if(lastShootTime >= max && playerShooting){
     lastShootTime = 0;
     playerShoot();
     Game.shake += 0.3 * max;
