@@ -50,7 +50,7 @@ export const Player = {
   onGround: true,
   velocityX: 0,
   velocityY: 0,
-  gunType: {machine: true, fireRate: 5}
+  gun: []
 }
 
 export const PlayerConfig = {
