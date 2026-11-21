@@ -1,4 +1,5 @@
-const CACHE_NAME = 'the-vertex-cache-v1';
+const VERSION = "__VERSION__";
+const CACHE_NAME = `the-vertex-cache-v${VERSION}`;
 
 self.addEventListener('install', event => {
   event.waitUntil(
