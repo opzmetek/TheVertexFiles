@@ -6,7 +6,7 @@ const UP = new Vector3(0, 1, 0);
 let tmp;
 
 export function initParticles(){
-  const count = 80;
+  const count = 240;
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   const positions = new Float32Array(count * 3);
   for(let i = 0; i<count; i++){
@@ -14,7 +14,7 @@ export function initParticles(){
     const t = i/(count-1);
     const y = t;
     const r = Math.sqrt(1 - y * y);
-    const theta = goldenAngle * i;
+    const theta = goldenAngle * i + Math.random() * 0.05;
     const x = Math.cos(theta) * r;
     const z = Math.sin(theta) * r;
     positions[d] = x + (Math.random()-0.5)*0.1;
