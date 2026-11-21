@@ -133,23 +133,27 @@ class SliderSwitch extends HTMLElement {
   }
 }
 
+
 class HorizontalScrollable extends HTMLElement {
-  constructor(){
+  constructor() {
     super();
 
-    this.attachShadow({mode: "open"});
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = `
       <style>
         :host {
+          display: block;
+          position: relative;
           overflow: hidden;
         }
-      
-        .moveleft, .moveright 
+
+        .moveleft, .moveright {
           width: 50px;
           height: 80px;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
+          z-index: 10;
         }
 
         .moveleft {
@@ -162,55 +166,76 @@ class HorizontalScrollable extends HTMLElement {
 
         .childRoot {
           height: 100%;
+          width: 100%;
           position: absolute;
-          left: 0px;
-          top: 0px;
-          overflow: hidden;
+          left: 0;
+          top: 0;
+          overflow-x: auto;
+          overflow-y: hidden;
+          display: flex;
+          scrollbar-width: none;
+        }
+
+        .childRoot::-webkit-scrollbar {
+          display: none;
         }
       </style>
 
-      <button class = ".moveleft></button>
-      <button class = ".moveright></button>
+      <button class="moveleft">←</button>
+      <button class="moveright">→</button>
+      <div class="childRoot">
+        <slot></slot>
+      </div>
     `;
 
-    this.childRoot = document.createElement("div");
+    this.childRoot = this.shadowRoot.querySelector(".childRoot");
   }
 
   connectedCallback() {
-    super.appendChild(this.childRoot);
+    let down = false;
+    let lx = 0;
 
-    let down = false, lx = 0;
-
-    this.addEventListener("pointerdown", e=>{
+    this.childRoot.addEventListener("pointerdown", e => {
       down = true;
       lx = e.clientX;
+      this.childRoot.setPointerCapture(e.pointerId);
     });
-    
-    this.addEventListener("pointermove", e=>{
-      if(!down) return;
+
+    this.childRoot.addEventListener("pointermove", e => {
+      if (!down) return;
+
       const x = e.clientX;
       const dx = x - lx;
       lx = x;
-      this.childRoot.scrollBy(dx);
+
+      this.childRoot.scrollLeft -= dx;
     });
 
-    this.addEventListener("pointerup", e=>{
+    this.childRoot.addEventListener("pointerup", () => {
       down = false;
     });
 
-    const left = this.querySelector(".moveleft");
-    const right = this.querySelector(".moveright");
+    this.childRoot.addEventListener("pointercancel", () => {
+      down = false;
+    });
 
-    left.onclick = e=>{
+    const left = this.shadowRoot.querySelector(".moveleft");
+    const right = this.shadowRoot.querySelector(".moveright");
+
+    left.onclick = e => {
       e.preventDefault();
-      e.stopPropagation();
-      this.childRoot.scrollBy({left: 200, behavior: "smooth"});
+      this.childRoot.scrollBy({
+        left: -200,
+        behavior: "smooth"
+      });
     };
 
-    right.onclick = e=>{
+    right.onclick = e => {
       e.preventDefault();
-      e.stopPropagation();
-      this.childRoot.scrollBy({left: -200, behavior: "smooth"});
+      this.childRoot.scrollBy({
+        left: 200,
+        behavior: "smooth"
+      });
     };
   }
 }
