@@ -137,9 +137,9 @@ export function gameUI(color,dash,anchor){
     const onEnd = e=>{
       active = null;
 Game.renderer.domElement.releasePointerCapture(e.pointerId);
+      if (shootAwait) emit("shootend");
       clearTimeout(shootAwait);
       shootAwait = null;
-      emit("shootend");
     }
     Game.renderer.domElement.addEventListener("pointerup", onEnd, {signal: Game.events.signal});
     Game.renderer.domElement.addEventListener("poinercancel", onEnd, {signal: Game.events.signal});
