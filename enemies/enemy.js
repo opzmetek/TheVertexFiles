@@ -20,7 +20,26 @@ export class Enemy{
     this.m=null;
     this.meta = meta;
   }
-  move(dt, exp98){
+  
+  move(dt, exp98) {
     this.ai.move(dt, exp98);
+  }
+
+  damage(dmg) {
+    this.hp -= dmg;
+    if (this.hp <= 0) {
+      const idx = World.enemies.find(this);
+      if (idx >= 0) {
+        if (idx === World.enemies.length - 1) World.enemies.pop();
+        else World.enemies[idx] = World.enemies.pop();
+      }
+    }
+    else {
+      this.m.material = World.eHitMaterial;
+      const self = this;
+      setTimeout(()=>{
+        self.m.material = World.eMaterial;
+      });
+    }
   }
 }
