@@ -109,6 +109,7 @@ export function gameUI(color,dash,anchor){
     let ly, lx, active;
     let shootTimeout = 300;
     let shootAwait = null;
+    let shot = false;
     Game.renderer.domElement.addEventListener("pointermove",e=>{
       if (e.pointerId != active) return;
       const x = e.clientX, y = e.clientY;
@@ -131,13 +132,15 @@ export function gameUI(color,dash,anchor){
       if(!document.pointerLockElement) pointerLock();
       shootAwait = setTimeout(() => {
         emit("shootstart", {x: lx, y: ly});
+        shot = true;
         shootAwait = null;
       }, shootTimeout);
     }, {signal: Game.events.signal});
     const onEnd = e=>{
       active = null;
 Game.renderer.domElement.releasePointerCapture(e.pointerId);
-      if (shootAwait) emit("shootend");
+      if (shot) emit("shootend");
+      shot = false;
       clearTimeout(shootAwait);
       shootAwait = null;
     }
