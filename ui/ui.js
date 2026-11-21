@@ -82,9 +82,9 @@ on("sprintend", () => {
 export function escape(){
   Game.paused = !Game.paused;
   if(Game.paused){
-    di("options").style.display="flex";
+    document.querySelectorAll(".options").forEach(e=>e.style.display="flex");
   }else{
-    di("options").style.display="none";
+    document.querySelectorAll(".options").forEach(e=>e.style.display="none");
   }
 }
 
