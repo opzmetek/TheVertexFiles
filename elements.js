@@ -167,7 +167,8 @@ class HorizontalScrollable extends HTMLElement {
         .childRoot {
           height: 100%;
           width: 100%;
-          position: absolute;
+          position: relative;
+          min-height: 100px;
           left: 0;
           top: 0;
           overflow-x: auto;
