@@ -108,7 +108,7 @@ export function shoot(pos, speed){
 const tempVec = new Vector3();
 
 function testEnemies(ray, len, out){
-  const sql = len*len;
+  const sql = 4;
   for(const enemy of World.enemies){
     tempVec.subVectors(enemy.p, ray.origin);
     const t = tempVec.dot(ray.direction);
@@ -118,6 +118,7 @@ function testEnemies(ray, len, out){
     if(hits[0]){
       enemy.shoot_testEnemies_dist = hits[0].distance;
       out.push(enemy);
+      console.log("HIT");
     }
   }
 }
