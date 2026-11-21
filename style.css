@@ -189,7 +189,9 @@ body > div{
     --translate: translateX(-50%);
     width:40%;
     height:70%;
-    overflow-y: scroll;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    overflow-y: scroll !important;
     background-color: #0b0f1abb;
     color: #b8d7ff;
     z-index: 999;
