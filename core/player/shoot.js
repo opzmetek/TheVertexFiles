@@ -112,7 +112,7 @@ function testEnemies(ray, len, out){
   for(const enemy of World.enemies){
     tempVec.subVectors(enemy.p, ray.origin);
     const t = tempVec.dot(ray.direction);
-    if(t<4||t>len+4||tempVec.lengthSq()-t*t>sql) continue;
+    if(t<-4||t>len+4||tempVec.lengthSq()-t*t>sql) continue;
     hits.length = 0;
     raycaster.ray = ray;
     raycaster.near = 0;
