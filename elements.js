@@ -145,12 +145,13 @@ class HorizontalScrollable extends HTMLElement {
           display: block;
           position: relative;
           overflow: hidden;
+          width: max-content;
         }
 
         .moveleft, .moveright {
           width: 50px;
           height: 80px;
-          position: absolute;
+          position: relative;
           top: 50%;
           transform: translateY(-50%);
           z-index: 10;
