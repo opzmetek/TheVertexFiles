@@ -15,12 +15,6 @@ export function loadUI(){
   di("lWidth").onchange = e=>{
     Game.lWidth = +e.target.value;
   }
-
-  document.querySelectorAll('input[name="gunselect"]').forEach(e=>{
-    e.addEventListener("change", ev=>{
-      Player.gun[0] = JSON.parse(ev.target.value);
-    });
-  });
   
   di("leaveBtn").onclick = e=>{
     Game.running = false;
