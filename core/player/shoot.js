@@ -87,7 +87,7 @@ export function checkPlayerShoot(dt){
 }
 
 export function playerShoot(){
-  temp.copy(World.yaw.position).addY(PlayerConfig.height-0.5);//gun
+  temp.copy(Game.camera.position);//gun
   const ray = new Ray(temp, direction);
   const hit = DDARaycast(World.mesh, ray, 0, 1000);
   const out = [];
