@@ -108,7 +108,7 @@ export function gameUI(color,dash,anchor){
   if(Game.mobile){
     let ly, lx, active;
     Game.renderer.domElement.addEventListener("pointermove",e=>{
-      if (e.poinerId != active) return;
+      if (e.pointerId != active) return;
       const x = e.clientX,y = e.clientY;
       if(ly===undefined||lx===undefined){
         ly=y;
