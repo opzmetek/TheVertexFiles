@@ -15,7 +15,7 @@ export function startGame(tId,lId){
     const loader = di("loader");
     loader.textContent = "Loading level...";
     di("homeMenu").style.display = "none";
-    Player.gun[0] = document.querySelectorAll('input[name="gunselect"]').value;
+    Player.gun[0] = JSON.parse(document.querySelector('input[name="gunselect"]:checked').value);
     const meta = await initLevel(tId, lId, loader);
     await initUtil(meta, loader);
     initParticles();
