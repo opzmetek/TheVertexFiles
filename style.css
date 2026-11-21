@@ -181,12 +181,24 @@ body > div{
   right:0px;
 }
 
-#options{
+#options-center{
     position:absolute;
     left: 50%;
     top: 10%;
     --translate: translateX(-50%);
     width:40%;
+    height:70%;
+    overflow-y: scroll;
+    background-color: #0b0f1abb;
+    color: #b8d7ff;
+    z-index: 999;
+}
+
+#options-right{
+    position:absolute;
+    right: 5%;
+    top: 10%;
+    width:20%;
     height:70%;
     overflow-y: scroll;
     background-color: #0b0f1abb;
