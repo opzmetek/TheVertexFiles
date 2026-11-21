@@ -72,7 +72,7 @@ on("shootend", ()=>{
 function updateDirection(screen){
   mouse.x = (screen.x / window.innerWidth) * 2 - 1;
   mouse.y = -(screen.y / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
+  raycaster.setFromCamera(mouse, World.camera);
   direction.copy(raycaster.ray.direction);
 }
 
