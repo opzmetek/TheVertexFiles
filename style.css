@@ -23,13 +23,14 @@
     position:absolute;
     grid-auto-flow: column;
     grid-template-rows: repeat(5, 1fr);
-    grid-auto-columns: 1fr;
+    grid-auto-columns: 7%;
     align-items: stretch;
     jusitfy-items: stretch;
     right:20px;
     bottom:20px;
     z-index:999;
     background:transparent;
+    height: 100%;
 }
 
 #mobile-controls svg {
