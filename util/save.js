@@ -1,3 +1,4 @@
+import {UserState} from "barrel"
 
 class SaveManager {
   constructor() {
@@ -57,4 +58,16 @@ class SaveManager {
     });
   }
 }
+
 export const saveManager = new SaveManager();
+
+export async function saveGame() {
+  await saveManager.save("state_save", UserState);
+}
+
+export async function revive() {
+  const data = await saveManager.load("state_save");
+  if (data) {
+    Object.assign(UserState, data);
+  }
+}
