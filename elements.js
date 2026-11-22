@@ -202,7 +202,6 @@ class HorizontalScrollable extends HTMLElement {
     this.childRoot.addEventListener("pointerdown", e => {
       down = true;
       lx = e.clientX;
-      this.childRoot.setPointerCapture(e.pointerId);
     });
 
     this.childRoot.addEventListener("pointermove", e => {
