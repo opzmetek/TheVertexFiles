@@ -65,3 +65,10 @@ export const PlayerConfig = {
   dashDelay: 1000,
   height: 2
 }
+
+export const UserState = {
+  xp: 0,
+  unlockedGuns: new Set(),
+  crystals: 0,
+  maxCrystals: 0
+}
