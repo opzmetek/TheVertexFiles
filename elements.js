@@ -151,7 +151,7 @@ class HorizontalScrollable extends HTMLElement {
         .moveleft, .moveright {
           width: 50px;
           height: 80px;
-          position: relative;
+          position: absolute;
           top: 50%;
           transform: translateY(-50%);
           z-index: 10;
@@ -170,13 +170,14 @@ class HorizontalScrollable extends HTMLElement {
           width: 100%;
           position: relative;
           min-height: 100px;
-          left: 50%;
-          transform: translateX(-50%);
           top: 0;
           overflow-x: auto;
           overflow-y: hidden;
-          display: flex;
           scrollbar-width: none;
+          display: flex;
+          justify-content: center;
+          flex-direction: row;
+          gap: 10px;
         }
 
         .childRoot::-webkit-scrollbar {
