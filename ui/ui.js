@@ -222,24 +222,3 @@ export function pointerLock(){
     if(!Game.mobile)Game.renderer.domElement.requestPointerLock();
   });
 }
-
-export async function loadGame(){
-  const loadscreen = document.getElementById("loadscreen");
-  const loader = document.createElement("span");
-  loadscreen.appendChild(loader);
-  loader.className="small";
-  loader.id = "loader";
-  try{
-    loader.textContent = "Loading game...";
-    const mRes = await fetch("./game-descriptor.json");
-    Game.manifest = await mRes.json();
-    loader.textContent = "Starting game...";
-    setTimeout(function() {
-      loadscreen.style.display="none";
-      document.getElementById("homeMenu").style.display="block";
-    }, 1000);
-  }catch(e){
-    loader.textContent="Error: "+e;
-    console.error(e);
-  }
-}
