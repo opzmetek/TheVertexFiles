@@ -66,6 +66,27 @@ export const PlayerConfig = {
   height: 2
 }
 
+export const Guns = [
+  {
+    name: "Machine Gun",
+    type: "machine",
+    fireRate: 4,
+    damage: 15
+  },
+  {
+    name: "Sniper",
+    type: "sniper",
+    fireRate: 0.5,
+    damage: 150
+  },
+  {
+    name: "Pistol",
+    type: "pistol",
+    fireRate: 1.1,
+    damage: 40
+  }
+]
+
 export const UserState = {
   xp: 0,
   unlockedGuns: new Set(),
