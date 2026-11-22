@@ -72,7 +72,12 @@ export function escape(){
   }
 }
 
-export function gameUI(color,dash,anchor){
+export function gameUI(color,dash,anchor) {
+  function swap() {
+    const t = Player.gun[0];
+    Player.gun[0] = Player.gun[1];
+    Player.gun[1] = t;
+  }
   Game.events = new AbortController();
   if(Game.mobile) screen.orientation.lock("landscape");
   const keys = {};
@@ -80,10 +85,10 @@ export function gameUI(color,dash,anchor){
     e.preventDefault();
     const k = e.key.toLowerCase();
     keys[k]=true;
-    if(k===keyCodes.jump&&Player.onGround&&!Game.paused)Player.vertVec = Player.jumpStrength;
-    else if(k===keyCodes.dash&&!Game.paused)dash();
-    else if(k===keyCodes.anchor&&!Game.paused)anchor();
-    else if(k===keyCodes.escape || k === "delete")escape();
+    else if(k===keyCodes.dash&&!Game.paused) dash();
+    else if(k===keyCodes.anchor&&!Game.paused) anchor();
+    else if(k===keyCodes.escape || k === "delete") escape();
+    else if(k===keyCodes.swap && !Game.paused) swap();
     updateKeys();
   }, {signal: Game.events.signal});
   document.addEventListener("keyup",e=>{
@@ -104,6 +109,7 @@ export function gameUI(color,dash,anchor){
     else Game.input.my=0;
     if(keys[keyCodes.sprint]) { if(!Player.sprinting) emit("sprintstart");}
     else if (Player.sprinting) emit("sprintend");
+    if(keys[keyCodes.jump] && Player.onGround) Player.vertVec = Player.jumpStrength;
   }
   if(Game.mobile){
     let ly, lx, active;
@@ -181,6 +187,10 @@ Game.renderer.domElement.releasePointerCapture(e.pointerId);
     ctrls.appendChild(escBtn);
     escBtn.textContent="⏸️";
     escBtn.onclick=escape;
+    const swapBtn=document.createElement("button");
+    ctrls.appendChild(swapBtn);
+    swapBtn.textContent="🔄";
+    swapBtn.onclick = swap;
     const settings = di("options-center");
     if (!settings.querySelector("#shootto")) {
       const shootTOL=document.createElement("label");
