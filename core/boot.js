@@ -1,4 +1,4 @@
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig} from "barrel";
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager} from "barrel";
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3, Vector3} from "three";
 
 export async function initLevel(tId, lId, loader) {
@@ -67,6 +67,7 @@ export async function loadGame(){
     loader.textContent = "Loading game...";
     const mRes = await fetch("./game-descriptor.json");
     Game.manifest = await mRes.json();
+    await saveManager.init();
     await revive();
     loader.textContent = "Starting game...";
     setTimeout(function() {
