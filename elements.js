@@ -18,7 +18,7 @@ class SliderSwitch extends HTMLElement {
           --bg-off: #2b2b2b;
           --bg-on: #00bfff;
 
-          --thumb: #fff;
+          --thumb: #000;
 
           --hex: polygon(
             var(--cut) 0,
@@ -142,16 +142,16 @@ class HorizontalScrollable extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          display: block;
+          display: inline-block;
           position: relative;
           overflow: hidden;
-          width: fit-content;
+          width: max-content;
         }
 
         .moveleft, .moveright {
           width: 50px;
           height: 80px;
-          position: absolute;
+          position: relative;
           top: 50%;
           transform: translateY(-50%);
           z-index: 10;
@@ -170,7 +170,8 @@ class HorizontalScrollable extends HTMLElement {
           width: 100%;
           position: relative;
           min-height: 100px;
-          left: 0;
+          left: 50%;
+          transform: translateX(-50%);
           top: 0;
           overflow-x: auto;
           overflow-y: hidden;
