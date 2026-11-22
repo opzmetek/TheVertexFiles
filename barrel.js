@@ -12,6 +12,7 @@ export * from "./core/utils.js";
 export * from "./ui/control.js";
 export * from "./ui/start.js";
 export * from "./ui/ui.js";
+export * from "./ui/guns.js";
 export * from "./music/audio.js";
 export * from "./ai/enemy_ai.js";
 export * from "./ai/mixins.js";
