@@ -83,7 +83,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
-                .then(() => console.log('Service Worker registred'))
+                .then(reg => { console.log('Service Worker registred'); reg.update()})
                 .catch(err => console.warn('SW error:', err));
         }
     </script>
