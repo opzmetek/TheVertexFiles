@@ -14,8 +14,8 @@ Guns.forEach(g => {
   el.appendChild(name);
   el.onclick = e => {
     if (g0 && g0.gun === g) return;
-    g0?.el.style.borderColor = "blue";
-    g1?.el.style.borderColor = "";
+    if (g0) g0.el.style.borderColor = "blue";
+    if (g1) g1.el.style.borderColor = "";
     if (g0) g1 = { gun: g0.gun, el: g0.el };
     g0 = { gun: g, el };
     el.style.borderColor = "red";
