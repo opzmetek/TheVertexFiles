@@ -1,4 +1,4 @@
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, PlayerConfig} from "barrel";
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig} from "barrel";
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3, Vector3} from "three";
 
 export async function initLevel(tId, lId, loader) {
@@ -55,6 +55,28 @@ export function setupScene(){
   World.pitch.add(Game.camera);
   World.scene.add(World.yaw);
   World.pitch.position.y+=PlayerConfig.height;
+}
+
+export async function loadGame(){
+  const loadscreen = document.getElementById("loadscreen");
+  const loader = document.createElement("span");
+  loadscreen.appendChild(loader);
+  loader.className="small";
+  loader.id = "loader";
+  try{
+    loader.textContent = "Loading game...";
+    const mRes = await fetch("./game-descriptor.json");
+    Game.manifest = await mRes.json();
+    await revive();
+    loader.textContent = "Starting game...";
+    setTimeout(function() {
+      loadscreen.style.display="none";
+      document.getElementById("homeMenu").style.display="block";
+    }, 1000);
+  }catch(e){
+    loader.textContent="Error: "+e;
+    console.error(e);
+  }
 }
 
 export function setupFlags(){
