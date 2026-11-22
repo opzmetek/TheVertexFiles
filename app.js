@@ -4,7 +4,7 @@
 //license: none
 
 //imports
-import {Game, World, Audio, Player, Animation, System, loadUI, loadGame, di, remove, destroyThree, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
+import {Game, World, Audio, Player, Animation, System, loadUI, loadGame, di, remove, revive, setGuns, destroyThree, analyse, moveStep, setupScene, setupFlags, initLevel, initUtil, initParticles, updateBullets, updateParticles} from "/TheVertexFiles/barrel.js";
 
 setupScene();
 setupFlags();
@@ -15,7 +15,7 @@ export function startGame(tId,lId){
     const loader = di("loader");
     loader.textContent = "Loading level...";
     di("homeMenu").style.display = "none";
-    Player.gun[0] = JSON.parse(document.querySelector('input[name="gunselect"]:checked').value);
+    setGuns();
     const meta = await initLevel(tId, lId, loader);
     await initUtil(meta, loader);
     initParticles();
