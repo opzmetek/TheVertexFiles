@@ -85,7 +85,7 @@ export function gameUI(color,dash,anchor) {
     e.preventDefault();
     const k = e.key.toLowerCase();
     keys[k]=true;
-    else if(k===keyCodes.dash&&!Game.paused) dash();
+    if(k===keyCodes.dash&&!Game.paused) dash();
     else if(k===keyCodes.anchor&&!Game.paused) anchor();
     else if(k===keyCodes.escape || k === "delete") escape();
     else if(k===keyCodes.swap && !Game.paused) swap();
