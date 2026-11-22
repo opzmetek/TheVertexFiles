@@ -10,8 +10,9 @@ Guns.forEach(g => {
   guns.appendChild(el);
   const name = document.createElement("h3");
   name.classList = "glow c small";
+  name.textContent = g.name ?? "Default";
   el.appendChild(name);
-  el.onclick = e=>{
+  el.onclick = e => {
     if (g0.gun === g) return;
     g0.el.style.borderColor = "blue";
     g1.el.style.borderColor = "";
