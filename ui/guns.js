@@ -12,17 +12,17 @@ Guns.forEach(g => {
   name.classList = "glow";
   name.textContent = g.name ?? "Default";
   el.appendChild(name);
-  el.onclick = e => {
+  el.addEventListener("click", e => {
     if (g0 && g0.gun === g) return;
     if (g0) g0.el.style.borderColor = "blue";
     if (g1) g1.el.style.borderColor = "";
     if (g0) g1 = { gun: g0.gun, el: g0.el };
     g0 = { gun: g, el };
     el.style.borderColor = "red";
-  }
+  });
 });
 
 export function setGuns() {
-  Player.gun[0] = g0;
-  Player.gun[1] = g1;
+  Player.gun[0] = g0.gun;
+  Player.gun[1] = g1.gun;
 }
