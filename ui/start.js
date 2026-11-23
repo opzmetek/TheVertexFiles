@@ -14,12 +14,13 @@ export function createStartingPanel() {
     container.style.display = 'flex';
     container.style.flexDirection = 'column';
     container.style.alignItems = 'center';
-    container.style.justifyContent = 'center';
+    container.style.justifyContent = 'flex-start';
     container.style.gap = '20px';
     container.style.padding = '20px';
     container.style.background = 'linear-gradient(145deg, #0e1625, #101c33)';
     container.style.border = '2px solid #3db4ff';
     container.style.borderRadius = '12px';
+    container.style.overflowY = "scroll";
     container.style.boxShadow = '0 0 20px rgba(61,180,255,0.6),0 0 40px rgba(61,180,255,0.3)';
 
     document.body.appendChild(container);
@@ -84,6 +85,8 @@ export function createStartingPanel() {
         levelsContainer.style.display = 'flex';
         levelsContainer.style.gap = '10px';
         levelsContainer.style.flexDirection = 'column';
+        levelsContainer.style.justifyContent = 'flex-start';
+        levelsContainer.overflowY = 'scroll';
         levelsContainer.style.alignItems = 'center';
         container.appendChild(levelsContainer);
 
