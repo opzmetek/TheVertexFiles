@@ -24,6 +24,8 @@
     grid-auto-flow: column;
     grid-template-rows: repeat(6, 1fr);
     grid-auto-columns: 1fr;
+    gap: 10px;
+    padding: 30px;
     align-items: stretch;
     jusitfy-items: stretch;
     right:20px;
