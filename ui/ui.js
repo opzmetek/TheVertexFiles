@@ -12,6 +12,10 @@ export function loadUI(){
     Game.sensivity = +e.target.value;
   }
 
+  di("pRatio").onchange = e=>{
+    Game.renderer.setPixelRatio(+e.target.value);
+  }
+
   di("lWidth").onchange = e=>{
     Game.lWidth = +e.target.value;
   }
