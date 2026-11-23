@@ -61,12 +61,23 @@
           
         }
       }
+    },
+    "magic_tower":{
+      "meta":{
+        "color":"#d123de",
+        "obj":"magic_tower"
+      },
+      "1":{
+        "enemies":{
+          "5":"enemy"
+        }
+      }
     }
   },
   "enemies":{
     "enemy":{
       "maxHp":120,
-      "speed":15,
+      "speed":12,
       "maxJump":30,
       "ai":[
         "jumper",
