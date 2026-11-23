@@ -23,7 +23,7 @@
     position:absolute;
     grid-auto-flow: column;
     grid-template-rows: repeat(5, 1fr);
-    grid-auto-columns: 7%;
+    grid-auto-columns: 1fr;
     align-items: stretch;
     jusitfy-items: stretch;
     right:20px;
@@ -31,6 +31,7 @@
     z-index:999;
     background:transparent;
     height: 100%;
+    width: 9%;
     direction: rtl;
 }
 
