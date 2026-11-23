@@ -12,6 +12,7 @@ export function loadUI(){
     Game.sensivity = +e.target.value;
   }
 
+  di("pRatio").max = window.devicePixelRatio;
   di("pRatio").onchange = e=>{
     Game.renderer.setPixelRatio(+e.target.value);
   }
