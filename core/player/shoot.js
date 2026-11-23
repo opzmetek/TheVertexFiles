@@ -12,11 +12,7 @@ let lastShootTime = 0;
 
 on("shootstart",screen=>{
   const max = 1/Player.gun[0].fireRate;
-  if(screen){
-    updateDirection(screen);
-  }else{
-    Game.camera.getWorldDirection(direction);
-  }
+  Game.camera.getWorldDirection(direction);
   if(Player.gun[0].type === "machine") playerShooting = true;
   else if(Player.gun[0].type === "pistol" && lastShootTime >= max) {
     playerShoot();
@@ -41,11 +37,7 @@ on("shootstart",screen=>{
 });
 
 on("shootmove", screen=>{
-  if(screen){
-    updateDirection(screen);
-  }else{
-    Game.camera.getWorldDirection(direction);
-  }
+  Game.camera.getWorldDirection(direction);
 });
 
 on("shootend", ()=>{
@@ -68,13 +60,6 @@ on("shootend", ()=>{
     playerShoot();
   }
 });
-
-function updateDirection(screen){
-  mouse.x = (screen.x / window.innerWidth) * 2 - 1;
-  mouse.y = -(screen.y / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, Game.camera);
-  direction.copy(raycaster.ray.direction);
-}
 
 export function checkPlayerShoot(dt){
   const max = 1 / Player.gun[0].fireRate;
