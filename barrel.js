@@ -5,6 +5,7 @@ export * from "./core/raycast.js";
 export * from "./ai/astar.js";
 export * from "./enemies/spawn.js";
 export * from "./enemies/enemy.js";
+export * from "./enemies/animator.js";
 export * from "./core/player/move.js";
 export * from "./core/boot.js";
 export * from "./core/shader.js";
