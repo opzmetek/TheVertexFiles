@@ -181,14 +181,11 @@ function heightmapToMesh(heightmap) {
   const indices = [];
   let index = 0;
 
-  // pole pro sledování, které buňky jsou už zpracované
   const used = Array.from({ length: height }, () => new Array(width).fill(false));
 
-  // pomocná funkce pro převod indexu na souřadnici
   const idxToCoord = (i, len) => (i - len / 2 + 0.5);
   const idxToEdge   = (i, len) => (i - len / 2);
 
-  // první podložka (plane)
   const x0_plane = -width * 0.5;
   const x1_plane = width * 0.5;
   const z0_plane = -height * 0.5;
@@ -224,7 +221,6 @@ function heightmapToMesh(heightmap) {
         heightmap.get(z, idxToCoord(xi + w, width)) === h
       ) w++;
 
-      // zjistí délku stejné výšky
       let d = 1;
       outer: while (zi + d < height) {
         for (let k = 0; k < w; k++) {
@@ -236,78 +232,67 @@ function heightmapToMesh(heightmap) {
         d++;
       }
 
-      // označí použité buňky
       for (let dz = 0; dz < d; dz++) {
         for (let dx = 0; dx < w; dx++) {
           used[zi + dz][xi + dx] = true;
         }
       }
 
-      // souřadnice bloků
       const x0 = idxToEdge(xi, width);
       const x1 = idxToEdge(xi + w, width);
       const z0 = idxToEdge(zi, height);
       const z1 = idxToEdge(zi + d, height);
       const y = h;
 
-// horní plocha (směrem nahoru)
 vertices.push(
-  x0, y, z0,  // 0
-  x1, y, z0,  // 1
-  x0, y, z1,  // 2
-  x1, y, z1   // 3
+  x0, y, z0,
+  x1, y, z0,
+  x0, y, z1,
+  x1, y, z1
 );
 indices.push(
   index, index + 2, index + 1,
   index + 1, index + 2, index + 3
 );
 index += 4;
-
-// přední stěna (směrem k z0)
 vertices.push(
-  x0, 0, z0,  // 0
-  x1, 0, z0,  // 1
-  x0, y, z0,  // 2
-  x1, y, z0   // 3
+  x0, 0, z0,
+  x1, 0, z0,
+  x0, y, z0,
+  x1, y, z0
 );
 indices.push(
   index, index + 2, index + 1,
   index + 1, index + 2, index + 3
 );
 index += 4;
-
-// zadní stěna (směrem k z1)
 vertices.push(
-  x0, 0, z1,  // 0
-  x1, 0, z1,  // 1
-  x0, y, z1,  // 2
-  x1, y, z1   // 3
+  x0, 0, z1,
+  x1, 0, z1,
+  x0, y, z1,
+  x1, y, z1
 );
 indices.push(
   index, index + 1, index + 2,
   index + 2, index + 1, index + 3
 );
 index += 4;
-
-// levá stěna (směrem k x0)
 vertices.push(
-  x0, 0, z0,  // 0
-  x0, 0, z1,  // 1
-  x0, y, z0,  // 2
-  x0, y, z1   // 3
+  x0, 0, z0,
+  x0, 0, z1,
+  x0, y, z0,
+  x0, y, z1
 );
 indices.push(
   index, index + 2, index + 1,
   index + 1, index + 2, index + 3
 );
 index += 4;
-
-// pravá stěna (směrem k x1)
 vertices.push(
-  x1, 0, z0,  // 0
-  x1, 0, z1,  // 1
-  x1, y, z0,  // 2
-  x1, y, z1   // 3
+  x1, 0, z0,
+  x1, 0, z1,
+  x1, y, z0,
+  x1, y, z1
 );
 indices.push(
   index, index + 1, index + 2,
@@ -317,16 +302,13 @@ index += 4;
     }
   }
 
-  // vytvoření geometrie
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
 
-  // materiál
   const material = new THREE.MeshStandardMaterial({ color: 0x88cc88, side: THREE.DoubleSide });
 
-  // návrat mesh
   return new THREE.Mesh(geometry, material);
 }
 export async function importHeightmap(url){
