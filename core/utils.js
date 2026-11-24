@@ -17,9 +17,8 @@ export function di(n){
 export async function loadAll(arr,loader,prefix = "",suffix = "", objects){
   for(const o of arr){
     const array = (await loadOne(prefix+o+suffix, loader));
-    const group = new Group();
-    array.forEach(m=>group.add(m));
-    objects[o] = group;
+    objects[o] = array.root;
+    array.root.allChildren = array.meshes;
   }
   return objects;
 }
