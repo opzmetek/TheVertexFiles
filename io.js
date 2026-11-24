@@ -42,6 +42,7 @@ export function exportVRX(objects, animations) {
   const animsFinal = new Float32Array(anims);
 
   const parents = new Int16Array(objectData.length);
+	parents.fill(-1)
 
   objects.forEach((o,i)=>{
     parents[i] = objects.findIndex(p=>p===o.parent);
