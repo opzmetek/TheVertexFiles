@@ -85,6 +85,9 @@ export async function importVRX(url) {
   const sizes = new Uint32Array(buffer, off, objectSizesByteLength / 4);
   off += objectSizesByteLength;
 
+  const parents = new Uint16Array(buffer, off, parentsByteLength / 2);
+		off += parentsByteLength;
+
   const meshes = [];
   let vi = 0;
 
@@ -156,7 +159,7 @@ export async function importVRX(url) {
       )
     );
   }
-  return meshes;
+  return {meshes, parents};
 }
 
 export async function exportHeightmap(heightmap){
