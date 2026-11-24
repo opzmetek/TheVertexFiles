@@ -65,7 +65,8 @@
     "magic_tower":{
       "meta":{
         "color":"#d123de",
-        "obj":"magic_tower"
+        "obj":"magic_tower",
+        "music":"music_04.mp3"
       },
       "1":{
         "enemies":{
