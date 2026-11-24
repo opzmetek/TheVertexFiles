@@ -28,7 +28,6 @@ void main()
     vec3 pos = vWorldPos;
     vec3 color = lineColor;
 
-    // --- derivace pro anti-aliasing ---
     float dXx = abs(dFdx(pos.x));
     float dYx = abs(dFdy(pos.x));
     float dXy = abs(dFdx(pos.y));
@@ -42,17 +41,14 @@ void main()
 
     float alpha = 0.0;
 
-    // --- osa X (linky v rovině YZ) ---
     float rem = mod(pos.x, squareSize);
     alpha += smoothstep(widthX,0.0, rem);
     alpha += smoothstep(widthX,0.0, squareSize - rem);
 
-    // --- osa Y (linky v rovině XZ) ---
     rem = mod(pos.y, squareSize);
     alpha += smoothstep(widthY,0.0, rem);
     alpha += smoothstep(widthY,0.0, squareSize - rem);
 
-    // --- osa Z (linky v rovině XY) ---
     rem = mod(pos.z, squareSize);
     alpha += smoothstep(widthZ,0.0, rem);
     alpha += smoothstep(widthZ,0.0, squareSize - rem);
