@@ -15,6 +15,7 @@ export function spawnEnemy(id){
   e.m = enemy;
   e.p = enemy.position;
   e.r = enemy.rotation;
+  e.meshes = enemy.allChildren;
   if(e.meta.scale){
     const s = e.meta.scale;
     enemy.scale.set(s,s,s);
