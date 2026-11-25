@@ -45,7 +45,7 @@ export function exportVRX(objects, animations) {
 	parents.fill(-1)
 
   objects.forEach((o,i)=>{
-    parents[i] = objects.findIndex(p=>p===o.parent);
+    parents[i] = objects.findIndex(p=> p === o.parent || p === o.realParent);
   });
 
   const sizes = new Uint32Array([
