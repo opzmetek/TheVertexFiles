@@ -1,9 +1,11 @@
+
 name: Deploy repo to Pages
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,18 +14,15 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Prepare site
         run: |
@@ -33,7 +32,9 @@ jobs:
             --exclude=".*" \
             --exclude="site" \
             ./ site/
+
           sed -i "s/__VERSION__/${GITHUB_SHA:0:6}/g" site/sw.js
+
           find site -type f \
             | sed 's|^site/||' \
             | sort > site/files.txt
@@ -42,7 +43,21 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: site
+          name: github-pages
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
