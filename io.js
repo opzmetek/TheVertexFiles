@@ -86,7 +86,7 @@ export async function importVRX(url) {
   const sizes = new Uint32Array(buffer, off, objectSizesByteLength / 4);
   off += objectSizesByteLength;
 
-  const parents = new Uint16Array(buffer, off, parentsByteLength / 2);
+  const parents = new Int16Array(buffer, off, parentsByteLength / 2);
 		off += parentsByteLength;
 
   const meshes = [];
