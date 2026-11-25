@@ -73,7 +73,7 @@ export async function importVRX(url) {
   let off = 0;
 
   const [verticesByteLength, animsByteLength, objectSizesByteLength, parentsByteLength, objectCount, animationCount] = new Uint32Array(buffer, 0, 5);
-  off += 20;
+  off += 24;
 
   const vertexCount = verticesByteLength / 4;
 
