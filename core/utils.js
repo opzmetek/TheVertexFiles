@@ -1,4 +1,4 @@
-import {Game, Player, World, Audio, importVRX} from "barrel";
+import {Game, Player, World, Audio, importVRX, construct} from "barrel";
 import {Group, AxesHelper, SkeletonHelper} from "three";
 
 export function getByPath(obj,path,stepsUp=0){
@@ -26,7 +26,8 @@ export async function loadAll(arr,loader,prefix = "",suffix = "", objects){
 export async function loadOne(o,loader){
   if(loader)loader.textContent=("From "+o);
   console.log(o);
-  return await importVRX(o);
+  const v = await importVRX(o);
+  return construct(v);
 }
 
 export function remove(m){
