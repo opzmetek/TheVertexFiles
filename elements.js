@@ -159,6 +159,27 @@ class HorizontalScrollable extends HTMLElement {
           right: 10px;
         }
 
+        button, label, input, a, span {
+          position: relative;
+          background: linear-gradient(145deg, #0e1625, #101c33);
+          color: #a7d4ff;
+          border: 1px solid #3db4ff;
+          border-radius: 8px;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          box-shadow: 0 0 10px rgba(61, 180, 255, 0.4);
+          cursor: pointer;
+          transition: all 0.25s ease;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          user-select: none;
+          transform-origin: center center;
+          flex-direction: column;
+          width: auto;
+        }
+
         .childRoot {
           height: 100%;
           width: 100%;
