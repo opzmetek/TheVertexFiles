@@ -202,7 +202,7 @@ function heightmapToMesh(heightmap) {
     x1_plane, 0, z1_plane
   );
 
-  indices.push(index, index + 2, index + 1, index + 1, index + 2, index + 3);
+  indices.push(index, index + 1, index + 2, index + 1, index + 3, index + 2);
   index += 4;
 
   for (let zi = 0; zi < height; zi++) {
@@ -255,8 +255,8 @@ vertices.push(
   x1, y, z1
 );
 indices.push(
-  index, index + 2, index + 1,
-  index + 1, index + 2, index + 3
+  index, index + 1, index + 2,
+  index + 1, index + 3, index + 2
 );
 index += 4;
 vertices.push(
