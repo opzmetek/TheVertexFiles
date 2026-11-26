@@ -60,22 +60,16 @@ class SliderSwitch extends HTMLElement {
 
         .slider::before {
           content: "";
-
           position: absolute;
           left: 0px;
           top: 0px;
-
-          width: var(--width);
+          width: var(--height);
           height: var(--height);
           clip-path: var(--hex);
-          
-          background: var(--thumb);
           border-radius: 5px;
-
           transition: transform .25s ease;
-
-          box-shadow:
-            0 2px 8px rgba(0,0,0,.3);
+          background-color: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,.3);
         }
 
         input:checked + .slider {
