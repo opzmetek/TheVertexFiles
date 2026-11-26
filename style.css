@@ -75,6 +75,10 @@ button, label, input, a, span {
     width: auto;
 }
 
+#options-center > label > div {
+    flex-direction: row;
+}
+
 /* Hover efekt (funguje i na labely a divy s class) */
 button:hover, label:hover, a:hover, span:hover, option:checked {
     color: #e3f4ff;
