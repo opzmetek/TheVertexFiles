@@ -58,7 +58,8 @@ export function destroyThree({ scene, renderer, camera }) {
 
 export function showDebug() {
   const axesHelper = new AxesHelper(1);
-  World.yaw.add(axesHelper);
+  axesHelper.position.set(0, 2, 0);
+  World.scene.add(axesHelper);
   const skeletonHelper = new SkeletonHelper(World.mesh);
   World.scene.add(skeletonHelper);
   if(Game.mobile){
