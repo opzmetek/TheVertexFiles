@@ -1,4 +1,4 @@
-import {ShaderMaterial, Color, DoubleSide} from "three";
+import {ShaderMaterial, Color, DoubleSide, FrontSide} from "three";
 
 export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
   uniforms: {
