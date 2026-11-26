@@ -1,4 +1,4 @@
-import {ShaderMaterial, Color, DoubleSide, FrontSide} from "three";
+import {ShaderMaterial, Color, DoubleSide, FrontSide, BackSide} from "three";
 
 export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
   uniforms: {
@@ -7,7 +7,7 @@ export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5
     thickness: { value: 1.0 },
     baseColor: { value: new Color(bc) },
   },
-  side: FrontSide,
+  side: BackSide,
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
