@@ -7,7 +7,7 @@ export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5
     thickness: { value: 1.0 },
     baseColor: { value: new Color(bc) },
   },
-  side: DoubleSide,
+  side: FrontSide,
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
