@@ -1,4 +1,4 @@
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager} from "barrel";
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager, showDebug} from "barrel";
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3, Vector3} from "three";
 
 export async function initLevel(tId, lId, loader) {
