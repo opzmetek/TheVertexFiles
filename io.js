@@ -266,8 +266,8 @@ vertices.push(
   x1, y, z0
 );
 indices.push(
-  index, index + 2, index + 1,
-  index + 1, index + 2, index + 3
+  index, index + 1, index + 2,
+  index + 1, index + 3, index + 2
 );
 index += 4;
 vertices.push(
@@ -277,8 +277,8 @@ vertices.push(
   x1, y, z1
 );
 indices.push(
-  index, index + 1, index + 2,
-  index + 2, index + 1, index + 3
+  index, index + 2, index + 1,
+  index + 1, index + 2, index + 3
 );
 index += 4;
 vertices.push(
