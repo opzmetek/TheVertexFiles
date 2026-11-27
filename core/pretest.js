@@ -11,6 +11,8 @@ const renderTarget = new WebGLRenderTarget(width, height, {
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
     generateMipmaps: false,
+    depthBuffer: true,
+    stencilBuffer: false,
 });
 
 const gtex = renderTarget.texture;
