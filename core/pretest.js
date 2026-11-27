@@ -35,6 +35,7 @@ export function render() {
     World.eMaterial.uniforms.depthTex.value = gtex;
     World.eHitMaterial.uniforms.depthTex.value = gtex;
   }
+  console.log(World.worldScene);
   const r = Game.renderer;
   r.setRenderTarget(renderTarget);
   r.render(World.worldScene, Game.camera);
