@@ -1,33 +1,6 @@
 import {ShaderMaterial, Color, DoubleSide, FrontSide, BackSide} from "three";
 
-export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
-  uniforms: {
-    lineColor: { value: new Color(lineColor) },
-    squareSize: { value: squareSize },
-    thickness: { value: 1.0 },
-    baseColor: { value: new Color(bc) },
-  },
-  side: BackSide,
-  vertexShader: `
-    varying vec3 vWorldPos;
-    void main() {
-      vWorldPos = position;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-precision highp float;
-uniform float squareSize;
-uniform float thickness;
-uniform vec3 lineColor;
-uniform vec3 baseColor;
-varying vec3 vWorldPos;
-
-void main() 
-{
-    vec3 pos = vWorldPos;
-    vec3 color = lineColor;
-
+const gridCore = `
     float dXx = abs(dFdx(pos.x));
     float dYx = abs(dFdy(pos.x));
     float dXy = abs(dFdx(pos.y));
@@ -54,10 +27,57 @@ void main()
     alpha += smoothstep(widthZ,0.0, squareSize - rem);
 
     alpha = clamp(alpha, 0.0, 1.0);
+`;
 
+export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5) => new ShaderMaterial({
+  uniforms: {
+    lineColor: { value: new Color(lineColor) },
+    squareSize: { value: squareSize },
+    thickness: { value: 1.0 },
+    baseColor: { value: new Color(bc) },
+  },
+  side: DoubleSide,
+  vertexShader: `
+    varying vec3 vWorldPos;
+    void main() {
+      vWorldPos = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+precision highp float;
+uniform float squareSize;
+uniform float thickness;
+uniform vec3 lineColor;
+uniform vec3 baseColor;
+varying vec3 vWorldPos;
+
+void main() 
+{
+    vec3 pos = vWorldPos;
+    vec3 color = lineColor;
+
+    ${gridCore}
     gl_FragColor = vec4(mix(baseColor,color, alpha),1.0);
 }
   `,
+});
+
+export const GridOptiMaterial = () => new ShaderMaterial({
+  side: BackSide,
+  vertexShader: `
+    varying vec3 vWorldPos;
+    void main() {
+      vWorldPos = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  fragmentShader: `
+    precision highp float;
+    varying vec3 vWorldPos;
+    void main() {
+      gl_FragColor = vec4(vWorldPos.xy, 0.0);
+    }
+  `
 });
 
 export function BillboardMaterial(color = 0xffffff) {
