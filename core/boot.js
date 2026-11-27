@@ -1,4 +1,4 @@
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager, showDebug} from "barrel";
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, GridOptiMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager, showDebug} from "barrel";
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3, Vector3} from "three";
 
 export async function initLevel(tId, lId, loader) {
@@ -12,7 +12,7 @@ export async function initLevel(tId, lId, loader) {
   World.mesh.geometry.computeVertexNormals();
   World.box = new Box3().setFromObject(World.mesh);
   await loadAll(Object.values(Game.lvl.enemies),loader,"/TheVertexFiles/enemies/",".vrx",Game.objects);
-  World.scene.add(World.mesh);
+  World.worldScene.add(World.mesh);
   return meta;
 }
 
@@ -22,7 +22,7 @@ export async function initUtil(meta, loader) {
   const tColor1 = meta.color;
   const tColor2 = meta["alt-color"] || 0x000000;
   World.colors = [tColor1, tColor2];
-  World.mesh.material = GridMaterial(tColor2, tColor1);
+  World.mesh.material = GridOptiMaterial();
   World.eMaterial = GridMaterial(tColor1, tColor2, 0.5);
   World.eHitMaterial = GridMaterial(tColor2, tColor1, 0.5);
   di("game").style.display = "block";
