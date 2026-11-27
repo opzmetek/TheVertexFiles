@@ -1,4 +1,4 @@
-import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, GridOptiMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager, showDebug} from "barrel";
+import {World, Game, loadAll, di, importHeightmap, initAudio, GridMaterial, GridOptiMaterial, gameUI, dash, anchor, spawn, revive, PlayerConfig, saveManager, showDebug, initPretest } from "barrel";
 import {Scene, WebGLRenderer, PerspectiveCamera, Object3D, Box3, Vector3} from "three";
 
 export async function initLevel(tId, lId, loader) {
@@ -32,6 +32,7 @@ export async function initUtil(meta, loader) {
     showDebug();
   }
   Game.spawner = setInterval(spawn, 5000);
+  initPretest();
   return { tColor1, tColor2 };
 }
 
