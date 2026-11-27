@@ -1,5 +1,5 @@
 import { DataTexture, RGBAFormat, FloatType, Scene, BufferGeometry, Mesh, NearestFilter, ClampToEdgeWrapping, Camera } from "three"
-import { Game, GridRenderMaterial } from "barrel"
+import { Game, World, GridRenderMaterial } from "barrel"
 
 const width = window.innerWidth, height = window.innerHeight;
 const buffer = new Float32Array(width * height * 4);
