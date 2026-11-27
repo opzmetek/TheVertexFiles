@@ -31,6 +31,10 @@ export function setThickness(val) {
 }
 
 export function render() {
+  if (!World.eMaterial.uniforms.depthTex) {
+    World.eMaterial.uniforms.depthTex = gtex;
+    World.eHitMaterial.uniforms.depthTex = gtex;
+  }
   const r = Game.renderer;
   r.setRenderTarget(gtex);
   r.render(World.worldScene, Game.camera);
