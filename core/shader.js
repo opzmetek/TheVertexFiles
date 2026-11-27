@@ -114,7 +114,7 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
         if (all(equal(pos, vec3(0.0)))) discard;
         vec3 color = lineColor;
         ${gridCore}
-        gl_FragColor = vec4(/*mix(baseColor, color, alpha)*/1.0, 0.0, 1.0, 1.0);
+        gl_FragColor = vec4(/*mix(baseColor, color, alpha)*/pos * 0.1 + 0.5, 1.0);
       }
     `
 });
