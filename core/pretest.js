@@ -35,11 +35,11 @@ export function render() {
     World.eMaterial.uniforms.depthTex.value = gtex;
     World.eHitMaterial.uniforms.depthTex.value = gtex;
   }
-  console.log(World.worldScene);
   const r = Game.renderer;
+  r.autoClear = false;
   r.setRenderTarget(renderTarget);
   r.render(World.worldScene, Game.camera);
   r.setRenderTarget(null);
   r.render(quadScene, quadCam);
-  //r.render(World.scene, Game.camera);
+  r.render(World.scene, Game.camera);
 }
