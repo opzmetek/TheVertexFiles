@@ -92,10 +92,10 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
         tDiffuse: { value: tex }
     },
     vertexShader: `
-      varying vec2 uv;
+      varying vec2 vUv;
       void main() {
+        vUv = position.xy;
         gl_Position = vec4(position, 0.0);
-        uv = position.xy;
       }
     `,
     depthTest: false,
@@ -107,9 +107,9 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
       uniform vec3 lineColor;
       uniform vec3 baseColor;
       uniform sampler2D tDiffuse;
-      varying vec2 uv;
+      varying vec2 vUv;
       void main() {
-        vec3 pos = texture2D(tDiffuse, uv).xyz;
+        vec3 pos = texture2D(tDiffuse, vUv).xyz;
         vec3 color = lineColor;
         ${gridCore}
         gl_FragColor = vec4(mix(baseColor, color, alpha), 1.0);
