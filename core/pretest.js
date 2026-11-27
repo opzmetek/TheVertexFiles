@@ -11,8 +11,6 @@ const renderTarget = new WebGLRenderTarget(width, height, {
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
     generateMipmaps: false,
-    depthBuffer: false,
-    stencilBuffer: false
 });
 
 const gtex = renderTarget.texture;
@@ -31,9 +29,9 @@ export function setThickness(val) {
 }
 
 export function render() {
-  if (!World.eMaterial.uniforms.depthTex) {
-    World.eMaterial.uniforms.depthTex = gtex;
-    World.eHitMaterial.uniforms.depthTex = gtex;
+  if (!World.eMaterial.uniforms.depthTex.value) {
+    World.eMaterial.uniforms.depthTex.value = gtex;
+    World.eHitMaterial.uniforms.depthTex.value = gtex;
   }
   const r = Game.renderer;
   r.setRenderTarget(renderTarget);
