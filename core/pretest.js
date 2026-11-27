@@ -1,18 +1,28 @@
-import { Texture, RGBAFormat, FloatType, Scene, PlaneGeometry, Mesh } from "three"
+import { Texture, RGBAFormat, FloatType, Scene, Geometry, Mesh, NearestFilter, ClampToEdgeWrapping, Camera } from "three"
 import { Game, GridRenderMaterial } from "barrel"
 
 const width = window.innerWidth, height = window.innerHeight;
 const buffer = new Float32Array(width * height * 4);
 const gtex = new DataTexture(buffer, width, height, RGBAFormat, FloatType);
-
+gtex.minFilter = NearestFilter;
+gtex.magFilter = NearestFilter;
+gtex.wrapS = ClampToEdgeWrapping;
+gtex.wrapT = ClampToEdgeWrapping;
+gtex.generateMipmaps = false;
 const quadScene = new Scene();
-const quadGeom = new PlaneGeometry();
-const quadMat = GridRenderMaterial(World.colors[0], World.colors[1]);
+const quadGeom = new BufferGeometry();
+const quadCam = new Camera();
+
+quadGeom.setAttribute('position',
+    new Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1,  3, 0], 3)
+);
+const quadMat = GridRenderMaterial(World.colors[0], World.colors[1], gtex);
 quadScene.add(new Mesh(quadGeom, quadMat));
 
 export function render() {
   const r = Game.renderer;
   r.setRenderTarget(gtex);
   r.render(World.worldScene, Game.camera);
-  
+  r.setRenderTarget(null);
+  r.render(quadScene, quadCam);
 }
