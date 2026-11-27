@@ -25,4 +25,5 @@ export function render() {
   r.render(World.worldScene, Game.camera);
   r.setRenderTarget(null);
   r.render(quadScene, quadCam);
+  r.render(World.scene, Game.camera);
 }
