@@ -36,7 +36,7 @@ export function render() {
     World.eHitMaterial.uniforms.depthTex = gtex;
   }
   const r = Game.renderer;
-  r.setRenderTarget(gtex);
+  r.setRenderTarget(renderTarget);
   r.render(World.worldScene, Game.camera);
   r.setRenderTarget(null);
   r.render(quadScene, quadCam);
