@@ -2,6 +2,7 @@ export * from "./core/ecosystem.js";
 export * from "./core/animation.js";
 export * from "./core/state.js";
 export * from "./core/raycast.js";
+export * from "./core/pretest.js";
 export * from "./ai/astar.js";
 export * from "./enemies/spawn.js";
 export * from "./enemies/enemy.js";
