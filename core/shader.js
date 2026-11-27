@@ -72,7 +72,7 @@ export const GridOptiMaterial = () => new ShaderMaterial({
     varying vec3 vWorldPos;
     void main() {
       vec4 pos = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      vWorldPos = pos.xyz;
+      vWorldPos = position;
     }`,
   fragmentShader: `
     precision highp float;
