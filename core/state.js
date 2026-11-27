@@ -1,4 +1,4 @@
-import { Vector3 } from "three"
+import { Vector3, Scene } from "three"
 
 export const Game = {
   camera: null,
@@ -38,6 +38,7 @@ export const World = {
   scene: null,
   mesh: null,
   box: null,
+  worldScene: new Scene(),
   material: null,
   eMaterial: null,
   pitch: null,
