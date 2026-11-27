@@ -1,4 +1,4 @@
-import { Texture, RGBAFormat, FloatType, Scene, Geometry, Mesh, NearestFilter, ClampToEdgeWrapping, Camera } from "three"
+import { Texture, RGBAFormat, FloatType, Scene, BufferGeometry, Mesh, NearestFilter, ClampToEdgeWrapping, Camera } from "three"
 import { Game, GridRenderMaterial } from "barrel"
 
 const width = window.innerWidth, height = window.innerHeight;
