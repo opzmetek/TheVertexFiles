@@ -80,7 +80,7 @@ export const GridOptiMaterial = () => new ShaderMaterial({
   `
 });
 
-export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial{
+export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
     uniforms: {
         lineColor: {value: new Color(color1)},
         baseColor: {value: new Color(color2)},
@@ -110,7 +110,7 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial{
         gl_FragColor = vec4(mix(baseColor, color, alpha), 1.0);
       }
     `
-}
+});
 
 export function BillboardMaterial(color = 0xffffff) {
     return new THREE.ShaderMaterial({
