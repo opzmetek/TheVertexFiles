@@ -38,6 +38,7 @@ export function render() {
   const r = Game.renderer;
   r.autoClear = false;
   r.setRenderTarget(renderTarget);
+  r.clear(true, true, true);
   r.render(World.worldScene, Game.camera);
   r.setRenderTarget(null);
   r.render(quadScene, quadCam);
