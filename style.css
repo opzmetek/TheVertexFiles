@@ -27,13 +27,13 @@
     gap: 10px;
     padding: 30px;
     align-items: stretch;
-    jusitfy-items: stretch;
+    justify-items: stretch;
     right:20px;
     bottom:20px;
     z-index:999;
     background:transparent;
-    height: 100%;
-    width: 15vh;
+    height: 100dvh;
+    width: 15dvh;
     direction: rtl;
 }
 
