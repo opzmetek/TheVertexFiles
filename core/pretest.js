@@ -4,9 +4,10 @@ import { Game, World, GridRenderMaterial } from "barrel"
 let renderTarget, gtex, quadCam, quadGeom, quadMat, quadScene;
 
 export function initPretest() {
-const width = window.innerWidth, height = window.innerHeight;
-const buffer = new Float32Array(width * height * 4);
-renderTarget = new WebGLRenderTarget(width, height, {
+  const width = Math.floor(window.innerWidth * window.devicePixelRatio);
+  const height = Math.floor(window.innerHeight * window.devicePixelRatio);
+  const buffer = new Float32Array(width * height * 4);
+  renderTarget = new WebGLRenderTarget(width, height, {
     format: RGBAFormat,
     type: FloatType,
     minFilter: LinearFilter,
@@ -16,18 +17,18 @@ renderTarget = new WebGLRenderTarget(width, height, {
     generateMipmaps: false,
     depthBuffer: true,
     stencilBuffer: false,
-});
+  });
 
-gtex = renderTarget.texture;
-quadScene = new Scene();
-quadGeom = new BufferGeometry();
-quadCam = new Camera();
+  gtex = renderTarget.texture;
+  quadScene = new Scene();
+  quadGeom = new BufferGeometry();
+  quadCam = new Camera();
 
-quadGeom.setAttribute('position',
+  quadGeom.setAttribute('position',
     new Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1,  3, 0], 3)
-);
-quadMat = GridRenderMaterial(World.colors[0], World.colors[1], gtex);
-quadScene.add(new Mesh(quadGeom, quadMat));
+  );
+  quadMat = GridRenderMaterial(World.colors[0], World.colors[1], gtex);
+  quadScene.add(new Mesh(quadGeom, quadMat));
 }
 
 export function setThickness(val) {
