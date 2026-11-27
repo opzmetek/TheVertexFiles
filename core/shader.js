@@ -110,12 +110,11 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
       uniform sampler2D tDiffuse;
       varying vec2 vUv;
       void main() {
-        /*vec3 pos = texture2D(tDiffuse, vUv).xyz;
+        vec3 pos = texture2D(tDiffuse, vUv).xyz;
+        if (all(equal(pos, vec3(0.0)))) discard;
         vec3 color = lineColor;
         ${gridCore}
-        if (length(pos) < 0.0001) gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-        else gl_FragColor = vec4(mix(baseColor, color, alpha), 1.0);*/
-gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+        gl_FragColor = vec4(mix(baseColor, color, alpha), 1.0);
       }
     `
 });
