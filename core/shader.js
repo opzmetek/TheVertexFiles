@@ -35,13 +35,15 @@ export const GridMaterial = (bc = 0x000000,lineColor = 0xffa500,squareSize = 2.5
     squareSize: { value: squareSize },
     thickness: { value: 1.0 },
     baseColor: { value: new Color(bc) },
+    depthTex: { value: null }
   },
   side: DoubleSide,
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
       vWorldPos = position;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      vec4 p = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      gl_Position = p;
     }
   `,
   fragmentShader: `
@@ -50,13 +52,14 @@ uniform float squareSize;
 uniform float thickness;
 uniform vec3 lineColor;
 uniform vec3 baseColor;
+uniform sampler2D depthTex;
 varying vec3 vWorldPos;
 
 void main() 
 {
     vec3 pos = vWorldPos;
     vec3 color = lineColor;
-
+    if (texture2D(depthTex, clamp(vWorldPos.xy * 0.5 + 0.5, 0.0, 1.0)).z < vWorldPos.z) discard;
     ${gridCore}
     gl_FragColor = vec4(mix(baseColor,color, alpha),1.0);
 }
@@ -75,18 +78,18 @@ export const GridOptiMaterial = () => new ShaderMaterial({
     precision highp float;
     varying vec3 vWorldPos;
     void main() {
-      gl_FragColor = vec4(vWorldPos.xy, 0.0);
+      gl_FragColor = vec4(vWorldPos.xyz, 0.0);
     }
   `
 });
 
 export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
     uniforms: {
-        lineColor: {value: new Color(color1)},
-        baseColor: {value: new Color(color2)},
-        thickness: {value: 1.0},
-        squareSize: {value: 1.5},
-        tDiffuse: {resource: tex}
+        lineColor: { value: new Color(color1) },
+        baseColor: { value: new Color(color2) },
+        thickness: { value: 1.0 },
+        squareSize: { value: 1.5 },
+        tDiffuse: { value: tex }
     },
     vertexShader: `
       varying vec2 uv;
@@ -95,6 +98,8 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
         uv = position.xy;
       }
     `,
+    depthTest: false,
+    depthWrite: false,
     fragmentShader: `
       precision highp float;
       uniform float squareSize;
@@ -104,7 +109,7 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
       uniform sampler2D tDiffuse;
       varying vec2 uv;
       void main() {
-        vec3 pos = texture(tDiffuse, uv).xyz;
+        vec3 pos = texture2D(tDiffuse, uv).xyz;
         vec3 color = lineColor;
         ${gridCore}
         gl_FragColor = vec4(mix(baseColor, color, alpha), 1.0);
