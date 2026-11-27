@@ -80,6 +80,38 @@ export const GridOptiMaterial = () => new ShaderMaterial({
   `
 });
 
+export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial{
+    uniforms: {
+        lineColor: {value: new Color(color1)},
+        baseColor: {value: new Color(color2)},
+        thickness: {value: 1.0},
+        squareSize: {value: 1.5},
+        tDiffuse: {resource: tex}
+    },
+    vertexShader: `
+      varying vec2 uv;
+      void main() {
+        gl_Position = vec4(position, 0.0);
+        uv = position.xy;
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      uniform float squareSize;
+      uniform float thickness;
+      uniform vec3 lineColor;
+      uniform vec3 baseColor;
+      uniform sampler2D tDiffuse;
+      varying vec2 uv;
+      void main() {
+        vec3 pos = texture(tDiffuse, uv).xyz;
+        vec3 color = lineColor;
+        ${gridCore}
+        gl_FragColor = vec4(mix(baseColor, color, alpha), 1.0);
+      }
+    `
+}
+
 export function BillboardMaterial(color = 0xffffff) {
     return new THREE.ShaderMaterial({
 
