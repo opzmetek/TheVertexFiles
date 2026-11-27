@@ -1,4 +1,4 @@
-import { RGBAFormat, FloatType, Scene, BufferGeometry, Mesh, NearestFilter, ClampToEdgeWrapping, Camera, Float32BufferAttribute, WebGLRenderTarget } from "three"
+import { RGBAFormat, FloatType, Scene, BufferGeometry, Mesh, LinearFilter, ClampToEdgeWrapping, Camera, Float32BufferAttribute, WebGLRenderTarget } from "three"
 import { Game, World, GridRenderMaterial } from "barrel"
 
 let renderTarget, gtex, quadCam, quadGeom, quadMat, quadScene;
@@ -9,8 +9,8 @@ const buffer = new Float32Array(width * height * 4);
 renderTarget = new WebGLRenderTarget(width, height, {
     format: RGBAFormat,
     type: FloatType,
-    minFilter: NearestFilter,
-    magFilter: NearestFilter,
+    minFilter: LinearFilter,
+    magFilter: LinearFilter,
     wrapS: ClampToEdgeWrapping,
     wrapT: ClampToEdgeWrapping,
     generateMipmaps: false,
