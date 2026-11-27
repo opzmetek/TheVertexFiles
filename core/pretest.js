@@ -20,7 +20,7 @@ const quadMat = GridRenderMaterial(World.colors[0], World.colors[1], gtex);
 quadScene.add(new Mesh(quadGeom, quadMat));
 
 export function setThickness(val) {
-    quadMat.thickness.value = val;
+    quadMat.uniforms.thickness.value = val;
 }
 
 export function render() {
