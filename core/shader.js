@@ -59,7 +59,7 @@ void main()
 {
     vec3 pos = vWorldPos;
     vec3 color = lineColor;
-    if (texture2D(depthTex, clamp(vWorldPos.xy * 0.5 + 0.5, 0.0, 1.0)).z < vWorldPos.z) discard;
+    if (texture2D(depthTex, clamp(vWorldPos.xy * 0.5 + 0.5, 0.0, 1.0)).w < gl_FragCoord.z) discard;
     ${gridCore}
     gl_FragColor = vec4(mix(baseColor,color, alpha),1.0);
 }
@@ -78,7 +78,7 @@ export const GridOptiMaterial = () => new ShaderMaterial({
     precision highp float;
     varying vec3 vWorldPos;
     void main() {
-      gl_FragColor = vec4(vWorldPos.xyz, 0.0);
+      gl_FragColor = vec4(vWorldPos.xyz, gl_FragCoord.z);
     }
   `
 });
