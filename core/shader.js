@@ -71,8 +71,8 @@ export const GridOptiMaterial = () => new ShaderMaterial({
   vertexShader: `
     varying vec3 vWorldPos;
     void main() {
-      vWorldPos = position;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      vec4 pos = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      vWorldPos = pos.xyz;
     }`,
   fragmentShader: `
     precision highp float;
@@ -94,8 +94,8 @@ export const GridRenderMaterial = (color1, color2, tex) => new ShaderMaterial({
     vertexShader: `
       varying vec2 vUv;
       void main() {
-        vUv = position.xy;
-        gl_Position = vec4(position, 0.0);
+        vUv = position.xy * 0.5 + 0.5;
+        gl_Position = vec4(position, 1.0);
       }
     `,
     depthTest: false,
