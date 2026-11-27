@@ -1,4 +1,4 @@
-import {Game, World, Audio} from "barrel";
+import {Game, World, Audio, setThickness} from "barrel";
 
 export function analyse() {
   Audio.analyser.getByteTimeDomainData(Audio.bin);
@@ -8,7 +8,7 @@ export function analyse() {
   }
   const avg = sum/Audio.bin.length;
   const energy = avg / 255;
-  World.mesh.material.uniforms.thickness.value = (1.0+energy * energy * 2.0) * Game.lWidth;
+  setThickness((1.0+energy * energy * 2.0) * Game.lWidth);
 }
 
 
