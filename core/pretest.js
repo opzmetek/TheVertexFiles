@@ -1,10 +1,12 @@
 import { RGBAFormat, FloatType, Scene, BufferGeometry, Mesh, NearestFilter, ClampToEdgeWrapping, Camera, Float32BufferAttribute, WebGLRenderTarget } from "three"
 import { Game, World, GridRenderMaterial } from "barrel"
 
+let renderTarget, gtex, quadCam, quadGeom, quadMat, quadScene;
+
 export function initPretest() {
 const width = window.innerWidth, height = window.innerHeight;
 const buffer = new Float32Array(width * height * 4);
-const renderTarget = new WebGLRenderTarget(width, height, {
+renderTarget = new WebGLRenderTarget(width, height, {
     format: RGBAFormat,
     type: FloatType,
     minFilter: NearestFilter,
@@ -16,17 +18,18 @@ const renderTarget = new WebGLRenderTarget(width, height, {
     stencilBuffer: false,
 });
 
-const gtex = renderTarget.texture;
-const quadScene = new Scene();
-const quadGeom = new BufferGeometry();
-const quadCam = new Camera();
+gtex = renderTarget.texture;
+quadScene = new Scene();
+quadGeom = new BufferGeometry();
+quadCam = new Camera();
 
 quadGeom.setAttribute('position',
     new Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1,  3, 0], 3)
 );
-const quadMat = GridRenderMaterial(World.colors[0], World.colors[1], gtex);
+quadMat = GridRenderMaterial(World.colors[0], World.colors[1], gtex);
 quadScene.add(new Mesh(quadGeom, quadMat));
 }
+
 export function setThickness(val) {
     quadMat.uniforms.thickness.value = val;
 }
