@@ -1,4 +1,4 @@
-import {World, Game, Animation, analyse, moveStep, updateBullets, updateParticles} from "barrel";
+import {World, Game, Animation, analyse, moveStep, updateBullets, updateParticles, render as pRender} from "barrel";
 
 export class System {
   static last = 0;
@@ -31,7 +31,7 @@ export class System {
     Animation.update();
     updateParticles(state.dt);
     this.applyShake(state);
-    Game.renderer.render(World.scene, Game.camera);
+    pRender();
   }
 
   static applyShake(state){
