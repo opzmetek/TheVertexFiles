@@ -45,7 +45,7 @@ export class System {
   }
 
   static renderOnly(state){
-    Game.renderer.render(World.scene, Game.camera);
+    pRender();
   }
 
   static updateAndRender(state){
