@@ -21,7 +21,9 @@ self.addEventListener('install', event => {
 
         if (data && Array.isArray(data)) {
           console.log('[SW] Finded ' + data.length + ' game files.');
-          await cache.addAll(data);
+          await Promise.all(
+           data.map(f => cache.add("/TheVertexFiles/" + f))
+          );
           await notifyClients({text: `Installed v${VERSION}`});
         } else {
           console.warn('[SW] Error: cannot fetch game files.');
