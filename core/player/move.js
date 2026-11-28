@@ -54,9 +54,9 @@ export function dash(){
   o.y+=0.5;
   const ray = new Ray(o,vFor);
   const hit = DDARaycast(World.mesh, ray, 0, PlayerConfig.dashLength);
-  World.yaw.position.x = Math.floor(hit.point.x)+0.5;
-  World.yaw.position.z = Math.floor(hit.point.z)+0.5;
-  World.yaw.position.y = hit.point.y;
+  const hx = Math.floor(hit.point.x * 10) / 10;
+  const hz = Math.floor(hit.point.z * 10) / 10;
+  World.yaw.position.set(Math.ceil(hx), hit.point.y, Math.ceil(hz));
 }
 
 export function anchor(){
