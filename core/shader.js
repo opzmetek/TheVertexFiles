@@ -59,7 +59,7 @@ void main()
 {
     vec3 pos = vWorldPos;
     vec3 color = lineColor;
-    if (texture2D(depthTex, clamp(vWorldPos.xy * 0.5 + 0.5, 0.0, 1.0)).w < gl_FragCoord.z) discard;
+    /*if (texture2D(depthTex, clamp(vWorldPos.xy * 0.5 + 0.5, 0.0, 1.0)).w < gl_FragCoord.z) discard;*/
     ${gridCore}
     gl_FragColor = vec4(mix(baseColor,color, alpha),1.0);
 }
